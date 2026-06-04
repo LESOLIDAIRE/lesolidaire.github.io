@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LE SOLIDAIRE SARL – Quincaillerie Générale & Solutions BTP</title>
+<title>LE SOLIDAIRE SARL – Administration & E-commerce BTP</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -19,8 +19,9 @@
     --ombre: 0 2px 12px rgba(0,0,0,0.10);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Source Sans 3', sans-serif; color:var(--texte); background:#fff; }
-  a { text-decoration:none; color:inherit; }
+  body { font-family:'Source Sans 3', sans-serif; color:var(--texte); background:#f5f5f5; }
+  a { text-decoration:none; color:inherit; cursor:pointer; }
+
   .topbar {
     background: var(--bleu);
     color:#fff;
@@ -33,7 +34,8 @@
   }
   .topbar span { display:flex; align-items:center; gap:6px; }
   .topbar-right { display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
-  .topbar-right a { color:#fff; font-size:13px; display:flex; align-items:center; gap:5px; }
+  .topbar-right a { color:#fff; font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer; }
+
   header {
     background:#fff;
     padding:14px 20px;
@@ -77,6 +79,7 @@
     width:18px; height:18px; font-size:10px;
     display:flex; align-items:center; justify-content:center; font-weight:700;
   }
+
   .main-nav {
     background: var(--bleu);
     display:flex;
@@ -105,6 +108,7 @@
     cursor:pointer;
   }
   .nav-links a:hover, .nav-links a.active { background:rgba(255,255,255,0.12); }
+
   .hero-section { display:flex; }
   .sidebar {
     width:210px;
@@ -156,6 +160,7 @@
     color:#fff;
   }
   .hero-badge i { font-size:22px; color:var(--rouge); }
+
   .features-strip {
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -170,11 +175,13 @@
   .feature-card.red { background:var(--rouge); color:#fff; }
   .feature-card.blue { background:var(--bleu); color:#fff; }
   .feature-card i { font-size:28px; }
+
   .section { padding:36px 20px; }
   .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
   .section-title { font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; display:flex; align-items:center; gap:10px; }
   .section-title::before { content:''; width:5px; height:26px; background:var(--rouge); border-radius:2px; }
   .see-all { color:var(--bleu); font-size:13.5px; font-weight:600; cursor:pointer; }
+
   .products-grid {
     display:grid;
     grid-template-columns:repeat(6,1fr);
@@ -196,10 +203,13 @@
     align-items:center;
     justify-content:center;
     font-size:48px;
+    color:var(--bleu);
   }
   .product-info { padding:10px 12px 14px; }
   .product-name { font-size:13px; font-weight:600; color:#333; margin-bottom:6px; }
   .product-price { color:var(--rouge); font-weight:700; font-size:15px; }
+  .product-stock { font-size:11px; color:#28a745; margin-top:5px; }
+  .product-stock.out { color:var(--rouge); }
   .btn-cart {
     width:100%;
     margin-top:10px;
@@ -215,6 +225,7 @@
     gap:7px;
   }
   .btn-cart:hover { background:var(--rouge); }
+
   .cats-grid {
     display:grid;
     grid-template-columns:repeat(8,1fr);
@@ -231,6 +242,7 @@
   .cat-card:hover { border-color:var(--rouge); }
   .cat-icon { font-size:36px; margin-bottom:10px; }
   .cat-name { font-size:12px; font-weight:600; }
+
   .promo-banner {
     background: linear-gradient(135deg, var(--rouge) 0%, #8b0000 100%);
     margin:0 20px 36px;
@@ -250,6 +262,7 @@
     font-weight:700;
     cursor:pointer;
   }
+
   .garanties {
     background:var(--gris-clair);
     padding:28px 20px;
@@ -266,6 +279,7 @@
     gap:16px;
   }
   .garantie-icon { font-size:34px; color:var(--bleu); }
+
   footer {
     background: var(--bleu);
     color:#fff;
@@ -298,8 +312,7 @@
     cursor:pointer;
   }
   .footer-bottom { text-align:center; padding:14px; font-size:12px; opacity:0.6; }
-  
-  /* MODALE PANIER */
+
   .modal {
     display: none;
     position: fixed;
@@ -313,7 +326,7 @@
   .modal-content {
     background: #fff;
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
     border-radius: 12px;
     padding: 20px;
     max-height: 80vh;
@@ -338,24 +351,11 @@
     padding: 12px 0;
     border-bottom: 1px solid #f0f0f0;
   }
-  .cart-item-info { flex: 1; }
-  .cart-item-name { font-weight: 600; font-size: 14px; }
-  .cart-item-price { color: var(--rouge); font-size: 13px; }
-  .cart-item-actions { display: flex; gap: 10px; align-items: center; }
-  .cart-item-actions button {
-    width: 28px; height: 28px;
-    border: 1px solid #ddd;
-    background: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
   .cart-total {
     padding: 15px 0;
     text-align: right;
     font-size: 18px;
     font-weight: 700;
-    border-top: 2px solid #eee;
   }
   .validate-cart {
     width: 100%;
@@ -366,8 +366,41 @@
     border-radius: 6px;
     font-weight: 700;
     cursor: pointer;
-    margin-top: 10px;
   }
+  .form-group { margin-bottom: 15px; }
+  .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  .admin-panel {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .admin-table th, .admin-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  .filters {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .page { display: none; }
+  .page.active { display: block; }
   .toast {
     position: fixed;
     bottom: 20px;
@@ -379,7 +412,16 @@
     z-index: 3000;
     display: none;
   }
-  .current-page { font-weight: bold; margin: 20px; padding: 10px; background: var(--gris-clair); border-radius: 8px; text-align: center; display: none; }
+  .btn-small {
+    padding: 5px 10px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-edit { background: var(--bleu); color: white; }
+  .btn-delete { background: #dc3545; color: white; }
+
   @media(max-width:1200px) {
     .products-grid { grid-template-columns:repeat(4,1fr); }
     .cats-grid { grid-template-columns:repeat(4,1fr); }
@@ -400,15 +442,11 @@
 </head>
 <body>
 
-<div class="topbar">
-  <span><i class="fas fa-bullhorn"></i> Bienvenue chez LE SOLIDAIRE SARL – Votre partenaire en quincaillerie générale et solutions BTP</span>
+<div class="topbar" id="topbar">
+  <span><i class="fas fa-bullhorn"></i> Bienvenue chez LE SOLIDAIRE SARL</span>
   <div class="topbar-right">
-    <a href="#" class="contact-link" data-page="contact"><i class="fas fa-truck"></i> Livraison rapide partout</a>
-    <a href="#" class="contact-link" data-page="contact"><i class="fas fa-headset"></i> Besoin d'aide ?</a>
-    <div class="socials" style="display:flex;gap:8px;">
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-    </div>
+    <a><i class="fas fa-truck"></i> <span id="topbar-livraison">Livraison rapide partout</span></a>
+    <a><i class="fas fa-headset"></i> Besoin d'aide ?</a>
   </div>
 </div>
 
@@ -426,9 +464,6 @@
   <div class="search-bar">
     <select id="search-cat">
       <option>Toutes catégories</option>
-      <option>Ciment</option>
-      <option>Fer à béton</option>
-      <option>Outillage</option>
     </select>
     <input type="text" id="search-input" placeholder="Rechercher un produit...">
     <button id="search-btn"><i class="fas fa-search"></i></button>
@@ -447,7 +482,7 @@
 </header>
 
 <nav class="main-nav">
-  <div class="cat-btn" id="all-categories-btn"><i class="fas fa-bars"></i> TOUTES LES CATÉGORIES</div>
+  <div class="cat-btn"><i class="fas fa-bars"></i> TOUTES LES CATÉGORIES</div>
   <div class="nav-links">
     <a class="nav-link active" data-page="accueil">ACCUEIL</a>
     <a class="nav-link" data-page="produits">NOS PRODUITS</a>
@@ -455,28 +490,15 @@
     <a class="nav-link" data-page="devis">DEMANDE DE DEVIS</a>
     <a class="nav-link" data-page="apropos">À PROPOS</a>
     <a class="nav-link" data-page="contact">CONTACT</a>
+    <a class="nav-link" data-page="admin" id="admin-link" style="display:none;">?? ADMIN</a>
   </div>
 </nav>
 
-<div id="current-page" class="current-page"></div>
-
-<div id="accueil-page">
+<!-- PAGE ACCUEIL -->
+<div id="accueil" class="page active">
   <div class="hero-section">
-    <div class="sidebar">
-      <div class="sidebar-item"><i class="fas fa-cubes"></i><span>Ciment</span></div>
-      <div class="sidebar-item"><i class="fas fa-ruler-combined"></i><span>Fer à béton</span></div>
-      <div class="sidebar-item"><i class="fas fa-building"></i><span>Matériaux de construction</span></div>
-      <div class="sidebar-item"><i class="fas fa-tools"></i><span>Outillage & Équipements</span></div>
-      <div class="sidebar-item"><i class="fas fa-faucet"></i><span>Plomberie & Sanitaire</span></div>
-      <div class="sidebar-item"><i class="fas fa-bolt"></i><span>Électricité</span></div>
-      <div class="sidebar-item"><i class="fas fa-wrench"></i><span>Quincaillerie générale</span></div>
-      <div class="sidebar-whatsapp" id="whatsapp-sidebar">
-        <i class="fab fa-whatsapp"></i>
-        <div>
-          <div style="font-size:11px;">Besoin d'aide ? Chattez avec nous</div>
-          <div class="number">07 57 19 67 24</div>
-        </div>
-      </div>
+    <div class="sidebar" id="sidebar-categories">
+      <!-- Catégories générées dynamiquement -->
     </div>
     <div class="hero-slider">
       <div class="hero-content">
@@ -485,33 +507,39 @@
         <div class="hero-badges">
           <div class="hero-badge"><i class="fas fa-medal"></i><div><strong>PRODUITS DE QUALITÉ</strong></div></div>
           <div class="hero-badge"><i class="fas fa-truck-fast"></i><div><strong>LIVRAISON RAPIDE</strong></div></div>
+          <div class="hero-badge"><i class="fas fa-shield-halved"></i><div><strong>PAIEMENT SÉCURISÉ</strong></div></div>
         </div>
       </div>
     </div>
   </div>
+
   <div class="features-strip">
     <div class="feature-card red"><i class="fas fa-tag"></i><div><strong>MEILLEURS PRIX</strong><span>Des prix compétitifs</span></div></div>
     <div class="feature-card blue"><i class="fas fa-percent"></i><div><strong>PROMOTIONS</strong><span>Offres spéciales</span></div></div>
     <div class="feature-card red"><i class="fas fa-file-invoice"></i><div><strong>DEVIS GRATUIT</strong><span>Demandez votre devis</span></div></div>
     <div class="feature-card blue"><i class="fas fa-headset"></i><div><strong>CONSEILS EXPERTS</strong><span>Notre équipe vous accompagne</span></div></div>
   </div>
+
   <div class="section">
     <div class="section-header">
       <div class="section-title">PRODUITS PHARES</div>
       <div class="see-all" data-page="produits">Voir tous les produits <i class="fas fa-arrow-right"></i></div>
     </div>
-    <div class="products-grid" id="products-grid"></div>
+    <div class="products-grid" id="home-products"></div>
   </div>
+
   <div class="section" style="background:var(--gris-clair);">
     <div class="section-header">
       <div class="section-title">NOS CATÉGORIES POPULAIRES</div>
     </div>
     <div class="cats-grid" id="cats-grid"></div>
   </div>
+
   <div class="promo-banner">
     <div class="promo-text"><h2>PROMOTIONS EXCLUSIVES !</h2><p>Des réductions incroyables sur une sélection de produits BTP</p></div>
     <div class="btn-promo" data-page="promotions">VOIR LES OFFRES</div>
   </div>
+
   <div class="garanties">
     <div class="garantie-card"><div class="garantie-icon"><i class="fas fa-truck"></i></div><div><div class="garantie-title">LIVRAISON PARTOUT</div><div class="garantie-desc">En Côte d'Ivoire</div></div></div>
     <div class="garantie-card"><div class="garantie-icon"><i class="fas fa-hand-holding-usd"></i></div><div><div class="garantie-title">PAIEMENT À LA LIVRAISON</div><div class="garantie-desc">Payez à la réception</div></div></div>
@@ -520,341 +548,781 @@
   </div>
 </div>
 
-<div id="produits-page" style="display:none;">
+<!-- PAGE PRODUITS -->
+<div id="produits" class="page">
   <div class="section">
     <div class="section-header"><div class="section-title">TOUS NOS PRODUITS</div></div>
-    <div class="products-grid" id="all-products-grid"></div>
+    <div class="filters">
+      <input type="text" id="filter-search" placeholder="Rechercher..." style="flex:2;">
+      <select id="filter-category">
+        <option value="">Toutes catégories</option>
+      </select>
+      <input type="number" id="filter-min" placeholder="Prix min" style="width:100px;">
+      <input type="number" id="filter-max" placeholder="Prix max" style="width:100px;">
+      <button class="btn-cart" id="apply-filters" style="width:auto; margin:0;">Filtrer</button>
+    </div>
+    <div class="products-grid" id="all-products"></div>
   </div>
 </div>
 
-<div id="promotions-page" style="display:none;">
+<!-- PAGE PROMOTIONS -->
+<div id="promotions" class="page">
   <div class="section">
     <div class="section-header"><div class="section-title">PROMOTIONS EN COURS</div></div>
-    <div class="products-grid" id="promo-products-grid"></div>
+    <div class="products-grid" id="promo-products"></div>
   </div>
 </div>
 
-<div id="devis-page" style="display:none;">
+<!-- PAGE DEVIS -->
+<div id="devis" class="page">
   <div class="section">
     <div class="section-header"><div class="section-title">DEMANDE DE DEVIS GRATUIT</div></div>
     <div style="max-width:600px; margin:0 auto; background:#f9f9f9; padding:30px; border-radius:12px;">
       <form id="devis-form">
-        <div style="margin-bottom:15px;"><input type="text" id="devis-nom" placeholder="Votre nom complet" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px;" required></div>
-        <div style="margin-bottom:15px;"><input type="tel" id="devis-tel" placeholder="Votre téléphone" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px;" required></div>
-        <div style="margin-bottom:15px;"><input type="email" id="devis-email" placeholder="Votre email" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px;" required></div>
-        <div style="margin-bottom:15px;"><textarea id="devis-message" rows="4" placeholder="Décrivez votre projet ou les produits souhaités..." style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px;" required></textarea></div>
-        <button type="submit" style="width:100%; padding:14px; background:var(--rouge); color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer;">ENVOYER MA DEMANDE</button>
+        <div class="form-group"><input type="text" id="devis-nom" placeholder="Votre nom complet" required></div>
+        <div class="form-group"><input type="tel" id="devis-tel" placeholder="Votre téléphone" required></div>
+        <div class="form-group"><input type="email" id="devis-email" placeholder="Votre email" required></div>
+        <div class="form-group"><textarea id="devis-message" rows="4" placeholder="Décrivez votre projet..." required></textarea></div>
+        <button type="submit" class="btn-cart">ENVOYER MA DEMANDE</button>
       </form>
-      <div id="devis-success" style="display:none; margin-top:15px; padding:12px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Votre demande a été envoyée ! Nous vous contacterons sous 24h.</div>
+      <div id="devis-success" style="display:none; margin-top:15px; padding:12px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Votre demande a été envoyée !</div>
     </div>
   </div>
 </div>
 
-<div id="apropos-page" style="display:none;">
+<!-- PAGE A PROPOS -->
+<div id="apropos" class="page">
   <div class="section">
     <div class="section-header"><div class="section-title">À PROPOS DE LE SOLIDAIRE SARL</div></div>
     <div style="max-width:800px; margin:0 auto; line-height:1.8;">
       <p>Créée en 2015, <strong>LE SOLIDAIRE SARL</strong> est une entreprise spécialisée dans la <strong>quincaillerie générale et les solutions BTP</strong> en Côte d'Ivoire.</p><br>
-      <p>Nous proposons une large gamme de produits de qualité : ciment, fer à béton, outillage, plomberie, électricité, peinture et bien plus encore.</p><br>
-      <p><strong>Notre engagement :</strong> qualité, prix compétitifs, livraison rapide et service client réactif.</p><br>
-      <p><strong>Horaires :</strong> Lundi - Samedi : 8h - 18h</p>
+      <p>Nous proposons une large gamme de produits de qualité : ciment, fer à béton, outillage, plomberie, électricité, peinture et bien plus encore.</p>
     </div>
   </div>
 </div>
 
-<div id="contact-page" style="display:none;">
+<!-- PAGE CONTACT -->
+<div id="contact" class="page">
   <div class="section">
     <div class="section-header"><div class="section-title">CONTACTEZ-NOUS</div></div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
-      <div>
-        <div style="margin-bottom:20px;"><i class="fas fa-phone" style="color:var(--rouge); width:30px;"></i> <strong>07 57 19 67 24</strong></div>
-        <div style="margin-bottom:20px;"><i class="fas fa-envelope" style="color:var(--rouge); width:30px;"></i> comptabilitesolidaire@gmail.com</div>
-        <div style="margin-bottom:20px;"><i class="fas fa-map-marker-alt" style="color:var(--rouge); width:30px;"></i> Abidjan, Yopougon, Côte d'Ivoire</div>
-        <div style="margin-top:30px;"><button id="contact-whatsapp" style="background:#25D366; color:#fff; border:none; padding:12px 24px; border-radius:30px; cursor:pointer; font-weight:700;"><i class="fab fa-whatsapp"></i> Nous contacter sur WhatsApp</button></div>
+      <div id="contact-info">
+        <!-- Infos contact dynamiques -->
       </div>
       <div>
         <form id="contact-form">
-          <input type="text" id="contact-nom" placeholder="Votre nom" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;" required>
-          <input type="tel" id="contact-tel" placeholder="Votre téléphone" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;" required>
-          <textarea id="contact-msg" rows="4" placeholder="Votre message" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;" required></textarea>
-          <button type="submit" style="background:var(--bleu); color:#fff; padding:12px; border:none; border-radius:6px; cursor:pointer; width:100%;">ENVOYER</button>
+          <input type="text" id="contact-nom" placeholder="Votre nom" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
+          <input type="tel" id="contact-tel" placeholder="Votre téléphone" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
+          <textarea id="contact-msg" rows="4" placeholder="Votre message" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;"></textarea>
+          <button type="submit" class="btn-cart" style="width:100%;">ENVOYER</button>
         </form>
-        <div id="contact-success" style="display:none; margin-top:10px; padding:10px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Message envoyé ! Nous vous répondrons rapidement.</div>
+        <div id="contact-success" style="display:none; margin-top:10px; padding:10px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Message envoyé !</div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="account-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header"><h3>Mon compte</h3><span class="close-modal">&times;</span></div>
-    <div style="padding:15px 0;">
-      <p style="margin-bottom:15px;">Connectez-vous pour suivre vos commandes et gérer votre profil.</p>
-      <input type="email" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
-      <input type="password" placeholder="Mot de passe" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
-      <button id="fake-login" style="width:100%; padding:12px; background:var(--rouge); color:#fff; border:none; border-radius:6px; cursor:pointer;">Se connecter</button>
-      <p style="margin-top:15px; font-size:12px; text-align:center; color:#888;">Démo : cliquez sur "Se connecter" pour accéder</p>
+<!-- PAGE ADMIN -->
+<div id="admin" class="page">
+  <div class="section">
+    <h2>?? PANEL D'ADMINISTRATION</h2>
+    
+    <!-- Paramètres du site -->
+    <div class="admin-panel">
+      <h3>?? PARAMÈTRES DU SITE</h3>
+      <form id="settings-form">
+        <div class="form-group"><label>Téléphone</label><input type="text" id="site-phone" placeholder="Téléphone"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="site-email" placeholder="Email"></div>
+        <div class="form-group"><label>Adresse</label><input type="text" id="site-address" placeholder="Adresse"></div>
+        <div class="form-group"><label>WhatsApp</label><input type="text" id="site-whatsapp" placeholder="WhatsApp"></div>
+        <button type="submit" class="btn-cart">?? ENREGISTRER LES MODIFICATIONS</button>
+      </form>
+    </div>
+
+    <!-- Ajouter un produit -->
+    <div class="admin-panel">
+      <h3>? AJOUTER UN PRODUIT</h3>
+      <form id="add-product-form">
+        <div class="form-group"><input type="text" id="prod-nom" placeholder="Nom du produit" required></div>
+        <div class="form-group"><input type="number" id="prod-prix" placeholder="Prix (FCFA)" required></div>
+        <div class="form-group"><input type="text" id="prod-categorie" placeholder="Catégorie" required></div>
+        <div class="form-group"><input type="number" id="prod-stock" placeholder="Stock" required></div>
+        <div class="form-group"><input type="text" id="prod-emoji" placeholder="Icône (ex: ??)" value="??"></div>
+        <div class="form-group"><label><input type="checkbox" id="prod-promo"> En promotion</label></div>
+        <button type="submit" class="btn-cart">? AJOUTER LE PRODUIT</button>
+      </form>
+    </div>
+
+    <!-- Liste des produits -->
+    <div class="admin-panel">
+      <h3>?? LISTE DES PRODUITS</h3>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Nom</th><th>Prix (FCFA)</th><th>Catégorie</th><th>Stock</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="admin-products-list"></tbody>
+      </table>
+    </div>
+
+    <!-- Commandes -->
+    <div class="admin-panel">
+      <h3>?? COMMANDES CLIENTS</h3>
+      <div id="admin-orders-list"></div>
     </div>
   </div>
 </div>
 
+<!-- MODAL PANIER -->
 <div id="cart-modal" class="modal">
   <div class="modal-content">
-    <div class="modal-header"><h3><i class="fas fa-shopping-cart"></i> Mon panier</h3><span class="close-modal">&times;</span></div>
-    <div id="cart-items-list"></div>
+    <div class="modal-header"><h3>?? Mon panier</h3><span class="close-modal">&times;</span></div>
+    <div id="cart-items"></div>
     <div class="cart-total">Total : <span id="cart-total">0</span> FCFA</div>
-    <button class="validate-cart" id="validate-cart">VALIDER LA COMMANDE</button>
-    <div id="order-success" style="display:none; margin-top:10px; padding:10px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Commande validée ! Vous recevrez un appel de confirmation.</div>
+    <button class="validate-cart" id="validate-order">VALIDER LA COMMANDE</button>
+  </div>
+</div>
+
+<!-- MODAL COMPTE -->
+<div id="account-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>?? Mon compte</h3><span class="close-modal" id="close-account">&times;</span></div>
+    <div id="account-content"></div>
+  </div>
+</div>
+
+<!-- MODAL MODIFIER PRIX -->
+<div id="edit-price-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>?? Modifier le produit</h3><span class="close-modal">&times;</span></div>
+    <form id="edit-product-form">
+      <input type="hidden" id="edit-id">
+      <div class="form-group"><label>Nom</label><input type="text" id="edit-nom" required></div>
+      <div class="form-group"><label>Prix (FCFA)</label><input type="number" id="edit-prix" required></div>
+      <div class="form-group"><label>Catégorie</label><input type="text" id="edit-categorie" required></div>
+      <div class="form-group"><label>Stock</label><input type="number" id="edit-stock" required></div>
+      <div class="form-group"><label>Icône</label><input type="text" id="edit-emoji"></div>
+      <div class="form-group"><label><input type="checkbox" id="edit-promo"> En promotion</label></div>
+      <button type="submit" class="btn-cart">?? ENREGISTRER</button>
+    </form>
   </div>
 </div>
 
 <div id="toast" class="toast">? Produit ajouté au panier !</div>
 
 <script>
-// Produits
-const products = [
-  { id:1, name:'Ciment CIMAF 50kg', price:4200, category:'ciment', emoji:'??', promo:false },
-  { id:2, name:'Fer à béton 12mm', price:6500, category:'fer', emoji:'??', promo:true },
-  { id:3, name:'Câble électrique 2.5mm', price:1850, category:'electricite', emoji:'??', promo:false },
-  { id:4, name:'Peinture VINYLUX 20L', price:25000, category:'peinture', emoji:'??', promo:false },
-  { id:5, name:'Brouette métallique', price:28000, category:'outillage', emoji:'??', promo:true },
-  { id:6, name:'Perceuse Bosch 680W', price:45000, category:'outillage', emoji:'??', promo:false },
-  { id:7, name:'Tuyau PVC 100mm (ml)', price:2800, category:'plomberie', emoji:'??', promo:false },
-  { id:8, name:'Carrelage Sol 60x60', price:12500, category:'materiaux', emoji:'?', promo:true },
-  { id:9, name:'Marteau démolisseur', price:85000, category:'outillage', emoji:'??', promo:false },
-  { id:10, name:'Fil électrique 1.5mm', price:1250, category:'electricite', emoji:'?', promo:false },
+// ============= DONNÉES PAR DÉFAUT =============
+let produits = [
+  { id: 1, nom: "Ciment CIMAF 50kg", prix: 4200, categorie: "Ciment", stock: 50, emoji: "??", promo: false },
+  { id: 2, nom: "Fer à béton 12mm", prix: 6500, categorie: "Fer", stock: 30, emoji: "??", promo: true },
+  { id: 3, nom: "Perceuse Bosch 680W", prix: 45000, categorie: "Outillage", stock: 10, emoji: "??", promo: false },
+  { id: 4, nom: "Peinture VINYLUX 20L", prix: 25000, categorie: "Peinture", stock: 20, emoji: "??", promo: false },
+  { id: 5, nom: "Brouette métallique", prix: 28000, categorie: "Outillage", stock: 15, emoji: "??", promo: true },
+  { id: 6, nom: "Câble électrique 2.5mm", prix: 1850, categorie: "Électricité", stock: 100, emoji: "??", promo: false },
+  { id: 7, nom: "Tuyau PVC 100mm", prix: 2800, categorie: "Plomberie", stock: 40, emoji: "??", promo: false },
+  { id: 8, nom: "Carrelage 60x60", prix: 12500, categorie: "Matériaux", stock: 25, emoji: "?", promo: true }
 ];
 
-let cart = [];
-let currentPage = 'accueil';
+// Paramètres du site
+let siteSettings = {
+  telephone: "07 57 19 67 24",
+  email: "comptabilitesolidaire@gmail.com",
+  adresse: "Abidjan, Yopougon, Côte d'Ivoire",
+  whatsapp: "2250757196724",
+  livraison: "Livraison rapide partout"
+};
 
-// Sauvegarde panier
-function saveCart() {
-  localStorage.setItem('cart', JSON.stringify(cart));
+let utilisateurs = [];
+let utilisateurConnecte = null;
+let panier = [];
+let nextId = 9;
+
+// Chargement localStorage
+function loadData() {
+  const savedProduits = localStorage.getItem("produits_solidaire");
+  if(savedProduits) produits = JSON.parse(savedProduits);
+  const savedSettings = localStorage.getItem("siteSettings_solidaire");
+  if(savedSettings) siteSettings = JSON.parse(savedSettings);
+  const savedUsers = localStorage.getItem("users_solidaire");
+  if(savedUsers) utilisateurs = JSON.parse(savedUsers);
+  const savedCart = localStorage.getItem("cart_solidaire");
+  if(savedCart) panier = JSON.parse(savedCart);
+  const savedUser = localStorage.getItem("currentUser_solidaire");
+  if(savedUser && savedUser !== "null") utilisateurConnecte = JSON.parse(savedUser);
+  if(produits.length > 0) nextId = Math.max(...produits.map(p => p.id)) + 1;
 }
 
-// Charger panier
-function loadCart() {
-  const saved = localStorage.getItem('cart');
-  if(saved) cart = JSON.parse(saved);
-  updateCartUI();
+function saveData() {
+  localStorage.setItem("produits_solidaire", JSON.stringify(produits));
+  localStorage.setItem("siteSettings_solidaire", JSON.stringify(siteSettings));
+  localStorage.setItem("users_solidaire", JSON.stringify(utilisateurs));
+  localStorage.setItem("cart_solidaire", JSON.stringify(panier));
+  localStorage.setItem("currentUser_solidaire", JSON.stringify(utilisateurConnecte));
 }
 
-// Ajouter au panier
-function addToCart(productId) {
-  const product = products.find(p => p.id === productId);
-  if(!product) return;
-  const existing = cart.find(item => item.id === productId);
-  if(existing) existing.quantity++;
-  else cart.push({...product, quantity:1});
-  saveCart();
-  updateCartUI();
-  showToast();
+// Mise à jour globale
+function updateAll() {
+  updateCartCount();
+  renderHomeProducts();
+  renderAllProducts();
+  renderPromoProducts();
+  renderAdminProducts();
+  renderCartModal();
+  renderAccountModal();
+  updateCategoryFilters();
+  renderSidebarCategories();
+  renderCategoriesGrid();
+  renderContactInfo();
+  updateTopbar();
 }
 
-function updateCartUI() {
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.getElementById('cart-count').innerHTML = count;
-  
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  document.getElementById('cart-total').innerHTML = total.toLocaleString();
-  
-  const container = document.getElementById('cart-items-list');
+function updateCartCount() {
+  const count = panier.reduce((sum, item) => sum + item.quantite, 0);
+  document.getElementById("cart-count").innerHTML = count;
+}
+
+function updateTopbar() {
+  const livraisonSpan = document.getElementById("topbar-livraison");
+  if(livraisonSpan) livraisonSpan.innerHTML = siteSettings.livraison;
+}
+
+function renderContactInfo() {
+  const container = document.getElementById("contact-info");
   if(container) {
-    if(cart.length === 0) container.innerHTML = '<p style="text-align:center;padding:20px;">Votre panier est vide</p>';
-    else {
-      container.innerHTML = cart.map(item => `
-        <div class="cart-item">
-          <div class="cart-item-info">
-            <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-price">${item.price.toLocaleString()} FCFA</div>
-          </div>
-          <div class="cart-item-actions">
-            <button class="cart-qty-minus" data-id="${item.id}">-</button>
-            <span style="min-width:30px;text-align:center;">${item.quantity}</span>
-            <button class="cart-qty-plus" data-id="${item.id}">+</button>
-            <button class="cart-remove" data-id="${item.id}" style="background:#ff4444;color:#fff;border:none;">?</button>
-          </div>
-        </div>
-      `).join('');
-      
-      document.querySelectorAll('.cart-qty-minus').forEach(btn => {
-        btn.addEventListener('click', () => updateQty(parseInt(btn.dataset.id), -1));
-      });
-      document.querySelectorAll('.cart-qty-plus').forEach(btn => {
-        btn.addEventListener('click', () => updateQty(parseInt(btn.dataset.id), 1));
-      });
-      document.querySelectorAll('.cart-remove').forEach(btn => {
-        btn.addEventListener('click', () => {
-          cart = cart.filter(item => item.id !== parseInt(btn.dataset.id));
-          saveCart();
-          updateCartUI();
-        });
-      });
-    }
+    container.innerHTML = `
+      <div style="margin-bottom:20px;"><i class="fas fa-phone" style="color:var(--rouge); width:30px;"></i> <strong>${siteSettings.telephone}</strong></div>
+      <div style="margin-bottom:20px;"><i class="fas fa-envelope" style="color:var(--rouge); width:30px;"></i> ${siteSettings.email}</div>
+      <div style="margin-bottom:20px;"><i class="fas fa-map-marker-alt" style="color:var(--rouge); width:30px;"></i> ${siteSettings.adresse}</div>
+      <button id="contact-whatsapp" style="background:#25D366; color:#fff; border:none; padding:12px 24px; border-radius:30px; cursor:pointer;"><i class="fab fa-whatsapp"></i> Nous contacter sur WhatsApp</button>
+    `;
+    document.getElementById("contact-whatsapp")?.addEventListener("click", () => openWhatsApp());
   }
 }
 
-function updateQty(id, delta) {
-  const item = cart.find(i => i.id === id);
-  if(item) {
-    item.quantity += delta;
-    if(item.quantity <= 0) cart = cart.filter(i => i.id !== id);
-    saveCart();
-    updateCartUI();
-  }
-}
-
-function showToast() {
-  const toast = document.getElementById('toast');
-  toast.style.display = 'block';
-  setTimeout(() => toast.style.display = 'none', 2000);
-}
-
-// Afficher les produits
-function renderProducts(containerId, productList) {
-  const container = document.getElementById(containerId);
+function renderSidebarCategories() {
+  const container = document.getElementById("sidebar-categories");
   if(!container) return;
-  container.innerHTML = productList.map(p => `
-    <div class="product-card">
-      <div class="product-img"><span class="prod-emoji">${p.emoji}</span></div>
-      <div class="product-info">
-        <div class="product-name">${p.name}</div>
-        <div class="product-price">${p.price.toLocaleString()} FCFA</div>
-        <button class="btn-cart" data-id="${p.id}"><i class="fas fa-shopping-cart"></i> Ajouter au panier</button>
+  const categories = [...new Set(produits.map(p => p.categorie))];
+  container.innerHTML = categories.map(c => `
+    <div class="sidebar-item" onclick="filterByCategory('${c}')">
+      <i class="fas fa-tag"></i><span>${c}</span>
+    </div>
+  `).join("");
+  container.innerHTML += `
+    <div class="sidebar-whatsapp" id="whatsapp-sidebar">
+      <i class="fab fa-whatsapp"></i>
+      <div>
+        <div style="font-size:11px;opacity:.8;">Besoin d'aide ? Chattez avec nous</div>
+        <div class="number">${siteSettings.telephone}</div>
       </div>
     </div>
-  `).join('');
-  
-  document.querySelectorAll(`#${containerId} .btn-cart`).forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      addToCart(parseInt(btn.dataset.id));
-    });
-  });
+  `;
+  document.getElementById("whatsapp-sidebar")?.addEventListener("click", () => openWhatsApp());
 }
 
-// Navigation entre pages
-function showPage(page) {
-  currentPage = page;
-  const pages = ['accueil', 'produits', 'promotions', 'devis', 'apropos', 'contact'];
-  pages.forEach(p => {
-    const el = document.getElementById(`${p}-page`);
-    if(el) el.style.display = p === page ? 'block' : 'none';
-  });
-  
-  document.querySelectorAll('.nav-link').forEach(link => {
-    if(link.dataset.page === page) link.classList.add('active');
-    else link.classList.remove('active');
-  });
-  
-  if(page === 'produits') renderProducts('all-products-grid', products);
-  if(page === 'promotions') renderProducts('promo-products-grid', products.filter(p => p.promo));
-  if(page === 'accueil') renderProducts('products-grid', products.slice(0,8));
-  
-  document.getElementById('current-page').style.display = 'block';
-  document.getElementById('current-page').innerHTML = `?? Vous êtes sur : ${page.toUpperCase()}`;
+function renderCategoriesGrid() {
+  const container = document.getElementById("cats-grid");
+  if(!container) return;
+  const categories = [...new Set(produits.map(p => p.categorie))];
+  container.innerHTML = categories.slice(0,8).map(c => `
+    <div class="cat-card" onclick="filterByCategory('${c}')">
+      <div class="cat-icon">??</div>
+      <div class="cat-name">${c}</div>
+    </div>
+  `).join("");
+}
+
+function filterByCategory(cat) {
+  document.querySelector('.nav-link[data-page="produits"]').click();
   setTimeout(() => {
-    const cp = document.getElementById('current-page');
-    if(cp) cp.style.opacity = '0.5';
-  }, 2000);
+    const filtered = produits.filter(p => p.categorie === cat);
+    renderAllProducts(filtered);
+    document.getElementById("filter-category").value = cat;
+  }, 100);
 }
 
-// Recherche
-function searchProducts() {
-  const term = document.getElementById('search-input').value.toLowerCase();
-  const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-  renderProducts('products-grid', filtered.slice(0,8));
-  if(currentPage === 'accueil') renderProducts('products-grid', filtered.slice(0,8));
-  if(currentPage === 'produits') renderProducts('all-products-grid', filtered);
+function renderHomeProducts() {
+  const container = document.getElementById("home-products");
+  if(container) {
+    container.innerHTML = produits.slice(0,6).map(p => `
+      <div class="product-card">
+        <div class="product-img">${p.emoji}</div>
+        <div class="product-info">
+          <div class="product-name">${p.nom}</div>
+          <div class="product-price">${p.prix.toLocaleString()} FCFA</div>
+          <div class="product-stock ${p.stock <= 0 ? 'out' : ''}">?? Stock: ${p.stock}</div>
+          <button class="btn-cart" onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}><i class="fas fa-shopping-cart"></i> Ajouter</button>
+        </div>
+      </div>
+    `).join("");
+  }
 }
 
-// WhatsApp
+function renderAllProducts(filtered = null) {
+  const container = document.getElementById("all-products");
+  if(!container) return;
+  const list = filtered || produits;
+  container.innerHTML = list.map(p => `
+    <div class="product-card">
+      <div class="product-img">${p.emoji}</div>
+      <div class="product-info">
+        <div class="product-name">${p.nom}</div>
+        <div class="product-price">${p.prix.toLocaleString()} FCFA</div>
+        <div class="product-stock ${p.stock <= 0 ? 'out' : ''}">?? Stock: ${p.stock}</div>
+        <button class="btn-cart" onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}><i class="fas fa-shopping-cart"></i> Ajouter</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderPromoProducts() {
+  const container = document.getElementById("promo-products");
+  if(container) {
+    const promos = produits.filter(p => p.promo);
+    container.innerHTML = promos.map(p => `
+      <div class="product-card">
+        <div class="product-img">${p.emoji}</div>
+        <div class="product-info">
+          <div class="product-name">${p.nom}</div>
+          <div class="product-price">${p.prix.toLocaleString()} FCFA</div>
+          <div class="product-stock">?? Stock: ${p.stock}</div>
+          <button class="btn-cart" onclick="addToCart(${p.id})"><i class="fas fa-shopping-cart"></i> Ajouter</button>
+        </div>
+      </div>
+    `).join("");
+  }
+}
+
+function renderAdminProducts() {
+  const container = document.getElementById("admin-products-list");
+  if(!container) return;
+  container.innerHTML = produits.map(p => `
+    <tr>
+      <td>${p.nom}</td>
+      <td>${p.prix.toLocaleString()} FCFA</td>
+      <td>${p.categorie}</td>
+      <td>${p.stock}</td>
+      <td>
+        <button class="btn-small btn-edit" onclick="openEditModal(${p.id})">?? Modifier</button>
+        <button class="btn-small btn-delete" onclick="deleteProduct(${p.id})">??? Supprimer</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function renderCartModal() {
+  const container = document.getElementById("cart-items");
+  const totalSpan = document.getElementById("cart-total");
+  if(!container) return;
+  if(panier.length === 0) {
+    container.innerHTML = "<p style='text-align:center;padding:20px;'>Votre panier est vide</p>";
+    if(totalSpan) totalSpan.innerHTML = "0";
+    return;
+  }
+  let total = 0;
+  container.innerHTML = panier.map(item => {
+    const prod = produits.find(p => p.id === item.id);
+    const sousTotal = prod.prix * item.quantite;
+    total += sousTotal;
+    return `
+      <div class="cart-item">
+        <div><strong>${prod.nom}</strong><br>${prod.prix.toLocaleString()} FCFA x ${item.quantite}</div>
+        <div>
+          <button onclick="modifyQty(${item.id}, -1)">-</button>
+          <span style="margin:0 10px;">${item.quantite}</span>
+          <button onclick="modifyQty(${item.id}, 1)">+</button>
+          <button onclick="removeFromCart(${item.id})" style="background:#dc3545; color:white; border:none; padding:5px 10px;">X</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+  if(totalSpan) totalSpan.innerHTML = total.toLocaleString();
+}
+
+function renderAccountModal() {
+  const container = document.getElementById("account-content");
+  if(!container) return;
+  if(utilisateurConnecte) {
+    container.innerHTML = `
+      <div style="text-align:center;">
+        <i class="fas fa-user-circle" style="font-size:60px; color:var(--bleu);"></i>
+        <h3>${utilisateurConnecte.nom}</h3>
+        <p>?? ${utilisateurConnecte.email}</p>
+        <p>?? ${utilisateurConnecte.telephone || "Non renseigné"}</p>
+        <hr style="margin:15px 0;">
+        <h4>?? Historique</h4>
+        <div id="account-history"></div>
+        <button onclick="logout()" style="margin-top:15px; background:var(--rouge); color:white; border:none; padding:10px 20px; border-radius:5px;">Se déconnecter</button>
+      </div>
+    `;
+    const commandes = JSON.parse(localStorage.getItem("commandes_solidaire") || "[]");
+    const mesCommandes = commandes.filter(c => c.email === utilisateurConnecte.email);
+    const historyDiv = document.getElementById("account-history");
+    if(historyDiv) {
+      if(mesCommandes.length === 0) historyDiv.innerHTML = "<p>Aucune commande</p>";
+      else historyDiv.innerHTML = mesCommandes.map(c => `<div style="border-bottom:1px solid #ddd; padding:10px;">Commande #${c.id}<br>Total: ${c.total.toLocaleString()} FCFA<br>Statut: ${c.statut}</div>`).join("");
+    }
+  } else {
+    container.innerHTML = `
+      <h3>Connexion</h3>
+      <form id="login-form-modal">
+        <div class="form-group"><input type="email" id="login-email" placeholder="Email" required></div>
+        <div class="form-group"><input type="password" id="login-password" placeholder="Mot de passe" required></div>
+        <button type="submit" class="btn-cart" style="width:100%;">Se connecter</button>
+      </form>
+      <hr style="margin:15px 0;">
+      <h3>Inscription</h3>
+      <form id="register-form-modal">
+        <div class="form-group"><input type="text" id="reg-nom" placeholder="Nom complet" required></div>
+        <div class="form-group"><input type="email" id="reg-email" placeholder="Email" required></div>
+        <div class="form-group"><input type="tel" id="reg-tel" placeholder="Téléphone" required></div>
+        <div class="form-group"><input type="password" id="reg-password" placeholder="Mot de passe" required></div>
+        <button type="submit" class="btn-cart" style="width:100%;">S'inscrire</button>
+      </form>
+    `;
+    document.getElementById("login-form-modal")?.addEventListener("submit", handleLogin);
+    document.getElementById("register-form-modal")?.addEventListener("submit", handleRegister);
+  }
+}
+
+function updateCategoryFilters() {
+  const select = document.getElementById("filter-category");
+  const searchCat = document.getElementById("search-cat");
+  if(select) {
+    const categories = [...new Set(produits.map(p => p.categorie))];
+    select.innerHTML = '<option value="">Toutes catégories</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join("");
+  }
+  if(searchCat) {
+    const categories = [...new Set(produits.map(p => p.categorie))];
+    searchCat.innerHTML = '<option>Toutes catégories</option>' + categories.map(c => `<option>${c}</option>`).join("");
+  }
+}
+
+function filterProducts() {
+  let filtered = [...produits];
+  const search = document.getElementById("filter-search")?.value.toLowerCase() || "";
+  const category = document.getElementById("filter-category")?.value || "";
+  const min = parseInt(document.getElementById("filter-min")?.value) || 0;
+  const max = parseInt(document.getElementById("filter-max")?.value) || Infinity;
+  if(search) filtered = filtered.filter(p => p.nom.toLowerCase().includes(search));
+  if(category) filtered = filtered.filter(p => p.categorie === category);
+  filtered = filtered.filter(p => p.prix >= min && p.prix <= max);
+  renderAllProducts(filtered);
+}
+
+// Actions
+function addToCart(productId) {
+  const prod = produits.find(p => p.id === productId);
+  if(!prod || prod.stock <= 0) return alert("Stock insuffisant !");
+  const exist = panier.find(item => item.id === productId);
+  if(exist) {
+    if(prod.stock > exist.quantite) exist.quantite++;
+    else return alert("Stock insuffisant !");
+  } else panier.push({ id: productId, quantite: 1 });
+  saveData();
+  updateAll();
+  const toast = document.getElementById("toast");
+  toast.style.display = "block";
+  setTimeout(() => toast.style.display = "none", 2000);
+}
+
+function modifyQty(productId, delta) {
+  const item = panier.find(i => i.id === productId);
+  const prod = produits.find(p => p.id === productId);
+  if(item) {
+    const newQty = item.quantite + delta;
+    if(newQty <= 0) panier = panier.filter(i => i.id !== productId);
+    else if(prod && newQty <= prod.stock) item.quantite = newQty;
+    else alert("Stock insuffisant !");
+    saveData();
+    updateAll();
+  }
+}
+
+function removeFromCart(productId) {
+  panier = panier.filter(i => i.id !== productId);
+  saveData();
+  updateAll();
+}
+
+function openEditModal(id) {
+  const prod = produits.find(p => p.id === id);
+  if(!prod) return;
+  document.getElementById("edit-id").value = prod.id;
+  document.getElementById("edit-nom").value = prod.nom;
+  document.getElementById("edit-prix").value = prod.prix;
+  document.getElementById("edit-categorie").value = prod.categorie;
+  document.getElementById("edit-stock").value = prod.stock;
+  document.getElementById("edit-emoji").value = prod.emoji;
+  document.getElementById("edit-promo").checked = prod.promo;
+  document.getElementById("edit-price-modal").style.display = "flex";
+}
+
+function deleteProduct(id) {
+  if(confirm("Supprimer ce produit ?")) {
+    produits = produits.filter(p => p.id !== id);
+    saveData();
+    updateAll();
+  }
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+  const user = utilisateurs.find(u => u.email === email && u.password === password);
+  if(user) {
+    utilisateurConnecte = user;
+    saveData();
+    updateAll();
+    alert("Connexion réussie !");
+    document.getElementById("account-modal").style.display = "none";
+  } else alert("Email ou mot de passe incorrect");
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const nom = document.getElementById("reg-nom").value;
+  const email = document.getElementById("reg-email").value;
+  const telephone = document.getElementById("reg-tel").value;
+  const password = document.getElementById("reg-password").value;
+  if(utilisateurs.find(u => u.email === email)) return alert("Cet email est déjà utilisé");
+  const newUser = { id: Date.now(), nom, email, telephone, password };
+  utilisateurs.push(newUser);
+  utilisateurConnecte = newUser;
+  saveData();
+  updateAll();
+  alert("Inscription réussie !");
+  document.getElementById("account-modal").style.display = "none";
+}
+
+function logout() {
+  utilisateurConnecte = null;
+  saveData();
+  updateAll();
+  alert("Déconnecté");
+  document.getElementById("account-modal").style.display = "none";
+}
+
+function validateOrder() {
+  if(panier.length === 0) return alert("Votre panier est vide");
+  if(!utilisateurConnecte) return alert("Veuillez vous connecter");
+  let total = 0;
+  const commandeProduits = panier.map(item => {
+    const prod = produits.find(p => p.id === item.id);
+    total += prod.prix * item.quantite;
+    return { id: prod.id, nom: prod.nom, quantite: item.quantite, prix: prod.prix };
+  });
+  for(let item of panier) {
+    const prod = produits.find(p => p.id === item.id);
+    if(prod.stock < item.quantite) return alert(`Stock insuffisant pour ${prod.nom}`);
+    prod.stock -= item.quantite;
+  }
+  const commandes = JSON.parse(localStorage.getItem("commandes_solidaire") || "[]");
+  commandes.push({
+    id: Date.now(),
+    email: utilisateurConnecte.email,
+    produits: commandeProduits,
+    total: total,
+    date: new Date().toISOString(),
+    statut: "En préparation"
+  });
+  localStorage.setItem("commandes_solidaire", JSON.stringify(commandes));
+  panier = [];
+  saveData();
+  updateAll();
+  document.getElementById("cart-modal").style.display = "none";
+  alert("? Commande validée ! Vous recevrez un appel de confirmation.");
+}
+
 function openWhatsApp() {
-  const phone = '2250757196724';
-  window.open(`https://wa.me/${phone}`, '_blank');
+  window.open(`https://wa.me/${siteSettings.whatsapp}`, "_blank");
 }
 
 // Initialisation
-document.addEventListener('DOMContentLoaded', () => {
-  loadCart();
-  renderProducts('products-grid', products.slice(0,8));
+function init() {
+  loadData();
+  updateAll();
   
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => showPage(link.dataset.page));
-  });
+  // Remplir formulaire paramètres
+  document.getElementById("site-phone").value = siteSettings.telephone;
+  document.getElementById("site-email").value = siteSettings.email;
+  document.getElementById("site-address").value = siteSettings.adresse;
+  document.getElementById("site-whatsapp").value = siteSettings.whatsapp;
   
-  document.querySelectorAll('.see-all, [data-page]').forEach(el => {
-    if(el.dataset && el.dataset.page) {
-      el.addEventListener('click', () => showPage(el.dataset.page));
-    }
-  });
-  
-  document.getElementById('cart-btn')?.addEventListener('click', () => {
-    document.getElementById('cart-modal').style.display = 'flex';
-    updateCartUI();
-  });
-  
-  document.getElementById('account-btn')?.addEventListener('click', () => {
-    document.getElementById('account-modal').style.display = 'flex';
-  });
-  
-  document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.getElementById('cart-modal').style.display = 'none';
-      document.getElementById('account-modal').style.display = 'none';
+  // Navigation
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.addEventListener("click", () => {
+      const page = link.dataset.page;
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(page).classList.add("active");
+      document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      
+      if(page === "admin") {
+        const pwd = prompt("Mot de passe admin:");
+        if(pwd === "admin123") {
+          document.getElementById("admin-link").style.display = "block";
+        } else {
+          alert("Accès refusé");
+          document.getElementById("accueil").classList.add("active");
+          document.getElementById("admin").classList.remove("active");
+        }
+      }
     });
   });
   
-  document.getElementById('fake-login')?.addEventListener('click', () => {
-    alert('? Connexion réussie (mode démo)');
-    document.getElementById('account-modal').style.display = 'none';
+  document.querySelectorAll("[data-page]").forEach(el => {
+    el.addEventListener("click", () => {
+      const page = el.dataset.page;
+      document.querySelector(`.nav-link[data-page="${page}"]`).click();
+    });
   });
   
-  document.getElementById('validate-cart')?.addEventListener('click', () => {
-    if(cart.length === 0) alert('Votre panier est vide');
-    else {
-      document.getElementById('order-success').style.display = 'block';
-      cart = [];
-      saveCart();
-      updateCartUI();
-      setTimeout(() => {
-        document.getElementById('order-success').style.display = 'none';
-        document.getElementById('cart-modal').style.display = 'none';
-      }, 2000);
+  document.getElementById("cart-btn")?.addEventListener("click", () => {
+    document.getElementById("cart-modal").style.display = "flex";
+    renderCartModal();
+  });
+  
+  document.getElementById("account-btn")?.addEventListener("click", () => {
+    document.getElementById("account-modal").style.display = "flex";
+    renderAccountModal();
+  });
+  
+  document.querySelectorAll(".close-modal").forEach(btn => {
+    btn?.addEventListener("click", () => {
+      document.getElementById("cart-modal").style.display = "none";
+      document.getElementById("account-modal").style.display = "none";
+      document.getElementById("edit-price-modal").style.display = "none";
+    });
+  });
+  
+  document.getElementById("validate-order")?.addEventListener("click", validateOrder);
+  document.getElementById("apply-filters")?.addEventListener("click", filterProducts);
+  document.getElementById("filter-search")?.addEventListener("keyup", filterProducts);
+  
+  // Recherche globale
+  document.getElementById("search-btn")?.addEventListener("click", () => {
+    const term = document.getElementById("search-input").value.toLowerCase();
+    const filtered = produits.filter(p => p.nom.toLowerCase().includes(term));
+    document.querySelector('.nav-link[data-page="produits"]').click();
+    renderAllProducts(filtered);
+  });
+  
+  // Ajout produit
+  document.getElementById("add-product-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    produits.push({
+      id: nextId++,
+      nom: document.getElementById("prod-nom").value,
+      prix: parseInt(document.getElementById("prod-prix").value),
+      categorie: document.getElementById("prod-categorie").value,
+      stock: parseInt(document.getElementById("prod-stock").value),
+      emoji: document.getElementById("prod-emoji").value || "??",
+      promo: document.getElementById("prod-promo").checked
+    });
+    saveData();
+    updateAll();
+    e.target.reset();
+    alert("Produit ajouté !");
+  });
+  
+  // Modification produit
+  document.getElementById("edit-product-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const id = parseInt(document.getElementById("edit-id").value);
+    const prod = produits.find(p => p.id === id);
+    if(prod) {
+      prod.nom = document.getElementById("edit-nom").value;
+      prod.prix = parseInt(document.getElementById("edit-prix").value);
+      prod.categorie = document.getElementById("edit-categorie").value;
+      prod.stock = parseInt(document.getElementById("edit-stock").value);
+      prod.emoji = document.getElementById("edit-emoji").value;
+      prod.promo = document.getElementById("edit-promo").checked;
+      saveData();
+      updateAll();
+      document.getElementById("edit-price-modal").style.display = "none";
+      alert("Produit modifié !");
     }
   });
   
-  document.getElementById('search-btn')?.addEventListener('click', searchProducts);
-  document.getElementById('search-input')?.addEventListener('keyup', (e) => {
-    if(e.key === 'Enter') searchProducts();
-  });
-  
-  document.querySelectorAll('#whatsapp-sidebar, #contact-whatsapp').forEach(el => {
-    if(el) el.addEventListener('click', openWhatsApp);
-  });
-  
-  document.getElementById('devis-form')?.addEventListener('submit', (e) => {
+  // Paramètres site
+  document.getElementById("settings-form")?.addEventListener("submit", (e) => {
     e.preventDefault();
-    document.getElementById('devis-success').style.display = 'block';
-    setTimeout(() => document.getElementById('devis-success').style.display = 'none', 3000);
+    siteSettings.telephone = document.getElementById("site-phone").value;
+    siteSettings.email = document.getElementById("site-email").value;
+    siteSettings.adresse = document.getElementById("site-address").value;
+    siteSettings.whatsapp = document.getElementById("site-whatsapp").value;
+    saveData();
+    updateAll();
+    alert("Paramètres enregistrés !");
+  });
+  
+  // Formulaires devis et contact
+  document.getElementById("devis-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    document.getElementById("devis-success").style.display = "block";
+    setTimeout(() => document.getElementById("devis-success").style.display = "none", 3000);
     e.target.reset();
   });
   
-  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+  document.getElementById("contact-form")?.addEventListener("submit", (e) => {
     e.preventDefault();
-    document.getElementById('contact-success').style.display = 'block';
-    setTimeout(() => document.getElementById('contact-success').style.display = 'none', 3000);
+    document.getElementById("contact-success").style.display = "block";
+    setTimeout(() => document.getElementById("contact-success").style.display = "none", 3000);
     e.target.reset();
   });
   
-  // Fermer modals en cliquant dehors
   window.onclick = (e) => {
-    if(e.target.classList.contains('modal')) {
-      e.target.style.display = 'none';
-    }
+    if(e.target.classList.contains("modal")) e.target.style.display = "none";
   };
-});
+}
+
+init();
+</script>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div style="background:var(--rouge); border-radius:8px; padding:18px;">
+        <strong>BESOIN D'UN DEVIS ?</strong>
+        <p style="margin-top:10px;">Remplissez notre formulaire et recevez une réponse rapide.</p>
+        <div class="btn-devis" data-page="devis">DEMANDER UN DEVIS</div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Contactez-nous</h4>
+      <div class="contact-item"><i class="fas fa-phone"></i><span id="footer-phone">07 57 19 67 24</span></div>
+      <div class="contact-item"><i class="fas fa-envelope"></i><span id="footer-email">comptabilitesolidaire@gmail.com</span></div>
+    </div>
+    <div class="footer-col">
+      <h4>Visitez-nous</h4>
+      <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="footer-address">Abidjan, Yopougon</span></div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="socials-footer">
+        <a><i class="fab fa-facebook-f"></i></a>
+        <a><i class="fab fa-instagram"></i></a>
+        <a><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2025 LE SOLIDAIRE SARL – Tous droits réservés
+  </div>
+</footer>
+
+<script>
+// Mise à jour footer
+function updateFooterInfo() {
+  const footerPhone = document.getElementById("footer-phone");
+  const footerEmail = document.getElementById("footer-email");
+  const footerAddress = document.getElementById("footer-address");
+  if(footerPhone) footerPhone.innerHTML = siteSettings.telephone;
+  if(footerEmail) footerEmail.innerHTML = siteSettings.email;
+  if(footerAddress) footerAddress.innerHTML = siteSettings.adresse;
+}
+setTimeout(updateFooterInfo, 100);
 </script>
 </body>
 </html>
