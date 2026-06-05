@@ -3,1326 +3,1047 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LE SOLIDAIRE SARL – Administration & E-commerce BTP</title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>LE SOLIDAIRE SARL - Materiaux BTP</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  :root {
-    --rouge: #CC1818;
-    --rouge-hover: #a81212;
-    --bleu: #0D2B6B;
-    --bleu-clair: #1a3f8f;
-    --gris-clair: #f4f4f4;
-    --gris: #888;
-    --blanc: #ffffff;
-    --texte: #1a1a1a;
-    --ombre: 0 2px 12px rgba(0,0,0,0.10);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Source Sans 3', sans-serif; color:var(--texte); background:#f5f5f5; }
-  a { text-decoration:none; color:inherit; cursor:pointer; }
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--rouge:#CC1818;
+--bleu:#0D2B6B;
+--bleu-clair:#1a3d8f;
+--gris:#f2f3f5;
+--gris-moyen:#e0e2e7;
+--texte:#1a1a2e;
+--texte-clair:#6b7280;
+--ombre:0 4px 20px rgba(0,0,0,0.08);
+--ombre-hover:0 8px 30px rgba(0,0,0,0.15);
+--rayon:10px;
+}
+body{font-family:'Barlow',Arial,sans-serif;background:#f2f3f5;color:#1a1a2e;min-height:100vh;}
 
-  .topbar {
-    background: var(--bleu);
-    color:#fff;
-    font-size:12.5px;
-    padding:6px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-  }
-  .topbar span { display:flex; align-items:center; gap:6px; }
-  .topbar-right { display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
-  .topbar-right a { color:#fff; font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer; }
+/* NAVBAR */
+.navbar{background:#0D2B6B;padding:0 30px;display:flex;justify-content:space-between;align-items:center;height:65px;position:sticky;top:0;z-index:1000;box-shadow:0 2px 15px rgba(0,0,0,0.25);}
+.logo{font-family:'Barlow Condensed',Arial,sans-serif;font-size:22px;font-weight:800;color:white;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+.logo span{color:#CC1818;}
+.nav-links{display:flex;gap:4px;align-items:center;flex-wrap:wrap;}
+.nav-links a{color:rgba(255,255,255,0.85);text-decoration:none;cursor:pointer;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;transition:all 0.2s;}
+.nav-links a:hover{color:white;background:rgba(255,255,255,0.15);}
+.nav-links a.active{background:#CC1818;color:white;}
+.cart-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
+.cart-btn:hover{background:#CC1818;border-color:#CC1818;}
+.cart-badge{background:#CC1818;color:white;border-radius:50%;width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;}
 
-  header {
-    background:#fff;
-    padding:14px 20px;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    border-bottom:1px solid #e8e8e8;
-    position:sticky; top:0; z-index:1000;
-    box-shadow: var(--ombre);
-    flex-wrap:wrap;
-  }
-  .logo { display:flex; align-items:baseline; gap:0; font-family:'Oswald',sans-serif; }
-  .logo-le { font-size:24px; font-weight:400; color:var(--bleu); letter-spacing:1px; }
-  .logo-s { font-size:34px; font-weight:700; color:var(--rouge); line-height:1; }
-  .logo-olidaire { font-size:24px; font-weight:700; color:var(--bleu); }
-  .logo-sarl { font-size:11px; font-weight:400; color:var(--bleu); letter-spacing:3px; display:block; text-align:right; margin-top:-4px; }
-  .search-bar {
-    flex:1;
-    display:flex;
-    border:2px solid #ddd;
-    border-radius:4px;
-    overflow:hidden;
-    max-width:580px;
-  }
-  .search-bar select, .search-bar input {
-    border:none; padding:10px 14px; font-size:13.5px; outline:none;
-  }
-  .search-bar select { background:#f2f2f2; width:140px; cursor:pointer; }
-  .search-bar input { flex:1; }
-  .search-bar button {
-    background:var(--rouge); border:none; color:#fff;
-    padding:0 18px; cursor:pointer; font-size:16px;
-  }
-  .header-actions { display:flex; gap:20px; align-items:center; margin-left:auto; }
-  .header-action { display:flex; flex-direction:column; align-items:center; font-size:11.5px; color:#444; cursor:pointer; gap:2px; }
-  .header-action i { font-size:20px; color:var(--bleu); }
-  .cart-badge { position:relative; cursor:pointer; }
-  .badge {
-    position:absolute; top:-8px; right:-8px;
-    background:var(--rouge); color:#fff; border-radius:50%;
-    width:18px; height:18px; font-size:10px;
-    display:flex; align-items:center; justify-content:center; font-weight:700;
-  }
+/* CONTAINER */
+.container{max-width:1400px;margin:0 auto;padding:25px 20px;}
+.page{display:none;}
+.page.active{display:block;}
 
-  .main-nav {
-    background: var(--bleu);
-    display:flex;
-    flex-wrap:wrap;
-  }
-  .cat-btn {
-    background:var(--rouge);
-    color:#fff;
-    padding:0 22px;
-    font-family:'Oswald',sans-serif;
-    font-size:13.5px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    cursor:pointer;
-    white-space:nowrap;
-    min-width:210px;
-  }
-  .nav-links { display:flex; flex-wrap:wrap; }
-  .nav-links a {
-    color:#fff;
-    padding:14px 16px;
-    font-size:13px;
-    font-weight:600;
-    transition:background .2s;
-    cursor:pointer;
-  }
-  .nav-links a:hover, .nav-links a.active { background:rgba(255,255,255,0.12); }
+/* BANNER */
+.welcome-banner{background:linear-gradient(135deg,#0D2B6B 0%,#CC1818 100%);color:white;padding:50px 40px;border-radius:10px;margin-bottom:30px;position:relative;overflow:hidden;}
+.welcome-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:250px;height:250px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.welcome-banner::after{content:'';position:absolute;right:60px;bottom:-80px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.welcome-banner h2{font-family:'Barlow Condensed',Arial,sans-serif;font-size:38px;font-weight:800;margin-bottom:10px;position:relative;z-index:1;}
+.welcome-banner p{font-size:16px;opacity:0.9;position:relative;z-index:1;}
+.banner-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:4px 14px;border-radius:20px;font-size:13px;margin-bottom:15px;letter-spacing:1px;text-transform:uppercase;position:relative;z-index:1;}
 
-  .hero-section { display:flex; }
-  .sidebar {
-    width:210px;
-    flex-shrink:0;
-    background:#fff;
-    border-right:1px solid #eee;
-    padding:8px 0;
-  }
-  .sidebar-item {
-    display:flex; align-items:center; gap:10px;
-    padding:10px 18px;
-    font-size:13px;
-    cursor:pointer;
-    transition:background .18s;
-    border-bottom:1px solid #f2f2f2;
-  }
-  .sidebar-item:hover { background:var(--gris-clair); color:var(--rouge); }
-  .sidebar-item i { color:var(--bleu); width:18px; }
-  .sidebar-whatsapp {
-    background:var(--bleu); color:#fff; padding:12px 18px;
-    display:flex; align-items:center; gap:10px;
-    font-size:13px; margin-top:4px;
-    cursor:pointer;
-  }
-  .sidebar-whatsapp i { font-size:22px; color:#25D366; }
-  .hero-slider {
-    flex:1;
-    background: linear-gradient(135deg, #0d1e3d 0%, #1a3560 60%, #0a1a30 100%);
-    position:relative;
-    min-height:380px;
-    display:flex;
-    align-items:center;
-    padding:40px 50px;
-  }
-  .hero-content { position:relative; z-index:2; max-width:480px; }
-  .hero-content h1 { font-family:'Oswald',sans-serif; font-size:52px; font-weight:700; color:#fff; text-transform:uppercase; }
-  .hero-content h1 span { color:var(--rouge); }
-  .hero-content .sub { color:rgba(255,255,255,0.75); margin-bottom:28px; }
-  .hero-badges { display:flex; gap:18px; flex-wrap:wrap; margin-top:10px; }
-  .hero-badge {
-    background:rgba(255,255,255,0.1);
-    backdrop-filter:blur(6px);
-    border:1px solid rgba(255,255,255,0.15);
-    border-radius:8px;
-    padding:10px 16px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:#fff;
-  }
-  .hero-badge i { font-size:22px; color:var(--rouge); }
+/* SECTION */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.section-title{font-family:'Barlow Condensed',Arial,sans-serif;font-size:26px;font-weight:700;color:#1a1a2e;text-transform:uppercase;letter-spacing:0.5px;}
+.section-title span{color:#CC1818;}
 
-  .features-strip {
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    background:#fff;
-  }
-  .feature-card {
-    display:flex; align-items:center; gap:14px;
-    padding:16px 24px;
-    border-right:1px solid #eee;
-    cursor:pointer;
-  }
-  .feature-card.red { background:var(--rouge); color:#fff; }
-  .feature-card.blue { background:var(--bleu); color:#fff; }
-  .feature-card i { font-size:28px; }
+/* PRODUITS */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
+.product-card{background:white;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:all 0.3s;display:flex;flex-direction:column;}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.15);}
+.product-img-wrap{height:180px;background:#e0e2e7;overflow:hidden;position:relative;}
+.product-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.product-img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#e8eaf0,#d4d8e2);color:#9ba3af;gap:8px;}
+.product-img-placeholder i{font-size:42px;opacity:0.4;}
+.product-img-placeholder span{font-size:12px;}
+.product-cat-badge{position:absolute;top:10px;left:10px;background:#0D2B6B;color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.product-info{padding:15px;flex:1;display:flex;flex-direction:column;}
+.product-name{font-weight:600;font-size:15px;margin-bottom:6px;color:#1a1a2e;line-height:1.3;}
+.product-price{color:#CC1818;font-family:'Barlow Condensed',Arial,sans-serif;font-weight:700;font-size:22px;margin-bottom:6px;}
+.product-stock{font-size:12px;color:#28a745;font-weight:500;margin-bottom:12px;}
+.product-stock.low{color:#e67e22;}
+.product-stock.out{color:#dc3545;}
+.btn-add{background:#0D2B6B;color:white;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;width:100%;transition:background 0.2s;margin-top:auto;font-family:Arial,sans-serif;}
+.btn-add:hover{background:#CC1818;}
 
-  .section { padding:36px 20px; }
-  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
-  .section-title { font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; display:flex; align-items:center; gap:10px; }
-  .section-title::before { content:''; width:5px; height:26px; background:var(--rouge); border-radius:2px; }
-  .see-all { color:var(--bleu); font-size:13.5px; font-weight:600; cursor:pointer; }
+/* FILTRES */
+.filters-bar{background:white;padding:16px 20px;border-radius:10px;margin-bottom:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.filters-bar input,.filters-bar select{padding:9px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;font-family:Arial,sans-serif;background:#f2f3f5;color:#1a1a2e;transition:border-color 0.2s;}
+.filters-bar input:focus,.filters-bar select:focus{outline:none;border-color:#0D2B6B;}
+.filters-bar input{flex:2;min-width:180px;}
+.btn-filter{background:#0D2B6B;color:white;border:none;padding:9px 20px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;transition:background 0.2s;font-family:Arial,sans-serif;}
+.btn-filter:hover{background:#CC1818;}
 
-  .products-grid {
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:14px;
-  }
-  .product-card {
-    border:1px solid #e8e8e8;
-    border-radius:8px;
-    overflow:hidden;
-    background:#fff;
-    transition:box-shadow .2s;
-    cursor:pointer;
-  }
-  .product-card:hover { box-shadow:0 6px 24px rgba(0,0,0,0.12); transform:translateY(-3px); }
-  .product-img {
-    height:150px;
-    background:#e8e8e8;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:48px;
-    color:var(--bleu);
-  }
-  .product-info { padding:10px 12px 14px; }
-  .product-name { font-size:13px; font-weight:600; color:#333; margin-bottom:6px; }
-  .product-price { color:var(--rouge); font-weight:700; font-size:15px; }
-  .product-stock { font-size:11px; color:#28a745; margin-top:5px; }
-  .product-stock.out { color:var(--rouge); }
-  .btn-cart {
-    width:100%;
-    margin-top:10px;
-    padding:8px;
-    background:var(--bleu);
-    color:#fff;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-  }
-  .btn-cart:hover { background:var(--rouge); }
+/* ADMIN */
+.admin-header{background:linear-gradient(135deg,#0D2B6B,#1a3d8f);color:white;padding:25px 30px;border-radius:10px;margin-bottom:25px;display:flex;align-items:center;gap:15px;}
+.admin-header i{font-size:28px;opacity:0.8;}
+.admin-header h2{font-family:'Barlow Condensed',Arial,sans-serif;font-size:26px;font-weight:700;}
+.admin-header p{font-size:14px;opacity:0.7;margin-top:3px;}
+.admin-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;}
+.admin-tab{padding:8px 16px;background:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;color:#6b7280;transition:all 0.2s;box-shadow:0 4px 20px rgba(0,0,0,0.08);font-family:Arial,sans-serif;display:flex;align-items:center;gap:6px;}
+.admin-tab.active{background:#0D2B6B;color:white;}
+.admin-tab:hover:not(.active){background:#e0e2e7;}
+.admin-section{display:none;}
+.admin-section.active{display:block;}
+.admin-panel{background:white;border-radius:10px;padding:24px;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.admin-panel-title{font-family:'Barlow Condensed',Arial,sans-serif;font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #e0e2e7;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:10px;}
+.admin-panel-title i{color:#CC1818;}
 
-  .cats-grid {
-    display:grid;
-    grid-template-columns:repeat(8,1fr);
-    gap:14px;
-  }
-  .cat-card {
-    border:1px solid #e8e8e8;
-    border-radius:10px;
-    padding:18px 10px;
-    text-align:center;
-    cursor:pointer;
-    background:#fff;
-  }
-  .cat-card:hover { border-color:var(--rouge); }
-  .cat-icon { font-size:36px; margin-bottom:10px; }
-  .cat-name { font-size:12px; font-weight:600; }
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.form-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+.form-group{margin-bottom:14px;}
+.form-group.full{grid-column:1 / -1;}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#1a1a2e;text-transform:uppercase;letter-spacing:0.3px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;font-family:Arial,sans-serif;background:#f2f3f5;color:#1a1a2e;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#0D2B6B;background:white;}
+.form-group input[type="color"]{height:44px;padding:4px 8px;cursor:pointer;}
 
-  .promo-banner {
-    background: linear-gradient(135deg, var(--rouge) 0%, #8b0000 100%);
-    margin:0 20px 36px;
-    border-radius:10px;
-    padding:28px 40px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:20px;
-  }
-  .btn-promo {
-    background:#fff;
-    color:var(--rouge);
-    padding:12px 28px;
-    border-radius:6px;
-    font-weight:700;
-    cursor:pointer;
-  }
+/* UPLOAD */
+.photo-upload-zone{border:2px dashed #e0e2e7;border-radius:8px;padding:25px;text-align:center;cursor:pointer;transition:all 0.2s;background:#f2f3f5;position:relative;}
+.photo-upload-zone:hover,.photo-upload-zone.dragover{border-color:#0D2B6B;background:#eef1f9;}
+.photo-upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.photo-upload-zone i{font-size:32px;color:#0D2B6B;opacity:0.5;margin-bottom:8px;display:block;}
+.photo-upload-zone p{color:#6b7280;font-size:14px;}
+.photo-upload-zone span{font-size:12px;color:#6b7280;}
+.photo-preview{width:100%;height:150px;object-fit:cover;border-radius:6px;margin-top:10px;display:none;}
 
-  .garanties {
-    background:var(--gris-clair);
-    padding:28px 20px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:16px;
-  }
-  .garantie-card {
-    background:#fff;
-    border-radius:8px;
-    padding:22px 18px;
-    display:flex;
-    align-items:center;
-    gap:16px;
-  }
-  .garantie-icon { font-size:34px; color:var(--bleu); }
+/* BOUTONS */
+.btn-submit{background:#0D2B6B;color:white;border:none;padding:12px 28px;border-radius:6px;cursor:pointer;font-weight:700;font-size:14px;transition:background 0.2s;display:inline-flex;align-items:center;gap:8px;font-family:Arial,sans-serif;}
+.btn-submit:hover{background:#CC1818;}
+.btn-submit.rouge{background:#CC1818;}
+.btn-submit.rouge:hover{background:#a81212;}
+.btn-submit.vert{background:#1e7e34;}
+.btn-submit.vert:hover{background:#155724;}
 
-  footer {
-    background: var(--bleu);
-    color:#fff;
-    padding:40px 20px 0;
-  }
-  .footer-grid {
-    display:grid;
-    grid-template-columns:1.2fr 1fr 1fr 1fr;
-    gap:32px;
-    padding-bottom:32px;
-  }
-  .footer-col h4 { font-size:15px; font-weight:600; margin-bottom:14px; }
-  .footer-col .contact-item { display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:13px; }
-  .btn-devis {
-    display:block;
-    text-align:center;
-    background:#fff;
-    color:var(--rouge);
-    padding:10px;
-    border-radius:5px;
-    font-weight:700;
-    margin-top:10px;
-    cursor:pointer;
-  }
-  .socials-footer { display:flex; gap:10px; margin-top:12px; }
-  .socials-footer a {
-    width:34px; height:34px; border-radius:50%;
-    background:rgba(255,255,255,0.12);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
-  }
-  .footer-bottom { text-align:center; padding:14px; font-size:12px; opacity:0.6; }
+/* TABLE */
+.admin-table{width:100%;border-collapse:collapse;font-size:14px;}
+.admin-table thead tr{background:#f2f3f5;border-bottom:2px solid #e0e2e7;}
+.admin-table th{padding:12px 14px;text-align:left;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;}
+.admin-table td{padding:12px 14px;border-bottom:1px solid #e0e2e7;vertical-align:middle;}
+.admin-table tr:hover td{background:#fafbff;}
+.table-img{width:50px;height:50px;border-radius:6px;object-fit:cover;}
+.table-img-placeholder{width:50px;height:50px;border-radius:6px;background:#e0e2e7;display:flex;align-items:center;justify-content:center;color:#6b7280;}
+.btn-sm{padding:5px 12px;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;margin-right:4px;transition:opacity 0.2s;font-family:Arial,sans-serif;}
+.btn-sm:hover{opacity:0.85;}
+.btn-edit{background:#e8f0fe;color:#0D2B6B;}
+.btn-delete{background:#fdecea;color:#dc3545;}
+.stock-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.stock-ok{background:#e6f4ea;color:#1e7e34;}
+.stock-low{background:#fff3e0;color:#e65100;}
+.stock-out{background:#fdecea;color:#c62828;}
 
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background: #fff;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 12px;
-    padding: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-  }
-  .close-modal {
-    font-size: 28px;
-    cursor: pointer;
-    color: var(--rouge);
-  }
-  .cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .cart-total {
-    padding: 15px 0;
-    text-align: right;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .validate-cart {
-    width: 100%;
-    padding: 12px;
-    background: var(--rouge);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .form-group { margin-bottom: 15px; }
-  .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  .admin-panel {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .admin-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .admin-table th, .admin-table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-  }
-  .filters {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-  .page { display: none; }
-  .page.active { display: block; }
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #25D366;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    z-index: 3000;
-    display: none;
-  }
-  .btn-small {
-    padding: 5px 10px;
-    margin: 2px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .btn-edit { background: var(--bleu); color: white; }
-  .btn-delete { background: #dc3545; color: white; }
+/* VERROU ADMIN */
+.admin-lock-screen{display:flex;align-items:center;justify-content:center;min-height:70vh;}
+.admin-lock-card{background:white;border-radius:14px;padding:50px 40px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,0.12);text-align:center;}
+.lock-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0D2B6B,#CC1818);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.lock-icon i{font-size:34px;color:white;}
+.lock-title{font-family:'Barlow Condensed',Arial,sans-serif;font-size:26px;font-weight:800;color:#1a1a2e;margin-bottom:6px;text-transform:uppercase;}
+.lock-subtitle{color:#6b7280;font-size:14px;margin-bottom:30px;}
+.lock-input{width:100%;padding:14px 18px;border:2px solid #e0e2e7;border-radius:8px;font-size:16px;font-family:Arial,sans-serif;text-align:center;letter-spacing:4px;transition:border-color 0.2s;background:#f2f3f5;}
+.lock-input:focus{outline:none;border-color:#0D2B6B;background:white;}
+.lock-btn{width:100%;margin-top:16px;padding:14px;background:#0D2B6B;color:white;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;transition:background 0.2s;}
+.lock-btn:hover{background:#CC1818;}
+.lock-error{color:#CC1818;font-size:13px;margin-top:10px;display:none;}
+.admin-real-content{display:none;}
 
-  @media(max-width:1200px) {
-    .products-grid { grid-template-columns:repeat(4,1fr); }
-    .cats-grid { grid-template-columns:repeat(4,1fr); }
-  }
-  @media(max-width:900px) {
-    .sidebar { display:none; }
-    .products-grid { grid-template-columns:repeat(3,1fr); }
-    .garanties { grid-template-columns:repeat(2,1fr); }
-    .footer-grid { grid-template-columns:1fr 1fr; }
-  }
-  @media(max-width:600px) {
-    .products-grid { grid-template-columns:repeat(2,1fr); }
-    .cats-grid { grid-template-columns:repeat(3,1fr); }
-    .features-strip { grid-template-columns:repeat(2,1fr); }
-    .hero-content h1 { font-size:34px; }
-  }
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px;}
+.stat-card{background:white;border-radius:10px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);display:flex;align-items:center;gap:16px;}
+.stat-icon{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.stat-icon.bleu{background:#e8f0fe;color:#0D2B6B;}
+.stat-icon.rouge{background:#fdecea;color:#CC1818;}
+.stat-icon.vert{background:#e6f4ea;color:#1e7e34;}
+.stat-icon.orange{background:#fff3e0;color:#e65100;}
+.stat-value{font-family:'Barlow Condensed',Arial,sans-serif;font-size:28px;font-weight:800;color:#1a1a2e;line-height:1;}
+.stat-label{font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(10,20,50,0.6);z-index:2000;justify-content:center;align-items:center;}
+.modal.open{display:flex;}
+.modal-content{background:white;border-radius:12px;padding:28px;max-width:520px;width:92%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.25s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #e0e2e7;}
+.modal-header h3{font-family:'Barlow Condensed',Arial,sans-serif;font-size:20px;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+.close-modal{width:32px;height:32px;background:#e0e2e7;border:none;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;line-height:1;}
+.close-modal:hover{background:#CC1818;color:white;}
+
+/* PANIER */
+.cart-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #e0e2e7;}
+.cart-item-img{width:55px;height:55px;border-radius:6px;object-fit:cover;background:#e0e2e7;flex-shrink:0;}
+.cart-item-info{flex:1;}
+.cart-item-name{font-weight:600;font-size:14px;}
+.cart-item-price{color:#CC1818;font-weight:700;font-size:15px;}
+.cart-item-controls{display:flex;align-items:center;gap:8px;}
+.qty-btn{width:28px;height:28px;border:1.5px solid #e0e2e7;border-radius:5px;background:white;cursor:pointer;font-size:14px;font-weight:700;transition:all 0.2s;}
+.qty-btn:hover{border-color:#0D2B6B;color:#0D2B6B;}
+.qty-display{font-weight:700;min-width:24px;text-align:center;}
+.remove-btn{background:#fdecea;border:none;border-radius:5px;width:28px;height:28px;cursor:pointer;color:#dc3545;transition:background 0.2s;}
+.remove-btn:hover{background:#dc3545;color:white;}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;font-size:18px;font-weight:700;}
+.cart-total-amount{color:#CC1818;font-family:'Barlow Condensed',Arial,sans-serif;font-size:24px;}
+
+/* COMPTE */
+.compte-card{background:white;border-radius:10px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+/* AIDE */
+.aide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:30px;}
+.aide-card{background:white;border-radius:10px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;transition:all 0.3s;}
+.aide-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.15);}
+.aide-card-icon{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;}
+.aide-card-icon.vert{background:#e6f4ea;color:#1e7e34;}
+.aide-card-icon.bleu{background:#e8f0fe;color:#0D2B6B;}
+.aide-card-icon.rouge{background:#fdecea;color:#CC1818;}
+.aide-card h3{font-family:'Barlow Condensed',Arial,sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;text-transform:uppercase;}
+.aide-card p{color:#6b7280;font-size:14px;line-height:1.6;margin-bottom:16px;}
+.wa-btn{background:#25D366;color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:10px;transition:background 0.2s;font-family:Arial,sans-serif;text-decoration:none;}
+.wa-btn:hover{background:#1da851;}
+
+/* DEVIS */
+.devis-header{background:linear-gradient(135deg,#0D2B6B,#CC1818);color:white;border-radius:10px;padding:28px 32px;margin-bottom:28px;}
+.devis-header h3{font-family:'Barlow Condensed',Arial,sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;}
+.devis-header p{font-size:14px;opacity:0.85;}
+.devis-form-card{background:white;border-radius:10px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,0.08);max-width:700px;margin:0 auto;}
+
+/* CLIENTS */
+.client-card{display:flex;align-items:center;gap:16px;padding:14px;border-bottom:1px solid #e0e2e7;}
+.client-avatar{width:48px;height:48px;border-radius:50%;background:#0D2B6B;display:flex;align-items:center;justify-content:center;color:white;font-family:'Barlow Condensed',Arial,sans-serif;font-size:20px;font-weight:700;flex-shrink:0;}
+.client-info{flex:1;}
+.client-name{font-weight:700;font-size:15px;}
+.client-detail{color:#6b7280;font-size:13px;margin-top:2px;}
+.client-date{font-size:12px;color:#6b7280;}
+
+/* COMMANDES */
+.order-card{border:1px solid #e0e2e7;border-radius:8px;padding:16px;margin-bottom:12px;}
+.order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.order-id{font-weight:700;color:#0D2B6B;font-size:15px;}
+.order-status{background:#e8f0fe;color:#0D2B6B;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px;color:#6b7280;}
+.empty-state i{font-size:48px;margin-bottom:16px;opacity:0.3;display:block;}
+.empty-state p{font-size:16px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#1e7e34;color:white;padding:14px 24px;border-radius:8px;display:none;z-index:3000;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.2);}
+
+/* FOOTER */
+.site-footer{background:#0D2B6B;color:white;padding:35px 30px 20px;margin-top:50px;}
+.footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:25px;}
+.footer-item{display:flex;align-items:center;gap:12px;}
+.footer-item i{font-size:18px;color:#CC1818;flex-shrink:0;}
+.footer-item-text div:first-child{font-size:11px;opacity:0.6;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+.footer-item-text div:last-child{font-weight:600;font-size:14px;}
+.footer-bottom{max-width:1400px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;text-align:center;font-size:13px;opacity:0.6;}
+
+@media(max-width:768px){
+.navbar{padding:10px 15px;height:auto;flex-wrap:wrap;gap:10px;}
+.nav-links{gap:3px;flex-wrap:wrap;}
+.nav-links a{padding:5px 10px;font-size:12px;}
+.form-grid{grid-template-columns:1fr;}
+.auth-grid{grid-template-columns:1fr;}
+.welcome-banner{padding:30px 20px;}
+.welcome-banner h2{font-size:26px;}
+.admin-tabs{gap:3px;}
+.admin-tab{padding:6px 12px;font-size:12px;}
+.form-grid.cols-3{grid-template-columns:1fr;}
+.admin-lock-card{padding:35px 24px;}
+}
 </style>
 </head>
 <body>
 
-<div class="topbar" id="topbar">
-  <span><i class="fas fa-bullhorn"></i> Bienvenue chez LE SOLIDAIRE SARL</span>
-  <div class="topbar-right">
-    <a><i class="fas fa-truck"></i> <span id="topbar-livraison">Livraison rapide partout</span></a>
-    <a><i class="fas fa-headset"></i> Besoin d'aide ?</a>
-  </div>
+<nav class="navbar">
+<div class="logo" onclick="goHome()">LE <span>S</span>OLIDAIRE <span>SARL</span></div>
+<div class="nav-links">
+<a class="nav-link active" data-page="accueil">Accueil</a>
+<a class="nav-link" data-page="produits">Produits</a>
+<a class="nav-link" data-page="devis">Devis</a>
+<a class="nav-link" data-page="aide">Aide</a>
+<a class="nav-link" data-page="admin">Admin</a>
+<a class="nav-link" data-page="compte">Mon Compte</a>
+<button class="cart-btn" id="cart-btn">
+<i class="fas fa-shopping-cart"></i> Panier
+<span class="cart-badge" id="cart-count">0</span>
+</button>
 </div>
-
-<header>
-  <div class="logo">
-    <div>
-      <div style="display:flex;align-items:baseline;">
-        <span class="logo-le">LE&nbsp;</span>
-        <span class="logo-s">S</span>
-        <span class="logo-olidaire">OLIDAIRE</span>
-      </div>
-      <span class="logo-sarl">SARL</span>
-    </div>
-  </div>
-  <div class="search-bar">
-    <select id="search-cat">
-      <option>Toutes catégories</option>
-    </select>
-    <input type="text" id="search-input" placeholder="Rechercher un produit...">
-    <button id="search-btn"><i class="fas fa-search"></i></button>
-  </div>
-  <div class="header-actions">
-    <div class="header-action" id="account-btn">
-      <i class="fas fa-user-circle"></i>
-      <span>Mon compte</span>
-    </div>
-    <div class="header-action cart-badge" id="cart-btn">
-      <i class="fas fa-shopping-cart"></i>
-      <div class="badge" id="cart-count">0</div>
-      <span>Panier</span>
-    </div>
-  </div>
-</header>
-
-<nav class="main-nav">
-  <div class="cat-btn"><i class="fas fa-bars"></i> TOUTES LES CATÉGORIES</div>
-  <div class="nav-links">
-    <a class="nav-link active" data-page="accueil">ACCUEIL</a>
-    <a class="nav-link" data-page="produits">NOS PRODUITS</a>
-    <a class="nav-link" data-page="promotions">PROMOTIONS</a>
-    <a class="nav-link" data-page="devis">DEMANDE DE DEVIS</a>
-    <a class="nav-link" data-page="apropos">À PROPOS</a>
-    <a class="nav-link" data-page="contact">CONTACT</a>
-    <a class="nav-link" data-page="admin" id="admin-link" style="display:none;">?? ADMIN</a>
-  </div>
 </nav>
 
-<!-- PAGE ACCUEIL -->
+<div class="container">
+
+<!-- ACCUEIL -->
 <div id="accueil" class="page active">
-  <div class="hero-section">
-    <div class="sidebar" id="sidebar-categories">
-      <!-- Catégories générées dynamiquement -->
-    </div>
-    <div class="hero-slider">
-      <div class="hero-content">
-        <h1>PROJETS BTP<br>AU MEILLEUR <span>PRIX !</span></h1>
-        <div class="sub">Qualité • Fiabilité • Livraison rapide</div>
-        <div class="hero-badges">
-          <div class="hero-badge"><i class="fas fa-medal"></i><div><strong>PRODUITS DE QUALITÉ</strong></div></div>
-          <div class="hero-badge"><i class="fas fa-truck-fast"></i><div><strong>LIVRAISON RAPIDE</strong></div></div>
-          <div class="hero-badge"><i class="fas fa-shield-halved"></i><div><strong>PAIEMENT SÉCURISÉ</strong></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="features-strip">
-    <div class="feature-card red"><i class="fas fa-tag"></i><div><strong>MEILLEURS PRIX</strong><span>Des prix compétitifs</span></div></div>
-    <div class="feature-card blue"><i class="fas fa-percent"></i><div><strong>PROMOTIONS</strong><span>Offres spéciales</span></div></div>
-    <div class="feature-card red"><i class="fas fa-file-invoice"></i><div><strong>DEVIS GRATUIT</strong><span>Demandez votre devis</span></div></div>
-    <div class="feature-card blue"><i class="fas fa-headset"></i><div><strong>CONSEILS EXPERTS</strong><span>Notre équipe vous accompagne</span></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">
-      <div class="section-title">PRODUITS PHARES</div>
-      <div class="see-all" data-page="produits">Voir tous les produits <i class="fas fa-arrow-right"></i></div>
-    </div>
-    <div class="products-grid" id="home-products"></div>
-  </div>
-
-  <div class="section" style="background:var(--gris-clair);">
-    <div class="section-header">
-      <div class="section-title">NOS CATÉGORIES POPULAIRES</div>
-    </div>
-    <div class="cats-grid" id="cats-grid"></div>
-  </div>
-
-  <div class="promo-banner">
-    <div class="promo-text"><h2>PROMOTIONS EXCLUSIVES !</h2><p>Des réductions incroyables sur une sélection de produits BTP</p></div>
-    <div class="btn-promo" data-page="promotions">VOIR LES OFFRES</div>
-  </div>
-
-  <div class="garanties">
-    <div class="garantie-card"><div class="garantie-icon"><i class="fas fa-truck"></i></div><div><div class="garantie-title">LIVRAISON PARTOUT</div><div class="garantie-desc">En Côte d'Ivoire</div></div></div>
-    <div class="garantie-card"><div class="garantie-icon"><i class="fas fa-hand-holding-usd"></i></div><div><div class="garantie-title">PAIEMENT À LA LIVRAISON</div><div class="garantie-desc">Payez à la réception</div></div></div>
-    <div class="garantie-card"><div class="garantie-icon"><i class="fas fa-undo-alt"></i></div><div><div class="garantie-title">SATISFAIT OU REMBOURSÉ</div><div class="garantie-desc">Retour sous 7 jours</div></div></div>
-    <div class="garantie-card"><div class="garantie-icon"><i class="fas fa-headset"></i></div><div><div class="garantie-title">SUPPORT 7J/7</div><div class="garantie-desc">Disponibles pour vous</div></div></div>
-  </div>
+<div class="welcome-banner">
+<div class="banner-badge">Cote d'Ivoire - BTP et Materiaux</div>
+<h2 id="welcome-title">Bienvenue chez LE SOLIDAIRE SARL</h2>
+<p id="welcome-text">Votre partenaire de confiance pour tous vos projets BTP en Cote d'Ivoire</p>
+</div>
+<div class="section-header">
+<div class="section-title">Produits <span>Populaires</span></div>
+<a class="nav-link" data-page="produits" style="color:#0D2B6B;font-weight:600;font-size:14px;cursor:pointer;">Voir tout &rarr;</a>
+</div>
+<div class="products-grid" id="home-products"></div>
 </div>
 
-<!-- PAGE PRODUITS -->
+<!-- PRODUITS -->
 <div id="produits" class="page">
-  <div class="section">
-    <div class="section-header"><div class="section-title">TOUS NOS PRODUITS</div></div>
-    <div class="filters">
-      <input type="text" id="filter-search" placeholder="Rechercher..." style="flex:2;">
-      <select id="filter-category">
-        <option value="">Toutes catégories</option>
-      </select>
-      <input type="number" id="filter-min" placeholder="Prix min" style="width:100px;">
-      <input type="number" id="filter-max" placeholder="Prix max" style="width:100px;">
-      <button class="btn-cart" id="apply-filters" style="width:auto; margin:0;">Filtrer</button>
-    </div>
-    <div class="products-grid" id="all-products"></div>
-  </div>
+<div class="section-title" style="margin-bottom:20px;">Tous nos <span>Produits</span></div>
+<div class="filters-bar">
+<input type="text" id="search-input" placeholder="Rechercher un produit...">
+<select id="category-filter"><option value="">Toutes categories</option></select>
+<button class="btn-filter" id="apply-filter"><i class="fas fa-filter"></i> Filtrer</button>
+</div>
+<div class="products-grid" id="all-products"></div>
 </div>
 
-<!-- PAGE PROMOTIONS -->
-<div id="promotions" class="page">
-  <div class="section">
-    <div class="section-header"><div class="section-title">PROMOTIONS EN COURS</div></div>
-    <div class="products-grid" id="promo-products"></div>
-  </div>
-</div>
-
-<!-- PAGE DEVIS -->
+<!-- DEVIS -->
 <div id="devis" class="page">
-  <div class="section">
-    <div class="section-header"><div class="section-title">DEMANDE DE DEVIS GRATUIT</div></div>
-    <div style="max-width:600px; margin:0 auto; background:#f9f9f9; padding:30px; border-radius:12px;">
-      <form id="devis-form">
-        <div class="form-group"><input type="text" id="devis-nom" placeholder="Votre nom complet" required></div>
-        <div class="form-group"><input type="tel" id="devis-tel" placeholder="Votre téléphone" required></div>
-        <div class="form-group"><input type="email" id="devis-email" placeholder="Votre email" required></div>
-        <div class="form-group"><textarea id="devis-message" rows="4" placeholder="Décrivez votre projet..." required></textarea></div>
-        <button type="submit" class="btn-cart">ENVOYER MA DEMANDE</button>
-      </form>
-      <div id="devis-success" style="display:none; margin-top:15px; padding:12px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Votre demande a été envoyée !</div>
-    </div>
-  </div>
+<div class="devis-header">
+<h3>Demande de Devis</h3>
+<p>Remplissez ce formulaire et nous vous repondrons rapidement via WhatsApp</p>
+</div>
+<div class="devis-form-card">
+<div class="admin-panel-title"><i class="fas fa-file-invoice"></i> Votre Demande</div>
+<form id="devis-form">
+<div class="form-grid">
+<div class="form-group"><label>Votre nom complet *</label><input type="text" id="devis-nom" placeholder="Ex: Kouassi Jean-Pierre" required></div>
+<div class="form-group"><label>Telephone / WhatsApp *</label><input type="tel" id="devis-tel" placeholder="+225 07 XX XX XX XX" required></div>
+<div class="form-group full"><label>Ville / Localite *</label><input type="text" id="devis-ville" placeholder="Ex: Abidjan, San Pedro, Yamoussoukro..." required></div>
+<div class="form-group full"><label>Produits souhaites *</label><textarea id="devis-produits" rows="3" placeholder="Ex: 10 sacs de ciment CIMAF 50kg, 5 barres de fer 12mm..." required></textarea></div>
+<div class="form-group full"><label>Message complementaire</label><textarea id="devis-message" rows="2" placeholder="Informations supplementaires, delai souhaite..."></textarea></div>
+</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:10px;padding:14px;background:#e6f9f0;border-radius:8px;margin-bottom:20px;">
+<i class="fab fa-whatsapp" style="font-size:28px;color:#25D366;flex-shrink:0;"></i>
+<div>
+<div style="font-weight:700;font-size:14px;">Envoi direct par WhatsApp</div>
+<div style="font-size:13px;color:#6b7280;">Votre demande sera transmise instantanement a notre equipe commerciale</div>
+</div>
+</div>
+<button type="submit" class="btn-submit vert" style="width:100%;justify-content:center;padding:14px;">
+<i class="fab fa-whatsapp" style="font-size:18px;"></i> Envoyer ma demande de devis
+</button>
+</form>
+</div>
 </div>
 
-<!-- PAGE A PROPOS -->
-<div id="apropos" class="page">
-  <div class="section">
-    <div class="section-header"><div class="section-title">À PROPOS DE LE SOLIDAIRE SARL</div></div>
-    <div style="max-width:800px; margin:0 auto; line-height:1.8;">
-      <p>Créée en 2015, <strong>LE SOLIDAIRE SARL</strong> est une entreprise spécialisée dans la <strong>quincaillerie générale et les solutions BTP</strong> en Côte d'Ivoire.</p><br>
-      <p>Nous proposons une large gamme de produits de qualité : ciment, fer à béton, outillage, plomberie, électricité, peinture et bien plus encore.</p>
-    </div>
-  </div>
+<!-- AIDE -->
+<div id="aide" class="page">
+<div class="section-title" style="margin-bottom:8px;">Centre d'<span>Aide</span></div>
+<p style="color:#6b7280;margin-bottom:28px;font-size:15px;">Notre equipe est disponible pour repondre a toutes vos questions</p>
+<div class="aide-grid">
+<div class="aide-card">
+<div class="aide-card-icon vert"><i class="fab fa-whatsapp"></i></div>
+<h3>Chat WhatsApp</h3>
+<p>Discutez directement avec notre equipe via WhatsApp. Reponse rapide garantie.</p>
+<a id="wa-direct-link" href="#" target="_blank" class="wa-btn"><i class="fab fa-whatsapp"></i> Ouvrir WhatsApp</a>
+</div>
+<div class="aide-card">
+<div class="aide-card-icon bleu"><i class="fas fa-phone"></i></div>
+<h3>Appel telephonique</h3>
+<p>Appelez-nous directement pour un accompagnement personnalise sur vos projets BTP.</p>
+<a id="tel-link" href="#" class="wa-btn" style="background:#0D2B6B;"><i class="fas fa-phone"></i> Appeler maintenant</a>
+</div>
+<div class="aide-card">
+<div class="aide-card-icon rouge"><i class="fas fa-file-invoice"></i></div>
+<h3>Demande de devis</h3>
+<p>Besoin d'un devis detaille ? Remplissez notre formulaire et recevez une reponse rapide.</p>
+<button class="wa-btn" style="background:#CC1818;" onclick="navigate('devis')"><i class="fas fa-file-invoice"></i> Faire un devis</button>
+</div>
+</div>
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-question-circle"></i> Questions frequentes</div>
+<div style="border-bottom:1px solid #e0e2e7;padding:16px 0;"><div style="font-weight:700;margin-bottom:6px;">Quels sont vos delais de livraison ?</div><div style="color:#6b7280;font-size:14px;">Nous livrons partout en Cote d'Ivoire. Les delais varient de 24h a 72h selon votre localite.</div></div>
+<div style="border-bottom:1px solid #e0e2e7;padding:16px 0;"><div style="font-weight:700;margin-bottom:6px;">Peut-on commander en grande quantite ?</div><div style="color:#6b7280;font-size:14px;">Oui, nous acceptons les commandes en gros. Contactez-nous via WhatsApp pour un devis specifique.</div></div>
+<div style="border-bottom:1px solid #e0e2e7;padding:16px 0;"><div style="font-weight:700;margin-bottom:6px;">Quels modes de paiement acceptez-vous ?</div><div style="color:#6b7280;font-size:14px;">Nous acceptons l'argent liquide, les virements bancaires et le Mobile Money (Orange Money, MTN Money, Wave).</div></div>
+<div style="padding:16px 0;"><div style="font-weight:700;margin-bottom:6px;">Vos produits sont-ils garantis ?</div><div style="color:#6b7280;font-size:14px;">Tous nos produits sont authentiques et proviennent de fournisseurs certifies. Satisfaction garantie.</div></div>
+</div>
+<div style="background:linear-gradient(135deg,#0D2B6B,#CC1818);color:white;border-radius:10px;padding:30px;text-align:center;">
+<h3 style="font-family:'Barlow Condensed',Arial,sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;text-transform:uppercase;">Vous n'avez pas trouve votre reponse ?</h3>
+<p style="opacity:0.85;margin-bottom:20px;font-size:15px;">Ecrivez-nous directement sur WhatsApp.</p>
+<a id="wa-footer-link" href="#" target="_blank" class="wa-btn" style="margin:0 auto;display:inline-flex;"><i class="fab fa-whatsapp" style="font-size:20px;"></i> Nous contacter sur WhatsApp</a>
+</div>
 </div>
 
-<!-- PAGE CONTACT -->
-<div id="contact" class="page">
-  <div class="section">
-    <div class="section-header"><div class="section-title">CONTACTEZ-NOUS</div></div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
-      <div id="contact-info">
-        <!-- Infos contact dynamiques -->
-      </div>
-      <div>
-        <form id="contact-form">
-          <input type="text" id="contact-nom" placeholder="Votre nom" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
-          <input type="tel" id="contact-tel" placeholder="Votre téléphone" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
-          <textarea id="contact-msg" rows="4" placeholder="Votre message" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;"></textarea>
-          <button type="submit" class="btn-cart" style="width:100%;">ENVOYER</button>
-        </form>
-        <div id="contact-success" style="display:none; margin-top:10px; padding:10px; background:#d4edda; color:#155724; border-radius:6px; text-align:center;">? Message envoyé !</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PAGE ADMIN -->
+<!-- ADMIN -->
 <div id="admin" class="page">
-  <div class="section">
-    <h2>?? PANEL D'ADMINISTRATION</h2>
-    
-    <!-- Paramètres du site -->
-    <div class="admin-panel">
-      <h3>?? PARAMÈTRES DU SITE</h3>
-      <form id="settings-form">
-        <div class="form-group"><label>Téléphone</label><input type="text" id="site-phone" placeholder="Téléphone"></div>
-        <div class="form-group"><label>Email</label><input type="email" id="site-email" placeholder="Email"></div>
-        <div class="form-group"><label>Adresse</label><input type="text" id="site-address" placeholder="Adresse"></div>
-        <div class="form-group"><label>WhatsApp</label><input type="text" id="site-whatsapp" placeholder="WhatsApp"></div>
-        <button type="submit" class="btn-cart">?? ENREGISTRER LES MODIFICATIONS</button>
-      </form>
-    </div>
-
-    <!-- Ajouter un produit -->
-    <div class="admin-panel">
-      <h3>? AJOUTER UN PRODUIT</h3>
-      <form id="add-product-form">
-        <div class="form-group"><input type="text" id="prod-nom" placeholder="Nom du produit" required></div>
-        <div class="form-group"><input type="number" id="prod-prix" placeholder="Prix (FCFA)" required></div>
-        <div class="form-group"><input type="text" id="prod-categorie" placeholder="Catégorie" required></div>
-        <div class="form-group"><input type="number" id="prod-stock" placeholder="Stock" required></div>
-        <div class="form-group"><input type="text" id="prod-emoji" placeholder="Icône (ex: ??)" value="??"></div>
-        <div class="form-group"><label><input type="checkbox" id="prod-promo"> En promotion</label></div>
-        <button type="submit" class="btn-cart">? AJOUTER LE PRODUIT</button>
-      </form>
-    </div>
-
-    <!-- Liste des produits -->
-    <div class="admin-panel">
-      <h3>?? LISTE DES PRODUITS</h3>
-      <table class="admin-table">
-        <thead>
-          <tr><th>Nom</th><th>Prix (FCFA)</th><th>Catégorie</th><th>Stock</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="admin-products-list"></tbody>
-      </table>
-    </div>
-
-    <!-- Commandes -->
-    <div class="admin-panel">
-      <h3>?? COMMANDES CLIENTS</h3>
-      <div id="admin-orders-list"></div>
-    </div>
-  </div>
+<div id="admin-lock" class="admin-lock-screen">
+<div class="admin-lock-card">
+<div class="lock-icon"><i class="fas fa-lock"></i></div>
+<div class="lock-title">Acces Administrateur</div>
+<div class="lock-subtitle">Entrez votre mot de passe pour acceder au panel d'administration</div>
+<input type="password" class="lock-input" id="admin-password-input" placeholder="Mot de passe" maxlength="30">
+<div class="lock-error" id="lock-error"><i class="fas fa-exclamation-circle"></i> Mot de passe incorrect</div>
+<button class="lock-btn" onclick="checkAdminPassword()"><i class="fas fa-unlock"></i> Acceder</button>
+<div style="margin-top:16px;font-size:12px;color:#6b7280;">Mot de passe par defaut : admin123</div>
 </div>
+</div>
+
+<div id="admin-real-content" class="admin-real-content">
+<div class="admin-header">
+<i class="fas fa-shield-alt"></i>
+<div><h2>Panel d'Administration</h2><p>Gerez vos produits, clients, commandes et parametres du site</p></div>
+<button class="btn-submit rouge" onclick="lockAdmin()" style="margin-left:auto;"><i class="fas fa-lock"></i> Verrouiller</button>
+</div>
+<div class="stats-row" id="admin-stats"></div>
+<div class="admin-tabs">
+<button class="admin-tab active" data-tab="tab-produits"><i class="fas fa-box"></i> Produits</button>
+<button class="admin-tab" data-tab="tab-clients"><i class="fas fa-users"></i> Clients</button>
+<button class="admin-tab" data-tab="tab-commandes"><i class="fas fa-shopping-bag"></i> Commandes</button>
+<button class="admin-tab" data-tab="tab-parametres"><i class="fas fa-sliders-h"></i> Parametres</button>
+<button class="admin-tab" data-tab="tab-contact"><i class="fas fa-phone"></i> Contact</button>
+<button class="admin-tab" data-tab="tab-apparence"><i class="fas fa-palette"></i> Apparence</button>
+<button class="admin-tab" data-tab="tab-securite"><i class="fas fa-key"></i> Securite</button>
+</div>
+
+<div id="tab-produits" class="admin-section active">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-plus-circle"></i> Ajouter un nouveau produit</div>
+<form id="add-product-form">
+<div class="form-grid">
+<div class="form-group"><label>Nom du produit *</label><input type="text" id="prod-nom" placeholder="Ex: Ciment CIMAF 50kg" required></div>
+<div class="form-group"><label>Categorie *</label><input type="text" id="prod-categorie" placeholder="Ex: Ciment, Fer, Outillage..." required></div>
+<div class="form-group"><label>Prix (FCFA) *</label><input type="number" id="prod-prix" placeholder="Ex: 4200" min="0" required></div>
+<div class="form-group"><label>Stock disponible *</label><input type="number" id="prod-stock" placeholder="Ex: 50" min="0" required></div>
+<div class="form-group full">
+<label>Photo du produit</label>
+<div class="photo-upload-zone">
+<input type="file" id="prod-photo" accept="image/*" onchange="previewPhoto(this,'add-preview')">
+<i class="fas fa-cloud-upload-alt"></i>
+<p>Cliquez ou glissez une photo ici</p>
+<span>PNG, JPG, WEBP</span>
+</div>
+<img id="add-preview" class="photo-preview" alt="Apercu">
+</div>
+</div>
+<button type="submit" class="btn-submit"><i class="fas fa-plus"></i> Ajouter le produit</button>
+</form>
+</div>
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-list"></i> Liste des produits (<span id="nb-produits">0</span>)</div>
+<div style="overflow-x:auto;">
+<table class="admin-table">
+<thead><tr><th>Photo</th><th>Nom</th><th>Categorie</th><th>Prix</th><th>Stock</th><th>Actions</th></tr></thead>
+<tbody id="admin-products-list"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="tab-clients" class="admin-section">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-users"></i> Comptes clients (<span id="nb-clients">0</span>)</div>
+<div id="admin-clients-list"></div>
+</div>
+</div>
+
+<div id="tab-commandes" class="admin-section">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-shopping-bag"></i> Commandes clients (<span id="nb-commandes">0</span>)</div>
+<div id="admin-orders-list"></div>
+</div>
+</div>
+
+<div id="tab-parametres" class="admin-section">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-building"></i> Informations generales</div>
+<form id="general-settings-form">
+<div class="form-grid">
+<div class="form-group"><label>Nom de l'entreprise</label><input type="text" id="company-name"></div>
+<div class="form-group"><label>Slogan / Livraison</label><input type="text" id="delivery-text"></div>
+<div class="form-group full"><label>Titre de la banniere</label><input type="text" id="welcome-title-input"></div>
+<div class="form-group full"><label>Message de bienvenue</label><textarea id="welcome-text-input" rows="2"></textarea></div>
+</div>
+<button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer</button>
+</form>
+</div>
+</div>
+
+<div id="tab-contact" class="admin-section">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-address-book"></i> Coordonnees</div>
+<form id="contact-settings-form">
+<div class="form-grid cols-3">
+<div class="form-group"><label>Telephone principal</label><input type="text" id="site-phone"></div>
+<div class="form-group"><label>Telephone secondaire</label><input type="text" id="site-phone2"></div>
+<div class="form-group"><label>Numero WhatsApp</label><input type="text" id="site-whatsapp" placeholder="225XXXXXXXXXX"></div>
+<div class="form-group"><label>Email</label><input type="email" id="site-email"></div>
+<div class="form-group"><label>Adresse</label><input type="text" id="site-address"></div>
+<div class="form-group"><label>Horaires</label><input type="text" id="site-hours"></div>
+</div>
+<button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer</button>
+</form>
+</div>
+</div>
+
+<div id="tab-apparence" class="admin-section">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-palette"></i> Couleurs du site</div>
+<form id="colors-settings-form">
+<div class="form-grid">
+<div class="form-group"><label>Couleur principale</label><input type="color" id="color-primary" value="#CC1818"></div>
+<div class="form-group"><label>Couleur secondaire</label><input type="color" id="color-secondary" value="#0D2B6B"></div>
+</div>
+<button type="submit" class="btn-submit rouge"><i class="fas fa-paint-brush"></i> Appliquer</button>
+</form>
+</div>
+</div>
+
+<div id="tab-securite" class="admin-section">
+<div class="admin-panel">
+<div class="admin-panel-title"><i class="fas fa-key"></i> Changer le mot de passe administrateur</div>
+<form id="change-password-form">
+<div class="form-grid">
+<div class="form-group"><label>Mot de passe actuel</label><input type="password" id="old-password" placeholder="Mot de passe actuel"></div>
+<div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="new-password" placeholder="Nouveau mot de passe"></div>
+<div class="form-group"><label>Confirmer</label><input type="password" id="confirm-password" placeholder="Confirmer le mot de passe"></div>
+</div>
+<div style="background:#fff3e0;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;color:#e65100;display:flex;gap:10px;">
+<i class="fas fa-exclamation-triangle" style="margin-top:2px;flex-shrink:0;"></i>
+<span>Notez votre mot de passe en lieu sur. Si vous l'oubliez, effacez les donnees du navigateur.</span>
+</div>
+<button type="submit" class="btn-submit rouge"><i class="fas fa-key"></i> Changer le mot de passe</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+
+<!-- COMPTE -->
+<div id="compte" class="page">
+<div class="section-title" style="margin-bottom:20px;">Mon <span>Compte</span></div>
+<div id="compte-content"></div>
+</div>
+
+</div>
+
+<footer class="site-footer">
+<div class="footer-grid" id="footer-grid"></div>
+<div class="footer-bottom" id="footer-bottom"></div>
+</footer>
 
 <!-- MODAL PANIER -->
 <div id="cart-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header"><h3>?? Mon panier</h3><span class="close-modal">&times;</span></div>
-    <div id="cart-items"></div>
-    <div class="cart-total">Total : <span id="cart-total">0</span> FCFA</div>
-    <button class="validate-cart" id="validate-order">VALIDER LA COMMANDE</button>
-  </div>
+<div class="modal-content">
+<div class="modal-header">
+<h3><i class="fas fa-shopping-cart" style="color:#CC1818;"></i> Mon Panier</h3>
+<button class="close-modal" data-modal="cart-modal">&times;</button>
+</div>
+<div id="cart-items"></div>
+<div class="cart-total-row"><span>Total</span><span class="cart-total-amount"><span id="cart-total">0</span> FCFA</span></div>
+<button class="btn-submit" id="validate-order" style="width:100%;justify-content:center;"><i class="fas fa-check-circle"></i> Valider la commande</button>
+</div>
 </div>
 
-<!-- MODAL COMPTE -->
-<div id="account-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header"><h3>?? Mon compte</h3><span class="close-modal" id="close-account">&times;</span></div>
-    <div id="account-content"></div>
-  </div>
+<!-- MODAL MODIFIER -->
+<div id="edit-modal" class="modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3><i class="fas fa-edit" style="color:#0D2B6B;"></i> Modifier le produit</h3>
+<button class="close-modal" data-modal="edit-modal">&times;</button>
+</div>
+<form id="edit-form">
+<input type="hidden" id="edit-id">
+<div class="form-group"><label>Nom</label><input type="text" id="edit-nom" required></div>
+<div class="form-grid">
+<div class="form-group"><label>Prix (FCFA)</label><input type="number" id="edit-prix" required></div>
+<div class="form-group"><label>Stock</label><input type="number" id="edit-stock" required></div>
+</div>
+<div class="form-group"><label>Categorie</label><input type="text" id="edit-categorie" required></div>
+<div class="form-group">
+<label>Nouvelle photo (optionnel)</label>
+<div class="photo-upload-zone">
+<input type="file" id="edit-photo" accept="image/*" onchange="previewPhoto(this,'edit-preview')">
+<i class="fas fa-camera"></i>
+<p>Cliquer pour changer la photo</p>
+</div>
+<img id="edit-preview" class="photo-preview" alt="Apercu">
+</div>
+<button type="submit" class="btn-submit" style="width:100%;justify-content:center;"><i class="fas fa-save"></i> Enregistrer</button>
+</form>
+</div>
 </div>
 
-<!-- MODAL MODIFIER PRIX -->
-<div id="edit-price-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header"><h3>?? Modifier le produit</h3><span class="close-modal">&times;</span></div>
-    <form id="edit-product-form">
-      <input type="hidden" id="edit-id">
-      <div class="form-group"><label>Nom</label><input type="text" id="edit-nom" required></div>
-      <div class="form-group"><label>Prix (FCFA)</label><input type="number" id="edit-prix" required></div>
-      <div class="form-group"><label>Catégorie</label><input type="text" id="edit-categorie" required></div>
-      <div class="form-group"><label>Stock</label><input type="number" id="edit-stock" required></div>
-      <div class="form-group"><label>Icône</label><input type="text" id="edit-emoji"></div>
-      <div class="form-group"><label><input type="checkbox" id="edit-promo"> En promotion</label></div>
-      <button type="submit" class="btn-cart">?? ENREGISTRER</button>
-    </form>
-  </div>
-</div>
-
-<div id="toast" class="toast">? Produit ajouté au panier !</div>
+<div id="toast" class="toast"></div>
 
 <script>
-// ============= DONNÉES PAR DÉFAUT =============
-let produits = [
-  { id: 1, nom: "Ciment CIMAF 50kg", prix: 4200, categorie: "Ciment", stock: 50, emoji: "??", promo: false },
-  { id: 2, nom: "Fer à béton 12mm", prix: 6500, categorie: "Fer", stock: 30, emoji: "??", promo: true },
-  { id: 3, nom: "Perceuse Bosch 680W", prix: 45000, categorie: "Outillage", stock: 10, emoji: "??", promo: false },
-  { id: 4, nom: "Peinture VINYLUX 20L", prix: 25000, categorie: "Peinture", stock: 20, emoji: "??", promo: false },
-  { id: 5, nom: "Brouette métallique", prix: 28000, categorie: "Outillage", stock: 15, emoji: "??", promo: true },
-  { id: 6, nom: "Câble électrique 2.5mm", prix: 1850, categorie: "Électricité", stock: 100, emoji: "??", promo: false },
-  { id: 7, nom: "Tuyau PVC 100mm", prix: 2800, categorie: "Plomberie", stock: 40, emoji: "??", promo: false },
-  { id: 8, nom: "Carrelage 60x60", prix: 12500, categorie: "Matériaux", stock: 25, emoji: "?", promo: true }
+var produits=[
+{id:1,nom:"Ciment CIMAF 50kg",prix:4200,categorie:"Ciment",stock:50,photo:null},
+{id:2,nom:"Fer a beton 12mm",prix:6500,categorie:"Fer",stock:30,photo:null},
+{id:3,nom:"Perceuse Bosch 680W",prix:45000,categorie:"Outillage",stock:10,photo:null},
+{id:4,nom:"Peinture VINYLUX 20L",prix:25000,categorie:"Peinture",stock:20,photo:null},
+{id:5,nom:"Brouette metallique",prix:28000,categorie:"Outillage",stock:15,photo:null},
+{id:6,nom:"Cable electrique 2.5",prix:1850,categorie:"Electricite",stock:100,photo:null},
+{id:7,nom:"Tuyau PVC 100mm",prix:2800,categorie:"Plomberie",stock:40,photo:null}
 ];
-
-// Paramètres du site
-let siteSettings = {
-  telephone: "07 57 19 67 24",
-  email: "comptabilitesolidaire@gmail.com",
-  adresse: "Abidjan, Yopougon, Côte d'Ivoire",
-  whatsapp: "2250757196724",
-  livraison: "Livraison rapide partout"
+var siteConfig={
+companyName:"LE SOLIDAIRE SARL",
+welcomeTitle:"Bienvenue chez LE SOLIDAIRE SARL",
+welcomeText:"Votre partenaire de confiance pour tous vos projets BTP en Cote d'Ivoire",
+deliveryText:"Livraison rapide partout en Cote d'Ivoire",
+telephone:"07 57 19 67 24",telephone2:"",
+whatsapp:"2250757196724",
+email:"comptabilitesolidaire@gmail.com",
+adresse:"Abidjan, Yopougon, Cote d'Ivoire",
+horaires:"Lundi - Samedi : 8h - 18h",
+colorPrimary:"#CC1818",colorSecondary:"#0D2B6B",
+adminPassword:"admin123"
 };
+var utilisateurs=[],utilisateurConnecte=null,panier=[],nextId=8,commandes=[],adminUnlocked=false;
 
-let utilisateurs = [];
-let utilisateurConnecte = null;
-let panier = [];
-let nextId = 9;
-
-// Chargement localStorage
-function loadData() {
-  const savedProduits = localStorage.getItem("produits_solidaire");
-  if(savedProduits) produits = JSON.parse(savedProduits);
-  const savedSettings = localStorage.getItem("siteSettings_solidaire");
-  if(savedSettings) siteSettings = JSON.parse(savedSettings);
-  const savedUsers = localStorage.getItem("users_solidaire");
-  if(savedUsers) utilisateurs = JSON.parse(savedUsers);
-  const savedCart = localStorage.getItem("cart_solidaire");
-  if(savedCart) panier = JSON.parse(savedCart);
-  const savedUser = localStorage.getItem("currentUser_solidaire");
-  if(savedUser && savedUser !== "null") utilisateurConnecte = JSON.parse(savedUser);
-  if(produits.length > 0) nextId = Math.max(...produits.map(p => p.id)) + 1;
+function loadData(){
+try{
+var sp=localStorage.getItem("ls_produits");if(sp)produits=JSON.parse(sp);
+var sc=localStorage.getItem("ls_config");if(sc)siteConfig=JSON.parse(sc);
+var su=localStorage.getItem("ls_users");if(su)utilisateurs=JSON.parse(su);
+var sk=localStorage.getItem("ls_cart");if(sk)panier=JSON.parse(sk);
+var scu=localStorage.getItem("ls_current_user");if(scu&&scu!="null")utilisateurConnecte=JSON.parse(scu);
+var sco=localStorage.getItem("ls_commandes");if(sco)commandes=JSON.parse(sco);
+if(produits.length>0)nextId=Math.max.apply(Math,produits.map(function(p){return p.id;}))+1;
+document.documentElement.style.setProperty('--rouge',siteConfig.colorPrimary);
+document.documentElement.style.setProperty('--bleu',siteConfig.colorSecondary);
+}catch(e){}
 }
 
-function saveData() {
-  localStorage.setItem("produits_solidaire", JSON.stringify(produits));
-  localStorage.setItem("siteSettings_solidaire", JSON.stringify(siteSettings));
-  localStorage.setItem("users_solidaire", JSON.stringify(utilisateurs));
-  localStorage.setItem("cart_solidaire", JSON.stringify(panier));
-  localStorage.setItem("currentUser_solidaire", JSON.stringify(utilisateurConnecte));
+function saveData(){
+try{
+localStorage.setItem("ls_produits",JSON.stringify(produits));
+localStorage.setItem("ls_config",JSON.stringify(siteConfig));
+localStorage.setItem("ls_users",JSON.stringify(utilisateurs));
+localStorage.setItem("ls_cart",JSON.stringify(panier));
+localStorage.setItem("ls_current_user",JSON.stringify(utilisateurConnecte));
+localStorage.setItem("ls_commandes",JSON.stringify(commandes));
+}catch(e){}
 }
 
-// Mise à jour globale
-function updateAll() {
-  updateCartCount();
-  renderHomeProducts();
-  renderAllProducts();
-  renderPromoProducts();
-  renderAdminProducts();
-  renderCartModal();
-  renderAccountModal();
-  updateCategoryFilters();
-  renderSidebarCategories();
-  renderCategoriesGrid();
-  renderContactInfo();
-  updateTopbar();
+function checkAdminPassword(){
+var input=document.getElementById("admin-password-input").value;
+if(input===siteConfig.adminPassword){
+adminUnlocked=true;
+document.getElementById("admin-lock").style.display="none";
+document.getElementById("admin-real-content").style.display="block";
+updateAll();
+document.getElementById("admin-password-input").value="";
+document.getElementById("lock-error").style.display="none";
+}else{
+document.getElementById("lock-error").style.display="block";
+document.getElementById("admin-password-input").value="";
+document.getElementById("admin-password-input").focus();
+}
 }
 
-function updateCartCount() {
-  const count = panier.reduce((sum, item) => sum + item.quantite, 0);
-  document.getElementById("cart-count").innerHTML = count;
+function lockAdmin(){
+adminUnlocked=false;
+document.getElementById("admin-lock").style.display="flex";
+document.getElementById("admin-real-content").style.display="none";
 }
 
-function updateTopbar() {
-  const livraisonSpan = document.getElementById("topbar-livraison");
-  if(livraisonSpan) livraisonSpan.innerHTML = siteSettings.livraison;
+document.getElementById("admin-password-input").addEventListener("keyup",function(e){if(e.key==="Enter")checkAdminPassword();});
+
+function updateAdminStats(){
+var totalCA=commandes.reduce(function(s,c){return s+c.total;},0);
+document.getElementById("admin-stats").innerHTML=
+'<div class="stat-card"><div class="stat-icon bleu"><i class="fas fa-box"></i></div><div><div class="stat-value">'+produits.length+'</div><div class="stat-label">Produits</div></div></div>'+
+'<div class="stat-card"><div class="stat-icon vert"><i class="fas fa-users"></i></div><div><div class="stat-value">'+utilisateurs.length+'</div><div class="stat-label">Clients</div></div></div>'+
+'<div class="stat-card"><div class="stat-icon orange"><i class="fas fa-shopping-bag"></i></div><div><div class="stat-value">'+commandes.length+'</div><div class="stat-label">Commandes</div></div></div>'+
+'<div class="stat-card"><div class="stat-icon rouge"><i class="fas fa-coins"></i></div><div><div class="stat-value">'+Math.round(totalCA/1000)+'K</div><div class="stat-label">CA FCFA</div></div></div>';
+if(document.getElementById("nb-produits"))document.getElementById("nb-produits").textContent=produits.length;
+if(document.getElementById("nb-clients"))document.getElementById("nb-clients").textContent=utilisateurs.length;
+if(document.getElementById("nb-commandes"))document.getElementById("nb-commandes").textContent=commandes.length;
 }
 
-function renderContactInfo() {
-  const container = document.getElementById("contact-info");
-  if(container) {
-    container.innerHTML = `
-      <div style="margin-bottom:20px;"><i class="fas fa-phone" style="color:var(--rouge); width:30px;"></i> <strong>${siteSettings.telephone}</strong></div>
-      <div style="margin-bottom:20px;"><i class="fas fa-envelope" style="color:var(--rouge); width:30px;"></i> ${siteSettings.email}</div>
-      <div style="margin-bottom:20px;"><i class="fas fa-map-marker-alt" style="color:var(--rouge); width:30px;"></i> ${siteSettings.adresse}</div>
-      <button id="contact-whatsapp" style="background:#25D366; color:#fff; border:none; padding:12px 24px; border-radius:30px; cursor:pointer;"><i class="fab fa-whatsapp"></i> Nous contacter sur WhatsApp</button>
-    `;
-    document.getElementById("contact-whatsapp")?.addEventListener("click", () => openWhatsApp());
-  }
+function renderClients(){
+var container=document.getElementById("admin-clients-list");
+if(!container)return;
+if(utilisateurs.length===0){container.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>Aucun client inscrit pour le moment</p></div>';return;}
+container.innerHTML=utilisateurs.map(function(u){
+return '<div class="client-card">'+
+'<div class="client-avatar">'+u.nom.charAt(0).toUpperCase()+'</div>'+
+'<div class="client-info"><div class="client-name">'+u.nom+'</div>'+
+'<div class="client-detail"><i class="fas fa-envelope" style="margin-right:6px;color:#0D2B6B;"></i>'+u.email+(u.telephone?' &nbsp;<i class="fas fa-phone" style="margin-right:6px;color:#0D2B6B;"></i>'+u.telephone:'')+'</div></div>'+
+'<div class="client-date">Inscrit le '+new Date(u.id).toLocaleDateString('fr-FR')+'</div></div>';
+}).join("");
 }
 
-function renderSidebarCategories() {
-  const container = document.getElementById("sidebar-categories");
-  if(!container) return;
-  const categories = [...new Set(produits.map(p => p.categorie))];
-  container.innerHTML = categories.map(c => `
-    <div class="sidebar-item" onclick="filterByCategory('${c}')">
-      <i class="fas fa-tag"></i><span>${c}</span>
-    </div>
-  `).join("");
-  container.innerHTML += `
-    <div class="sidebar-whatsapp" id="whatsapp-sidebar">
-      <i class="fab fa-whatsapp"></i>
-      <div>
-        <div style="font-size:11px;opacity:.8;">Besoin d'aide ? Chattez avec nous</div>
-        <div class="number">${siteSettings.telephone}</div>
-      </div>
-    </div>
-  `;
-  document.getElementById("whatsapp-sidebar")?.addEventListener("click", () => openWhatsApp());
+function previewPhoto(input,previewId){
+var file=input.files[0];if(!file)return;
+var reader=new FileReader();
+reader.onload=function(e){var img=document.getElementById(previewId);img.src=e.target.result;img.style.display="block";};
+reader.readAsDataURL(file);
 }
 
-function renderCategoriesGrid() {
-  const container = document.getElementById("cats-grid");
-  if(!container) return;
-  const categories = [...new Set(produits.map(p => p.categorie))];
-  container.innerHTML = categories.slice(0,8).map(c => `
-    <div class="cat-card" onclick="filterByCategory('${c}')">
-      <div class="cat-icon">??</div>
-      <div class="cat-name">${c}</div>
-    </div>
-  `).join("");
+function readPhotoAsBase64(input){
+return new Promise(function(resolve){
+var file=input.files[0];if(!file){resolve(null);return;}
+var reader=new FileReader();
+reader.onload=function(e){resolve(e.target.result);};
+reader.readAsDataURL(file);
+});
 }
 
-function filterByCategory(cat) {
-  document.querySelector('.nav-link[data-page="produits"]').click();
-  setTimeout(() => {
-    const filtered = produits.filter(p => p.categorie === cat);
-    renderAllProducts(filtered);
-    document.getElementById("filter-category").value = cat;
-  }, 100);
+function renderProductCard(p){
+var stockClass=p.stock===0?'out':p.stock<5?'low':'';
+var stockText=p.stock===0?'Rupture de stock':p.stock<5?'Plus que '+p.stock+' en stock':'En stock : '+p.stock;
+var imgContent=p.photo
+?'<img src="'+p.photo+'" alt="'+p.nom+'" style="width:100%;height:100%;object-fit:cover;">'
+:'<div class="product-img-placeholder"><i class="fas fa-image"></i><span>Pas de photo</span></div>';
+var disabled=p.stock===0?'disabled style="opacity:.5;cursor:not-allowed;"':'';
+return '<div class="product-card">'+
+'<div class="product-img-wrap">'+imgContent+'<span class="product-cat-badge">'+p.categorie+'</span></div>'+
+'<div class="product-info">'+
+'<div class="product-name">'+p.nom+'</div>'+
+'<div class="product-price">'+p.prix.toLocaleString('fr-FR')+' FCFA</div>'+
+'<div class="product-stock '+stockClass+'">'+stockText+'</div>'+
+'<button class="btn-add" onclick="addToCart('+p.id+')" '+disabled+'><i class="fas fa-cart-plus"></i> Ajouter au panier</button>'+
+'</div></div>';
 }
 
-function renderHomeProducts() {
-  const container = document.getElementById("home-products");
-  if(container) {
-    container.innerHTML = produits.slice(0,6).map(p => `
-      <div class="product-card">
-        <div class="product-img">${p.emoji}</div>
-        <div class="product-info">
-          <div class="product-name">${p.nom}</div>
-          <div class="product-price">${p.prix.toLocaleString()} FCFA</div>
-          <div class="product-stock ${p.stock <= 0 ? 'out' : ''}">?? Stock: ${p.stock}</div>
-          <button class="btn-cart" onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}><i class="fas fa-shopping-cart"></i> Ajouter</button>
-        </div>
-      </div>
-    `).join("");
-  }
+function updateAll(){
+var count=panier.reduce(function(s,i){return s+i.quantite;},0);
+document.getElementById("cart-count").textContent=count;
+document.getElementById("welcome-title").textContent=siteConfig.welcomeTitle;
+document.getElementById("welcome-text").textContent=siteConfig.welcomeText;
+
+var waUrl="https://wa.me/"+siteConfig.whatsapp;
+var waAide="https://wa.me/"+siteConfig.whatsapp+"?text="+encodeURIComponent("Bonjour, j'ai besoin d'aide.");
+document.getElementById("wa-direct-link").href=waAide;
+document.getElementById("wa-footer-link").href=waAide;
+var telEl=document.getElementById("tel-link");
+telEl.href="tel:+"+siteConfig.whatsapp;
+telEl.innerHTML='<i class="fas fa-phone"></i> '+(siteConfig.telephone||"Appeler");
+
+document.getElementById("home-products").innerHTML=produits.slice(0,6).map(renderProductCard).join("");
+document.getElementById("all-products").innerHTML=produits.map(renderProductCard).join("");
+
+if(adminUnlocked){
+document.getElementById("admin-products-list").innerHTML=produits.map(function(p){
+var badge=p.stock===0?'<span class="stock-badge stock-out">Rupture</span>':p.stock<5?'<span class="stock-badge stock-low">'+p.stock+' restants</span>':'<span class="stock-badge stock-ok">'+p.stock+'</span>';
+var imgCell=p.photo?'<img src="'+p.photo+'" alt="'+p.nom+'" class="table-img">'
+:'<div class="table-img-placeholder"><i class="fas fa-image"></i></div>';
+return '<tr><td>'+imgCell+'</td><td><strong>'+p.nom+'</strong></td><td>'+p.categorie+'</td>'+
+'<td><strong>'+p.prix.toLocaleString('fr-FR')+' FCFA</strong></td><td>'+badge+'</td>'+
+'<td><button class="btn-sm btn-edit" onclick="openEdit('+p.id+')"><i class="fas fa-edit"></i> Modifier</button>'+
+'<button class="btn-sm btn-delete" onclick="deleteProduct('+p.id+')"><i class="fas fa-trash"></i> Supprimer</button></td></tr>';
+}).join("");
+updateAdminStats();
+renderClients();
+var ordersEl=document.getElementById("admin-orders-list");
+if(commandes.length===0){
+ordersEl.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune commande pour le moment</p></div>';
+}else{
+ordersEl.innerHTML=commandes.slice().reverse().map(function(c){
+return '<div class="order-card"><div class="order-header"><span class="order-id">Commande #'+c.id+'</span><span class="order-status">'+c.statut+'</span></div>'+
+'<div style="font-size:14px;color:#6b7280;"><strong>'+c.clientNom+'</strong> - '+c.clientEmail+' - '+new Date(c.date).toLocaleDateString('fr-FR')+'</div>'+
+'<div style="font-weight:700;color:#CC1818;margin-top:6px;">'+c.total.toLocaleString('fr-FR')+' FCFA</div></div>';
+}).join("");
+}
+document.getElementById("company-name").value=siteConfig.companyName;
+document.getElementById("welcome-title-input").value=siteConfig.welcomeTitle;
+document.getElementById("welcome-text-input").value=siteConfig.welcomeText;
+document.getElementById("delivery-text").value=siteConfig.deliveryText;
+document.getElementById("site-phone").value=siteConfig.telephone;
+document.getElementById("site-phone2").value=siteConfig.telephone2||"";
+document.getElementById("site-whatsapp").value=siteConfig.whatsapp;
+document.getElementById("site-email").value=siteConfig.email;
+document.getElementById("site-address").value=siteConfig.adresse;
+document.getElementById("site-hours").value=siteConfig.horaires;
+document.getElementById("color-primary").value=siteConfig.colorPrimary;
+document.getElementById("color-secondary").value=siteConfig.colorSecondary;
 }
 
-function renderAllProducts(filtered = null) {
-  const container = document.getElementById("all-products");
-  if(!container) return;
-  const list = filtered || produits;
-  container.innerHTML = list.map(p => `
-    <div class="product-card">
-      <div class="product-img">${p.emoji}</div>
-      <div class="product-info">
-        <div class="product-name">${p.nom}</div>
-        <div class="product-price">${p.prix.toLocaleString()} FCFA</div>
-        <div class="product-stock ${p.stock <= 0 ? 'out' : ''}">?? Stock: ${p.stock}</div>
-        <button class="btn-cart" onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}><i class="fas fa-shopping-cart"></i> Ajouter</button>
-      </div>
-    </div>
-  `).join("");
+var cats=[...new Set(produits.map(function(p){return p.categorie;}))];
+document.getElementById("category-filter").innerHTML='<option value="">Toutes categories</option>'+cats.map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join("");
+
+document.getElementById("footer-grid").innerHTML=
+'<div class="footer-item"><i class="fas fa-phone"></i><div class="footer-item-text"><div>Telephone</div><div>'+siteConfig.telephone+(siteConfig.telephone2?' / '+siteConfig.telephone2:'')+'</div></div></div>'+
+'<div class="footer-item"><i class="fas fa-envelope"></i><div class="footer-item-text"><div>Email</div><div>'+siteConfig.email+'</div></div></div>'+
+'<div class="footer-item"><i class="fas fa-map-marker-alt"></i><div class="footer-item-text"><div>Adresse</div><div>'+siteConfig.adresse+'</div></div></div>'+
+'<div class="footer-item"><i class="fas fa-clock"></i><div class="footer-item-text"><div>Horaires</div><div>'+siteConfig.horaires+'</div></div></div>';
+document.getElementById("footer-bottom").innerHTML='&copy; '+new Date().getFullYear()+' '+siteConfig.companyName+' - '+siteConfig.deliveryText;
+
+renderCompte();
+applyColors();
 }
 
-function renderPromoProducts() {
-  const container = document.getElementById("promo-products");
-  if(container) {
-    const promos = produits.filter(p => p.promo);
-    container.innerHTML = promos.map(p => `
-      <div class="product-card">
-        <div class="product-img">${p.emoji}</div>
-        <div class="product-info">
-          <div class="product-name">${p.nom}</div>
-          <div class="product-price">${p.prix.toLocaleString()} FCFA</div>
-          <div class="product-stock">?? Stock: ${p.stock}</div>
-          <button class="btn-cart" onclick="addToCart(${p.id})"><i class="fas fa-shopping-cart"></i> Ajouter</button>
-        </div>
-      </div>
-    `).join("");
-  }
+function renderCart(){
+var container=document.getElementById("cart-items");
+if(panier.length===0){
+container.innerHTML='<div class="empty-state" style="padding:30px 0;"><i class="fas fa-shopping-cart"></i><p>Votre panier est vide</p></div>';
+document.getElementById("cart-total").textContent="0";return;
+}
+var total=0;
+container.innerHTML=panier.map(function(item){
+var prod=produits.find(function(p){return p.id===item.id;});
+if(!prod)return"";
+var sous=prod.prix*item.quantite;total+=sous;
+var imgEl=prod.photo?'<img src="'+prod.photo+'" class="cart-item-img" alt="'+prod.nom+'">'
+:'<div class="cart-item-img" style="background:#e0e2e7;display:flex;align-items:center;justify-content:center;"><i class="fas fa-image" style="color:#9ba3af;font-size:20px;"></i></div>';
+return '<div class="cart-item">'+imgEl+
+'<div class="cart-item-info"><div class="cart-item-name">'+prod.nom+'</div><div class="cart-item-price">'+sous.toLocaleString('fr-FR')+' FCFA</div></div>'+
+'<div class="cart-item-controls">'+
+'<button class="qty-btn" onclick="modifyQty('+item.id+',-1)">-</button>'+
+'<span class="qty-display">'+item.quantite+'</span>'+
+'<button class="qty-btn" onclick="modifyQty('+item.id+',1)">+</button>'+
+'<button class="remove-btn" onclick="removeFromCart('+item.id+')"><i class="fas fa-times"></i></button>'+
+'</div></div>';
+}).join("");
+document.getElementById("cart-total").textContent=total.toLocaleString('fr-FR');
 }
 
-function renderAdminProducts() {
-  const container = document.getElementById("admin-products-list");
-  if(!container) return;
-  container.innerHTML = produits.map(p => `
-    <tr>
-      <td>${p.nom}</td>
-      <td>${p.prix.toLocaleString()} FCFA</td>
-      <td>${p.categorie}</td>
-      <td>${p.stock}</td>
-      <td>
-        <button class="btn-small btn-edit" onclick="openEditModal(${p.id})">?? Modifier</button>
-        <button class="btn-small btn-delete" onclick="deleteProduct(${p.id})">??? Supprimer</button>
-      </td>
-    </tr>
-  `).join("");
+function addToCart(id){
+var prod=produits.find(function(p){return p.id===id;});
+if(!prod||prod.stock<=0)return showToast("Stock insuffisant !","error");
+var exist=panier.find(function(i){return i.id===id;});
+if(exist){if(prod.stock>exist.quantite)exist.quantite++;else return showToast("Stock maximum atteint","error");}
+else panier.push({id:id,quantite:1});
+saveData();updateAll();showToast("Produit ajoute au panier");
 }
 
-function renderCartModal() {
-  const container = document.getElementById("cart-items");
-  const totalSpan = document.getElementById("cart-total");
-  if(!container) return;
-  if(panier.length === 0) {
-    container.innerHTML = "<p style='text-align:center;padding:20px;'>Votre panier est vide</p>";
-    if(totalSpan) totalSpan.innerHTML = "0";
-    return;
-  }
-  let total = 0;
-  container.innerHTML = panier.map(item => {
-    const prod = produits.find(p => p.id === item.id);
-    const sousTotal = prod.prix * item.quantite;
-    total += sousTotal;
-    return `
-      <div class="cart-item">
-        <div><strong>${prod.nom}</strong><br>${prod.prix.toLocaleString()} FCFA x ${item.quantite}</div>
-        <div>
-          <button onclick="modifyQty(${item.id}, -1)">-</button>
-          <span style="margin:0 10px;">${item.quantite}</span>
-          <button onclick="modifyQty(${item.id}, 1)">+</button>
-          <button onclick="removeFromCart(${item.id})" style="background:#dc3545; color:white; border:none; padding:5px 10px;">X</button>
-        </div>
-      </div>
-    `;
-  }).join("");
-  if(totalSpan) totalSpan.innerHTML = total.toLocaleString();
+function modifyQty(id,delta){
+var item=panier.find(function(i){return i.id===id;});
+var prod=produits.find(function(p){return p.id===id;});
+if(!item)return;
+var newQty=item.quantite+delta;
+if(newQty<=0)panier=panier.filter(function(i){return i.id!==id;});
+else if(prod&&newQty<=prod.stock)item.quantite=newQty;
+else return showToast("Stock insuffisant !","error");
+saveData();updateAll();renderCart();
 }
 
-function renderAccountModal() {
-  const container = document.getElementById("account-content");
-  if(!container) return;
-  if(utilisateurConnecte) {
-    container.innerHTML = `
-      <div style="text-align:center;">
-        <i class="fas fa-user-circle" style="font-size:60px; color:var(--bleu);"></i>
-        <h3>${utilisateurConnecte.nom}</h3>
-        <p>?? ${utilisateurConnecte.email}</p>
-        <p>?? ${utilisateurConnecte.telephone || "Non renseigné"}</p>
-        <hr style="margin:15px 0;">
-        <h4>?? Historique</h4>
-        <div id="account-history"></div>
-        <button onclick="logout()" style="margin-top:15px; background:var(--rouge); color:white; border:none; padding:10px 20px; border-radius:5px;">Se déconnecter</button>
-      </div>
-    `;
-    const commandes = JSON.parse(localStorage.getItem("commandes_solidaire") || "[]");
-    const mesCommandes = commandes.filter(c => c.email === utilisateurConnecte.email);
-    const historyDiv = document.getElementById("account-history");
-    if(historyDiv) {
-      if(mesCommandes.length === 0) historyDiv.innerHTML = "<p>Aucune commande</p>";
-      else historyDiv.innerHTML = mesCommandes.map(c => `<div style="border-bottom:1px solid #ddd; padding:10px;">Commande #${c.id}<br>Total: ${c.total.toLocaleString()} FCFA<br>Statut: ${c.statut}</div>`).join("");
-    }
-  } else {
-    container.innerHTML = `
-      <h3>Connexion</h3>
-      <form id="login-form-modal">
-        <div class="form-group"><input type="email" id="login-email" placeholder="Email" required></div>
-        <div class="form-group"><input type="password" id="login-password" placeholder="Mot de passe" required></div>
-        <button type="submit" class="btn-cart" style="width:100%;">Se connecter</button>
-      </form>
-      <hr style="margin:15px 0;">
-      <h3>Inscription</h3>
-      <form id="register-form-modal">
-        <div class="form-group"><input type="text" id="reg-nom" placeholder="Nom complet" required></div>
-        <div class="form-group"><input type="email" id="reg-email" placeholder="Email" required></div>
-        <div class="form-group"><input type="tel" id="reg-tel" placeholder="Téléphone" required></div>
-        <div class="form-group"><input type="password" id="reg-password" placeholder="Mot de passe" required></div>
-        <button type="submit" class="btn-cart" style="width:100%;">S'inscrire</button>
-      </form>
-    `;
-    document.getElementById("login-form-modal")?.addEventListener("submit", handleLogin);
-    document.getElementById("register-form-modal")?.addEventListener("submit", handleRegister);
-  }
+function removeFromCart(id){
+panier=panier.filter(function(i){return i.id!==id;});
+saveData();updateAll();renderCart();
 }
 
-function updateCategoryFilters() {
-  const select = document.getElementById("filter-category");
-  const searchCat = document.getElementById("search-cat");
-  if(select) {
-    const categories = [...new Set(produits.map(p => p.categorie))];
-    select.innerHTML = '<option value="">Toutes catégories</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join("");
-  }
-  if(searchCat) {
-    const categories = [...new Set(produits.map(p => p.categorie))];
-    searchCat.innerHTML = '<option>Toutes catégories</option>' + categories.map(c => `<option>${c}</option>`).join("");
-  }
+function validateOrder(){
+if(panier.length===0)return showToast("Votre panier est vide","error");
+if(!utilisateurConnecte)return showToast("Connectez-vous pour commander","error");
+var total=0;var produitsCmd=[];
+for(var i=0;i<panier.length;i++){
+var item=panier[i];
+var prod=produits.find(function(p){return p.id===item.id;});
+if(!prod||prod.stock<item.quantite)return showToast("Stock insuffisant pour "+prod.nom,"error");
+prod.stock-=item.quantite;total+=prod.prix*item.quantite;
+produitsCmd.push({nom:prod.nom,quantite:item.quantite,prix:prod.prix});
+}
+commandes.push({id:Date.now(),clientNom:utilisateurConnecte.nom,clientEmail:utilisateurConnecte.email,produits:produitsCmd,total:total,date:new Date().toISOString(),statut:"En preparation"});
+panier=[];saveData();updateAll();closeModal("cart-modal");
+showToast("Commande validee avec succes !");
 }
 
-function filterProducts() {
-  let filtered = [...produits];
-  const search = document.getElementById("filter-search")?.value.toLowerCase() || "";
-  const category = document.getElementById("filter-category")?.value || "";
-  const min = parseInt(document.getElementById("filter-min")?.value) || 0;
-  const max = parseInt(document.getElementById("filter-max")?.value) || Infinity;
-  if(search) filtered = filtered.filter(p => p.nom.toLowerCase().includes(search));
-  if(category) filtered = filtered.filter(p => p.categorie === category);
-  filtered = filtered.filter(p => p.prix >= min && p.prix <= max);
-  renderAllProducts(filtered);
+function handleAddProduct(e){
+e.preventDefault();
+var photoInput=document.getElementById("prod-photo");
+readPhotoAsBase64(photoInput).then(function(photoData){
+produits.push({id:nextId++,nom:document.getElementById("prod-nom").value,prix:parseInt(document.getElementById("prod-prix").value),categorie:document.getElementById("prod-categorie").value,stock:parseInt(document.getElementById("prod-stock").value),photo:photoData});
+saveData();updateAll();e.target.reset();
+document.getElementById("add-preview").style.display="none";
+showToast("Produit ajoute avec succes !");
+});
 }
 
-// Actions
-function addToCart(productId) {
-  const prod = produits.find(p => p.id === productId);
-  if(!prod || prod.stock <= 0) return alert("Stock insuffisant !");
-  const exist = panier.find(item => item.id === productId);
-  if(exist) {
-    if(prod.stock > exist.quantite) exist.quantite++;
-    else return alert("Stock insuffisant !");
-  } else panier.push({ id: productId, quantite: 1 });
-  saveData();
-  updateAll();
-  const toast = document.getElementById("toast");
-  toast.style.display = "block";
-  setTimeout(() => toast.style.display = "none", 2000);
+function openEdit(id){
+var prod=produits.find(function(p){return p.id===id;});if(!prod)return;
+document.getElementById("edit-id").value=prod.id;
+document.getElementById("edit-nom").value=prod.nom;
+document.getElementById("edit-prix").value=prod.prix;
+document.getElementById("edit-categorie").value=prod.categorie;
+document.getElementById("edit-stock").value=prod.stock;
+var prev=document.getElementById("edit-preview");
+if(prod.photo){prev.src=prod.photo;prev.style.display="block";}else prev.style.display="none";
+document.getElementById("edit-photo").value="";
+openModal("edit-modal");
 }
 
-function modifyQty(productId, delta) {
-  const item = panier.find(i => i.id === productId);
-  const prod = produits.find(p => p.id === productId);
-  if(item) {
-    const newQty = item.quantite + delta;
-    if(newQty <= 0) panier = panier.filter(i => i.id !== productId);
-    else if(prod && newQty <= prod.stock) item.quantite = newQty;
-    else alert("Stock insuffisant !");
-    saveData();
-    updateAll();
-  }
+function handleEditProduct(e){
+e.preventDefault();
+var id=parseInt(document.getElementById("edit-id").value);
+var prod=produits.find(function(p){return p.id===id;});if(!prod)return;
+prod.nom=document.getElementById("edit-nom").value;
+prod.prix=parseInt(document.getElementById("edit-prix").value);
+prod.categorie=document.getElementById("edit-categorie").value;
+prod.stock=parseInt(document.getElementById("edit-stock").value);
+readPhotoAsBase64(document.getElementById("edit-photo")).then(function(newPhoto){
+if(newPhoto)prod.photo=newPhoto;
+saveData();updateAll();closeModal("edit-modal");showToast("Produit modifie !");
+});
 }
 
-function removeFromCart(productId) {
-  panier = panier.filter(i => i.id !== productId);
-  saveData();
-  updateAll();
+function deleteProduct(id){
+if(!confirm("Supprimer ce produit ?"))return;
+produits=produits.filter(function(p){return p.id!==id;});
+saveData();updateAll();showToast("Produit supprime");
 }
 
-function openEditModal(id) {
-  const prod = produits.find(p => p.id === id);
-  if(!prod) return;
-  document.getElementById("edit-id").value = prod.id;
-  document.getElementById("edit-nom").value = prod.nom;
-  document.getElementById("edit-prix").value = prod.prix;
-  document.getElementById("edit-categorie").value = prod.categorie;
-  document.getElementById("edit-stock").value = prod.stock;
-  document.getElementById("edit-emoji").value = prod.emoji;
-  document.getElementById("edit-promo").checked = prod.promo;
-  document.getElementById("edit-price-modal").style.display = "flex";
+function filterProducts(){
+var search=document.getElementById("search-input").value.toLowerCase();
+var cat=document.getElementById("category-filter").value;
+var filtered=produits;
+if(search)filtered=filtered.filter(function(p){return p.nom.toLowerCase().indexOf(search)>-1||p.categorie.toLowerCase().indexOf(search)>-1;});
+if(cat)filtered=filtered.filter(function(p){return p.categorie===cat;});
+document.getElementById("all-products").innerHTML=filtered.length?filtered.map(renderProductCard).join("")
+:'<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-search"></i><p>Aucun produit trouve</p></div>';
 }
 
-function deleteProduct(id) {
-  if(confirm("Supprimer ce produit ?")) {
-    produits = produits.filter(p => p.id !== id);
-    saveData();
-    updateAll();
-  }
+document.getElementById("devis-form").addEventListener("submit",function(e){
+e.preventDefault();
+var texte="DEMANDE DE DEVIS - LE SOLIDAIRE SARL\n\n"+
+"Nom : "+document.getElementById("devis-nom").value+"\n"+
+"Telephone : "+document.getElementById("devis-tel").value+"\n"+
+"Localite : "+document.getElementById("devis-ville").value+"\n\n"+
+"Produits souhaites :\n"+document.getElementById("devis-produits").value+"\n\n"+
+(document.getElementById("devis-message").value?"Message : "+document.getElementById("devis-message").value+"\n\n":"")+
+"Envoye depuis le site LE SOLIDAIRE SARL";
+window.open("https://wa.me/"+siteConfig.whatsapp+"?text="+encodeURIComponent(texte),"_blank");
+showToast("Redirection vers WhatsApp...");e.target.reset();
+});
+
+function renderCompte(){
+var container=document.getElementById("compte-content");
+if(utilisateurConnecte){
+container.innerHTML='<div class="compte-card">'+
+'<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">'+
+'<div style="width:64px;height:64px;border-radius:50%;background:#0D2B6B;display:flex;align-items:center;justify-content:center;color:white;font-size:26px;font-weight:800;">'+utilisateurConnecte.nom.charAt(0).toUpperCase()+'</div>'+
+'<div><div style="font-size:20px;font-weight:700;">'+utilisateurConnecte.nom+'</div><div style="color:#6b7280;font-size:14px;">'+utilisateurConnecte.email+'</div></div></div>'+
+'<p style="margin-bottom:8px;font-size:14px;"><i class="fas fa-phone" style="color:#0D2B6B;margin-right:8px;"></i>'+(utilisateurConnecte.telephone||"Non renseigne")+'</p>'+
+'<button class="btn-submit rouge" onclick="logout()" style="margin-top:16px;"><i class="fas fa-sign-out-alt"></i> Se deconnecter</button></div>';
+}else{
+container.innerHTML='<div class="auth-grid">'+
+'<div class="compte-card"><div class="admin-panel-title"><i class="fas fa-sign-in-alt"></i> Connexion</div>'+
+'<form id="login-form">'+
+'<div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="votre@email.com" required></div>'+
+'<div class="form-group"><label>Mot de passe</label><input type="password" id="login-password" placeholder="Mot de passe" required></div>'+
+'<button type="submit" class="btn-submit" style="width:100%;justify-content:center;"><i class="fas fa-sign-in-alt"></i> Se connecter</button></form></div>'+
+'<div class="compte-card"><div class="admin-panel-title"><i class="fas fa-user-plus"></i> Inscription</div>'+
+'<form id="register-form">'+
+'<div class="form-group"><label>Nom complet</label><input type="text" id="reg-nom" placeholder="Votre nom" required></div>'+
+'<div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="votre@email.com" required></div>'+
+'<div class="form-group"><label>Telephone</label><input type="tel" id="reg-tel" placeholder="+225 07 XX XX XX"></div>'+
+'<div class="form-group"><label>Mot de passe</label><input type="password" id="reg-password" placeholder="Mot de passe" required></div>'+
+'<button type="submit" class="btn-submit" style="width:100%;justify-content:center;"><i class="fas fa-user-plus"></i> S\'inscrire</button></form></div></div>';
+document.getElementById("login-form").addEventListener("submit",handleLogin);
+document.getElementById("register-form").addEventListener("submit",handleRegister);
+}
 }
 
-function handleLogin(e) {
-  e.preventDefault();
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
-  const user = utilisateurs.find(u => u.email === email && u.password === password);
-  if(user) {
-    utilisateurConnecte = user;
-    saveData();
-    updateAll();
-    alert("Connexion réussie !");
-    document.getElementById("account-modal").style.display = "none";
-  } else alert("Email ou mot de passe incorrect");
+function handleLogin(e){
+e.preventDefault();
+var email=document.getElementById("login-email").value;
+var pwd=document.getElementById("login-password").value;
+var user=utilisateurs.find(function(u){return u.email===email&&u.password===pwd;});
+if(user){utilisateurConnecte=user;saveData();updateAll();showToast("Bienvenue "+user.nom+" !");}
+else showToast("Email ou mot de passe incorrect","error");
 }
 
-function handleRegister(e) {
-  e.preventDefault();
-  const nom = document.getElementById("reg-nom").value;
-  const email = document.getElementById("reg-email").value;
-  const telephone = document.getElementById("reg-tel").value;
-  const password = document.getElementById("reg-password").value;
-  if(utilisateurs.find(u => u.email === email)) return alert("Cet email est déjà utilisé");
-  const newUser = { id: Date.now(), nom, email, telephone, password };
-  utilisateurs.push(newUser);
-  utilisateurConnecte = newUser;
-  saveData();
-  updateAll();
-  alert("Inscription réussie !");
-  document.getElementById("account-modal").style.display = "none";
+function handleRegister(e){
+e.preventDefault();
+var email=document.getElementById("reg-email").value;
+if(utilisateurs.find(function(u){return u.email===email;}))return showToast("Cet email est deja utilise","error");
+var newUser={id:Date.now(),nom:document.getElementById("reg-nom").value,email:email,telephone:document.getElementById("reg-tel").value,password:document.getElementById("reg-password").value};
+utilisateurs.push(newUser);utilisateurConnecte=newUser;saveData();updateAll();
+showToast("Inscription reussie ! Bienvenue "+newUser.nom);
 }
 
-function logout() {
-  utilisateurConnecte = null;
-  saveData();
-  updateAll();
-  alert("Déconnecté");
-  document.getElementById("account-modal").style.display = "none";
+function logout(){utilisateurConnecte=null;saveData();updateAll();showToast("Vous etes deconnecte");}
+
+function openModal(id){document.getElementById(id).classList.add("open");}
+function closeModal(id){document.getElementById(id).classList.remove("open");}
+
+function applyColors(){
+document.documentElement.style.setProperty('--rouge',siteConfig.colorPrimary);
+document.documentElement.style.setProperty('--bleu',siteConfig.colorSecondary);
 }
 
-function validateOrder() {
-  if(panier.length === 0) return alert("Votre panier est vide");
-  if(!utilisateurConnecte) return alert("Veuillez vous connecter");
-  let total = 0;
-  const commandeProduits = panier.map(item => {
-    const prod = produits.find(p => p.id === item.id);
-    total += prod.prix * item.quantite;
-    return { id: prod.id, nom: prod.nom, quantite: item.quantite, prix: prod.prix };
-  });
-  for(let item of panier) {
-    const prod = produits.find(p => p.id === item.id);
-    if(prod.stock < item.quantite) return alert(`Stock insuffisant pour ${prod.nom}`);
-    prod.stock -= item.quantite;
-  }
-  const commandes = JSON.parse(localStorage.getItem("commandes_solidaire") || "[]");
-  commandes.push({
-    id: Date.now(),
-    email: utilisateurConnecte.email,
-    produits: commandeProduits,
-    total: total,
-    date: new Date().toISOString(),
-    statut: "En préparation"
-  });
-  localStorage.setItem("commandes_solidaire", JSON.stringify(commandes));
-  panier = [];
-  saveData();
-  updateAll();
-  document.getElementById("cart-modal").style.display = "none";
-  alert("? Commande validée ! Vous recevrez un appel de confirmation.");
+function showToast(msg,type){
+var t=document.getElementById("toast");
+t.textContent=msg;
+t.style.background=type==="error"?"#c62828":"#1e7e34";
+t.style.display="block";
+setTimeout(function(){t.style.display="none";},2800);
 }
 
-function openWhatsApp() {
-  window.open(`https://wa.me/${siteSettings.whatsapp}`, "_blank");
+function navigate(page){
+document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+var el=document.getElementById(page);if(el)el.classList.add("active");
+document.querySelectorAll(".nav-link").forEach(function(l){l.classList.remove("active");});
+var nl=document.querySelector('.nav-link[data-page="'+page+'"]');if(nl)nl.classList.add("active");
+if(page==="admin"){
+if(!adminUnlocked){document.getElementById("admin-lock").style.display="flex";document.getElementById("admin-real-content").style.display="none";}
+}
 }
 
-// Initialisation
-function init() {
-  loadData();
-  updateAll();
-  
-  // Remplir formulaire paramètres
-  document.getElementById("site-phone").value = siteSettings.telephone;
-  document.getElementById("site-email").value = siteSettings.email;
-  document.getElementById("site-address").value = siteSettings.adresse;
-  document.getElementById("site-whatsapp").value = siteSettings.whatsapp;
-  
-  // Navigation
-  document.querySelectorAll(".nav-link").forEach(link => {
-    link.addEventListener("click", () => {
-      const page = link.dataset.page;
-      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-      document.getElementById(page).classList.add("active");
-      document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-      link.classList.add("active");
-      
-      if(page === "admin") {
-        const pwd = prompt("Mot de passe admin:");
-        if(pwd === "admin123") {
-          document.getElementById("admin-link").style.display = "block";
-        } else {
-          alert("Accès refusé");
-          document.getElementById("accueil").classList.add("active");
-          document.getElementById("admin").classList.remove("active");
-        }
-      }
-    });
-  });
-  
-  document.querySelectorAll("[data-page]").forEach(el => {
-    el.addEventListener("click", () => {
-      const page = el.dataset.page;
-      document.querySelector(`.nav-link[data-page="${page}"]`).click();
-    });
-  });
-  
-  document.getElementById("cart-btn")?.addEventListener("click", () => {
-    document.getElementById("cart-modal").style.display = "flex";
-    renderCartModal();
-  });
-  
-  document.getElementById("account-btn")?.addEventListener("click", () => {
-    document.getElementById("account-modal").style.display = "flex";
-    renderAccountModal();
-  });
-  
-  document.querySelectorAll(".close-modal").forEach(btn => {
-    btn?.addEventListener("click", () => {
-      document.getElementById("cart-modal").style.display = "none";
-      document.getElementById("account-modal").style.display = "none";
-      document.getElementById("edit-price-modal").style.display = "none";
-    });
-  });
-  
-  document.getElementById("validate-order")?.addEventListener("click", validateOrder);
-  document.getElementById("apply-filters")?.addEventListener("click", filterProducts);
-  document.getElementById("filter-search")?.addEventListener("keyup", filterProducts);
-  
-  // Recherche globale
-  document.getElementById("search-btn")?.addEventListener("click", () => {
-    const term = document.getElementById("search-input").value.toLowerCase();
-    const filtered = produits.filter(p => p.nom.toLowerCase().includes(term));
-    document.querySelector('.nav-link[data-page="produits"]').click();
-    renderAllProducts(filtered);
-  });
-  
-  // Ajout produit
-  document.getElementById("add-product-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    produits.push({
-      id: nextId++,
-      nom: document.getElementById("prod-nom").value,
-      prix: parseInt(document.getElementById("prod-prix").value),
-      categorie: document.getElementById("prod-categorie").value,
-      stock: parseInt(document.getElementById("prod-stock").value),
-      emoji: document.getElementById("prod-emoji").value || "??",
-      promo: document.getElementById("prod-promo").checked
-    });
-    saveData();
-    updateAll();
-    e.target.reset();
-    alert("Produit ajouté !");
-  });
-  
-  // Modification produit
-  document.getElementById("edit-product-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const id = parseInt(document.getElementById("edit-id").value);
-    const prod = produits.find(p => p.id === id);
-    if(prod) {
-      prod.nom = document.getElementById("edit-nom").value;
-      prod.prix = parseInt(document.getElementById("edit-prix").value);
-      prod.categorie = document.getElementById("edit-categorie").value;
-      prod.stock = parseInt(document.getElementById("edit-stock").value);
-      prod.emoji = document.getElementById("edit-emoji").value;
-      prod.promo = document.getElementById("edit-promo").checked;
-      saveData();
-      updateAll();
-      document.getElementById("edit-price-modal").style.display = "none";
-      alert("Produit modifié !");
-    }
-  });
-  
-  // Paramètres site
-  document.getElementById("settings-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    siteSettings.telephone = document.getElementById("site-phone").value;
-    siteSettings.email = document.getElementById("site-email").value;
-    siteSettings.adresse = document.getElementById("site-address").value;
-    siteSettings.whatsapp = document.getElementById("site-whatsapp").value;
-    saveData();
-    updateAll();
-    alert("Paramètres enregistrés !");
-  });
-  
-  // Formulaires devis et contact
-  document.getElementById("devis-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    document.getElementById("devis-success").style.display = "block";
-    setTimeout(() => document.getElementById("devis-success").style.display = "none", 3000);
-    e.target.reset();
-  });
-  
-  document.getElementById("contact-form")?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    document.getElementById("contact-success").style.display = "block";
-    setTimeout(() => document.getElementById("contact-success").style.display = "none", 3000);
-    e.target.reset();
-  });
-  
-  window.onclick = (e) => {
-    if(e.target.classList.contains("modal")) e.target.style.display = "none";
-  };
+function goHome(){navigate("accueil");}
+
+function initNav(){
+document.querySelectorAll(".nav-link").forEach(function(link){
+link.addEventListener("click",function(){var page=link.dataset.page;if(page)navigate(page);});
+});
+document.getElementById("cart-btn").addEventListener("click",function(){renderCart();openModal("cart-modal");});
+document.querySelectorAll(".close-modal").forEach(function(btn){btn.addEventListener("click",function(){closeModal(btn.dataset.modal);});});
+document.querySelectorAll(".modal").forEach(function(modal){modal.addEventListener("click",function(e){if(e.target===modal)closeModal(modal.id);});});
+document.getElementById("validate-order").addEventListener("click",validateOrder);
+document.getElementById("apply-filter").addEventListener("click",filterProducts);
+document.getElementById("search-input").addEventListener("keyup",filterProducts);
+document.getElementById("add-product-form").addEventListener("submit",handleAddProduct);
+document.getElementById("edit-form").addEventListener("submit",handleEditProduct);
+
+document.getElementById("general-settings-form").addEventListener("submit",function(e){
+e.preventDefault();
+siteConfig.companyName=document.getElementById("company-name").value;
+siteConfig.welcomeTitle=document.getElementById("welcome-title-input").value;
+siteConfig.welcomeText=document.getElementById("welcome-text-input").value;
+siteConfig.deliveryText=document.getElementById("delivery-text").value;
+saveData();updateAll();showToast("Parametres enregistres !");
+});
+document.getElementById("contact-settings-form").addEventListener("submit",function(e){
+e.preventDefault();
+siteConfig.telephone=document.getElementById("site-phone").value;
+siteConfig.telephone2=document.getElementById("site-phone2").value;
+siteConfig.whatsapp=document.getElementById("site-whatsapp").value;
+siteConfig.email=document.getElementById("site-email").value;
+siteConfig.adresse=document.getElementById("site-address").value;
+siteConfig.horaires=document.getElementById("site-hours").value;
+saveData();updateAll();showToast("Coordonnees enregistrees !");
+});
+document.getElementById("colors-settings-form").addEventListener("submit",function(e){
+e.preventDefault();
+siteConfig.colorPrimary=document.getElementById("color-primary").value;
+siteConfig.colorSecondary=document.getElementById("color-secondary").value;
+saveData();applyColors();showToast("Couleurs appliquees !");
+});
+document.getElementById("change-password-form").addEventListener("submit",function(e){
+e.preventDefault();
+var oldPwd=document.getElementById("old-password").value;
+var newPwd=document.getElementById("new-password").value;
+var confPwd=document.getElementById("confirm-password").value;
+if(oldPwd!==siteConfig.adminPassword)return showToast("Mot de passe actuel incorrect","error");
+if(newPwd.length<6)return showToast("Minimum 6 caracteres","error");
+if(newPwd!==confPwd)return showToast("Les mots de passe ne correspondent pas","error");
+siteConfig.adminPassword=newPwd;saveData();e.target.reset();showToast("Mot de passe modifie !");
+});
+document.querySelectorAll(".admin-tab").forEach(function(tab){
+tab.addEventListener("click",function(){
+document.querySelectorAll(".admin-tab").forEach(function(t){t.classList.remove("active");});
+document.querySelectorAll(".admin-section").forEach(function(s){s.classList.remove("active");});
+tab.classList.add("active");
+var sec=document.getElementById(tab.dataset.tab);if(sec)sec.classList.add("active");
+});
+});
+document.querySelectorAll(".photo-upload-zone").forEach(function(zone){
+zone.addEventListener("dragover",function(e){e.preventDefault();zone.classList.add("dragover");});
+zone.addEventListener("dragleave",function(){zone.classList.remove("dragover");});
+zone.addEventListener("drop",function(e){e.preventDefault();zone.classList.remove("dragover");});
+});
 }
 
-init();
-</script>
-
-<footer>
-  <div class="footer-grid">
-    <div class="footer-col">
-      <div style="background:var(--rouge); border-radius:8px; padding:18px;">
-        <strong>BESOIN D'UN DEVIS ?</strong>
-        <p style="margin-top:10px;">Remplissez notre formulaire et recevez une réponse rapide.</p>
-        <div class="btn-devis" data-page="devis">DEMANDER UN DEVIS</div>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Contactez-nous</h4>
-      <div class="contact-item"><i class="fas fa-phone"></i><span id="footer-phone">07 57 19 67 24</span></div>
-      <div class="contact-item"><i class="fas fa-envelope"></i><span id="footer-email">comptabilitesolidaire@gmail.com</span></div>
-    </div>
-    <div class="footer-col">
-      <h4>Visitez-nous</h4>
-      <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="footer-address">Abidjan, Yopougon</span></div>
-    </div>
-    <div class="footer-col">
-      <h4>Suivez-nous</h4>
-      <div class="socials-footer">
-        <a><i class="fab fa-facebook-f"></i></a>
-        <a><i class="fab fa-instagram"></i></a>
-        <a><i class="fab fa-whatsapp"></i></a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    &copy; 2025 LE SOLIDAIRE SARL – Tous droits réservés
-  </div>
-</footer>
-
-<script>
-// Mise à jour footer
-function updateFooterInfo() {
-  const footerPhone = document.getElementById("footer-phone");
-  const footerEmail = document.getElementById("footer-email");
-  const footerAddress = document.getElementById("footer-address");
-  if(footerPhone) footerPhone.innerHTML = siteSettings.telephone;
-  if(footerEmail) footerEmail.innerHTML = siteSettings.email;
-  if(footerAddress) footerAddress.innerHTML = siteSettings.adresse;
-}
-setTimeout(updateFooterInfo, 100);
+loadData();
+initNav();
+updateAll();
 </script>
 </body>
 </html>
