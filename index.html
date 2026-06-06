@@ -336,8 +336,129 @@ body{font-family:'Barlow','Segoe UI',Arial,sans-serif;background:#f2f3f5;color:#
 }
 </style>
 
+<!-- FIREBASE REALTIME DATABASE - Synchronisation temps reel -->
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAYuW1paoh7x1DICOiJMLd5kRICipFaptE",
+authDomain: "lesolidaire-sarl.firebaseapp.com",
+databaseURL: "https://lesolidaire-sarl-default-rtdb.europe-west1.firebasedatabase.app",
+projectId: "lesolidaire-sarl",
+storageBucket: "lesolidaire-sarl.firebasestorage.app",
+messagingSenderId: "827784328782",
+appId: "1:827784328782:web:72a88f2c0ae12628b2b51f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ============================================================
+// SYNCHRONISATION FIREBASE - Remplace localStorage
+// ============================================================
+
+// Sauvegarder toutes les donnees sur Firebase
+window.saveToFirebase = function() {
+try {
+set(ref(db, 'lesolidaire/produits'), window.produits || []);
+set(ref(db, 'lesolidaire/siteConfig'), window.siteConfig || {});
+set(ref(db, 'lesolidaire/utilisateurs'), window.utilisateurs || []);
+set(ref(db, 'lesolidaire/commandes'), window.commandes || []);
+set(ref(db, 'lesolidaire/realisations'), window.realisations || []);
+set(ref(db, 'lesolidaire/favoris'), window.favoris || []);
+// Aussi sauvegarder en local pour offline
+localStorage.setItem("ls_produits", JSON.stringify(window.produits || []));
+localStorage.setItem("ls_config", JSON.stringify(window.siteConfig || {}));
+localStorage.setItem("ls_users", JSON.stringify(window.utilisateurs || []));
+localStorage.setItem("ls_commandes", JSON.stringify(window.commandes || []));
+localStorage.setItem("ls_realisations", JSON.stringify(window.realisations || []));
+localStorage.setItem("ls_favoris", JSON.stringify(window.favoris || []));
+} catch(e) {
+console.log("Erreur sauvegarde Firebase:", e);
+}
+};
+
+// Charger les donnees depuis Firebase au demarrage
+window.loadFromFirebase = function() {
+// Indicateur de chargement
+document.getElementById("loading-overlay").style.display = "flex";
+
+get(ref(db, 'lesolidaire')).then(function(snapshot) {
+if (snapshot.exists()) {
+var data = snapshot.val();
+if (data.produits && Array.isArray(data.produits)) {
+window.produits = data.produits;
+window.produits.forEach(function(p){ if(!p.avis)p.avis=[]; if(p.prixOriginal===undefined)p.prixOriginal=null; });
+if(window.produits.length > 0)
+window.nextId = Math.max.apply(Math, window.produits.map(function(p){ return p.id; })) + 1;
+}
+if (data.siteConfig) window.siteConfig = Object.assign(window.siteConfig, data.siteConfig);
+if (data.utilisateurs && Array.isArray(data.utilisateurs)) window.utilisateurs = data.utilisateurs;
+if (data.commandes && Array.isArray(data.commandes)) window.commandes = data.commandes;
+if (data.realisations && Array.isArray(data.realisations)) window.realisations = data.realisations;
+if (data.favoris && Array.isArray(data.favoris)) window.favoris = data.favoris;
+console.log("Donnees chargees depuis Firebase");
+} else {
+console.log("Aucune donnee Firebase, utilisation des donnees locales");
+}
+document.getElementById("loading-overlay").style.display = "none";
+if(window.updateAll) window.updateAll();
+if(window.updateTicker) window.updateTicker();
+}).catch(function(e) {
+console.log("Erreur lecture Firebase:", e);
+document.getElementById("loading-overlay").style.display = "none";
+if(window.updateAll) window.updateAll();
+});
+};
+
+// Ecouter les changements en temps reel (mise a jour automatique pour tous les utilisateurs)
+onValue(ref(db, 'lesolidaire'), function(snapshot) {
+if (snapshot.exists()) {
+var data = snapshot.val();
+var needUpdate = false;
+
+if (data.produits && Array.isArray(data.produits)) {
+window.produits = data.produits;
+window.produits.forEach(function(p){ if(!p.avis)p.avis=[]; if(p.prixOriginal===undefined)p.prixOriginal=null; });
+if(window.produits.length > 0)
+window.nextId = Math.max.apply(Math, window.produits.map(function(p){ return p.id; })) + 1;
+needUpdate = true;
+}
+if (data.siteConfig) { window.siteConfig = Object.assign(window.siteConfig || {}, data.siteConfig); needUpdate = true; }
+if (data.utilisateurs && Array.isArray(data.utilisateurs)) { window.utilisateurs = data.utilisateurs; needUpdate = true; }
+if (data.commandes && Array.isArray(data.commandes)) { window.commandes = data.commandes; needUpdate = true; }
+if (data.realisations && Array.isArray(data.realisations)) { window.realisations = data.realisations; needUpdate = true; }
+if (data.favoris && Array.isArray(data.favoris)) { window.favoris = data.favoris; needUpdate = true; }
+
+if (needUpdate && window.updateAll) {
+window.updateAll();
+window.applyColors && window.applyColors();
+window.updateTicker && window.updateTicker();
+}
+}
+});
+
+// Demarrage : charger Firebase apres que la page soit prete
+document.addEventListener("DOMContentLoaded", function() {
+setTimeout(function() {
+window.loadFromFirebase();
+}, 500);
+});
+
+console.log("Firebase LE SOLIDAIRE SARL initialise avec succes");
+</script>
+
 </head>
 <body>
+<!-- OVERLAY CHARGEMENT -->
+<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(13,43,107,0.92);z-index:9999;flex-direction:column;align-items:center;justify-content:center;color:white;">
+<div style="width:60px;height:60px;border:4px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;"></div>
+<div style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;">Chargement en cours...</div>
+<div style="font-size:13px;opacity:0.7;margin-top:6px;">Synchronisation avec la base de donnees</div>
+<style>@keyframes spin{to{transform:rotate(360deg);}}</style>
+</div>
 
 <!-- BANNIERE DEFILANTE -->
 
@@ -814,6 +935,15 @@ LE <span class="r">S</span><span class="s">O</span>LIDAIRE <span class="r">SARL<
 // ============================================================
 // DONNEES
 // ============================================================
+// Variables globales exposees pour Firebase
+window.produits = window.produits || [];
+window.siteConfig = window.siteConfig || {};
+window.utilisateurs = window.utilisateurs || [];
+window.panier = window.panier || [];
+window.commandes = window.commandes || [];
+window.realisations = window.realisations || [];
+window.favoris = window.favoris || [];
+
 var produits=[
 {id:1,nom:"Ciment CIMAF 50kg",prix:4200,categorie:"Ciment",stock:50,photo:null,prixOriginal:null,avis:[]},
 {id:2,nom:"Fer a beton 12mm",prix:6500,categorie:"Fer",stock:30,photo:null,prixOriginal:null,avis:[]},
@@ -845,6 +975,13 @@ var noteSelectionnee=0;
 // STORAGE
 // ============================================================
 function loadData(){
+// Synchroniser avec window pour Firebase
+produits = window.produits.length > 0 ? window.produits : produits;
+siteConfig = Object.keys(window.siteConfig).length > 0 ? window.siteConfig : siteConfig;
+utilisateurs = window.utilisateurs.length > 0 ? window.utilisateurs : utilisateurs;
+commandes = window.commandes.length > 0 ? window.commandes : commandes;
+realisations = window.realisations.length > 0 ? window.realisations : realisations;
+favoris = window.favoris.length > 0 ? window.favoris : favoris;
 try{
 var sp=localStorage.getItem("ls_produits");if(sp)produits=JSON.parse(sp);
 var sc=localStorage.getItem("ls_config");if(sc)siteConfig=JSON.parse(sc);
@@ -861,6 +998,13 @@ document.documentElement.style.setProperty('--bleu',siteConfig.colorSecondary);
 }catch(e){}
 }
 function saveData(){
+// Synchroniser avec window pour Firebase
+window.produits = produits;
+window.siteConfig = siteConfig;
+window.utilisateurs = utilisateurs;
+window.commandes = commandes;
+window.realisations = realisations;
+window.favoris = favoris;
 try{
 localStorage.setItem("ls_produits",JSON.stringify(produits));
 localStorage.setItem("ls_config",JSON.stringify(siteConfig));
@@ -905,7 +1049,7 @@ document.getElementById("admin-password-input").addEventListener("keyup",functio
 // GRAPHIQUES DASHBOARD
 // ============================================================
 var chartCA=null,chartStatuts=null;
-function renderCharts(){
+window.renderCharts = function renderCharts(){
 // Graphique CA 6 mois
 var mois=["Janv","Fevr","Mars","Avri","Mai","Juin","Juil","Aout","Sept","Oct","Nov","Dec"];
 var now=new Date();var labels=[],data=[];
@@ -1032,7 +1176,7 @@ if(!prod.avis)prod.avis=[];
 var dejaNote=prod.avis.find(function(a){return a.clientId===utilisateurConnecte.id;});
 if(dejaNote){showToast("Vous avez deja note ce produit","error");return;}
 prod.avis.push({clientId:utilisateurConnecte.id,clientNom:utilisateurConnecte.nom,note:noteSelectionnee,commentaire:commentaire,date:new Date().toISOString()});
-saveData();updateAll();closeModal("note-modal");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();closeModal("note-modal");
 showToast("Merci pour votre avis !");
 }
 
@@ -1045,7 +1189,7 @@ var key=utilisateurConnecte.id+"_"+prodId;
 var idx=favoris.indexOf(key);
 if(idx>-1){favoris.splice(idx,1);showToast("Retire des favoris");}
 else{favoris.push(key);showToast("Ajoute aux favoris !");}
-saveData();updateAll();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();
 }
 function estFavori(prodId){
 if(!utilisateurConnecte)return false;
@@ -1145,7 +1289,7 @@ return '<div class="promo-card">'+
 function supprimerRealisation(i){
 if(!confirm("Supprimer cette realisation ?"))return;
 realisations.splice(i,1);
-saveData();updateAll();renderRealisations();renderAdminRealisations();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();renderRealisations();renderAdminRealisations();
 showToast("Realisation supprimee");
 }
 
@@ -1176,13 +1320,13 @@ return '<div class="promo-card">'+
 
 function supprimerPromo(id){
 var p=produits.find(function(x){return x.id===id;});
-if(p&&p.prixOriginal){p.prix=p.prixOriginal;p.prixOriginal=null;saveData();updateAll();showToast("Promotion retiree");}
+if(p&&p.prixOriginal){p.prix=p.prixOriginal;p.prixOriginal=null;saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Promotion retiree");}
 }
 
 // ============================================================
 // MISE A JOUR GENERALE
 // ============================================================
-function updateAll(){
+window.updateAll = function updateAll(){
 var count=panier.reduce(function(s,i){return s+i.quantite;},0);
 document.getElementById("cart-count").textContent=count;
 document.getElementById("welcome-title").textContent=siteConfig.welcomeTitle;
@@ -1293,7 +1437,7 @@ if(!prod||prod.stock<=0)return showToast("Stock insuffisant !","error");
 var exist=panier.find(function(i){return i.id===id;});
 if(exist){if(prod.stock>exist.quantite)exist.quantite++;else return showToast("Stock maximum atteint","error");}
 else panier.push({id:id,quantite:1});
-saveData();updateAll();showToast("Produit ajoute au panier");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Produit ajoute au panier");
 }
 function modifyQty(id,delta){
 var item=panier.find(function(i){return i.id===id;});
@@ -1302,11 +1446,11 @@ var newQty=item.quantite+delta;
 if(newQty<=0)panier=panier.filter(function(i){return i.id!==id;});
 else if(prod&&newQty<=prod.stock)item.quantite=newQty;
 else return showToast("Stock insuffisant !","error");
-saveData();updateAll();renderCart();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();renderCart();
 }
 function removeFromCart(id){
 panier=panier.filter(function(i){return i.id!==id;});
-saveData();updateAll();renderCart();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();renderCart();
 }
 function validateOrder(){
 if(panier.length===0)return showToast("Votre panier est vide","error");
@@ -1321,7 +1465,7 @@ produitsCmd.push({nom:prod.nom,quantite:item.quantite,prix:prod.prix});
 }
 var cmd={id:Date.now(),clientId:utilisateurConnecte.id,clientNom:utilisateurConnecte.nom,clientEmail:utilisateurConnecte.email,produits:produitsCmd,total:total,date:new Date().toISOString(),statut:"En preparation"};
 commandes.push(cmd);
-panier=[];saveData();updateAll();closeModal("cart-modal");
+panier=[];saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();closeModal("cart-modal");
 showToast("Commande validee ! Vous recevrez une confirmation.");
 notifierAdminWhatsApp(cmd);
 }
@@ -1333,7 +1477,7 @@ function handleAddProduct(e){
 e.preventDefault();
 readPhotoAsBase64(document.getElementById("prod-photo")).then(function(photoData){
 produits.push({id:nextId++,nom:document.getElementById("prod-nom").value,prix:parseInt(document.getElementById("prod-prix").value),categorie:document.getElementById("prod-categorie").value,stock:parseInt(document.getElementById("prod-stock").value),photo:photoData,prixOriginal:null,avis:[]});
-saveData();updateAll();e.target.reset();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();e.target.reset();
 document.getElementById("add-preview").style.display="none";
 showToast("Produit ajoute !");
 });
@@ -1360,13 +1504,13 @@ prod.categorie=document.getElementById("edit-categorie").value;
 prod.stock=parseInt(document.getElementById("edit-stock").value);
 readPhotoAsBase64(document.getElementById("edit-photo")).then(function(newPhoto){
 if(newPhoto)prod.photo=newPhoto;
-saveData();updateAll();closeModal("edit-modal");showToast("Produit modifie !");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();closeModal("edit-modal");showToast("Produit modifie !");
 });
 }
 function deleteProduct(id){
 if(!confirm("Supprimer ce produit ?"))return;
 produits=produits.filter(function(p){return p.id!==id;});
-saveData();updateAll();showToast("Produit supprime");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Produit supprime");
 }
 
 // ============================================================
@@ -1415,7 +1559,7 @@ return '<span class="statut-badge '+cls+'"><i class="fas '+icon+'" style="font-s
 }
 function changerStatut(cmdId,val){
 var cmd=commandes.find(function(c){return c.id===cmdId;});
-if(cmd){cmd.statut=val;saveData();updateAll();showToast("Statut mis a jour : "+val);}
+if(cmd){cmd.statut=val;saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Statut mis a jour : "+val);}
 }
 
 // ============================================================
@@ -1494,7 +1638,7 @@ e.preventDefault();
 var email=document.getElementById("login-email").value;
 var pwd=document.getElementById("login-password").value;
 var user=utilisateurs.find(function(u){return u.email===email&&u.password===pwd;});
-if(user){utilisateurConnecte=user;saveData();updateAll();showToast("Bienvenue "+user.nom+" !");}
+if(user){utilisateurConnecte=user;saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Bienvenue "+user.nom+" !");}
 else showToast("Email ou mot de passe incorrect","error");
 }
 function handleRegister(e){
@@ -1502,17 +1646,17 @@ e.preventDefault();
 var email=document.getElementById("reg-email").value;
 if(utilisateurs.find(function(u){return u.email===email;}))return showToast("Cet email est deja utilise","error");
 var newUser={id:Date.now(),nom:document.getElementById("reg-nom").value,email:email,telephone:document.getElementById("reg-tel").value,password:document.getElementById("reg-password").value};
-utilisateurs.push(newUser);utilisateurConnecte=newUser;saveData();updateAll();
+utilisateurs.push(newUser);utilisateurConnecte=newUser;saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();
 showToast("Compte cree ! Bienvenue "+newUser.nom);
 }
-function logout(){utilisateurConnecte=null;saveData();updateAll();showToast("Vous avez ete deconnecte");}
+function logout(){utilisateurConnecte=null;saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Vous avez ete deconnecte");}
 
 // ============================================================
 // UTILITAIRES
 // ============================================================
 function openModal(id){document.getElementById(id).classList.add("open");}
 function closeModal(id){document.getElementById(id).classList.remove("open");}
-function applyColors(){
+window.applyColors = function applyColors(){
 document.documentElement.style.setProperty('--rouge',siteConfig.colorPrimary);
 document.documentElement.style.setProperty('--bleu',siteConfig.colorSecondary);
 }
@@ -1569,7 +1713,7 @@ siteConfig.welcomeText=document.getElementById("welcome-text-input").value;
 siteConfig.deliveryText=document.getElementById("delivery-text").value;
 var tickerVal=document.getElementById("ticker-text-input").value;
 if(tickerVal)siteConfig.tickerText=tickerVal;
-saveData();updateAll();updateTicker();showToast("Parametres enregistres !");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();updateTicker();showToast("Parametres enregistres !");
 });
 document.getElementById("contact-settings-form").addEventListener("submit",function(e){
 e.preventDefault();
@@ -1579,13 +1723,13 @@ siteConfig.whatsapp=document.getElementById("site-whatsapp").value;
 siteConfig.email=document.getElementById("site-email").value;
 siteConfig.adresse=document.getElementById("site-address").value;
 siteConfig.horaires=document.getElementById("site-hours").value;
-saveData();updateAll();showToast("Coordonnees enregistrees !");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();showToast("Coordonnees enregistrees !");
 });
 document.getElementById("colors-settings-form").addEventListener("submit",function(e){
 e.preventDefault();
 siteConfig.colorPrimary=document.getElementById("color-primary").value;
 siteConfig.colorSecondary=document.getElementById("color-secondary").value;
-saveData();applyColors();showToast("Couleurs appliquees !");
+saveData(); if(window.saveToFirebase) window.saveToFirebase();applyColors();showToast("Couleurs appliquees !");
 });
 document.getElementById("change-password-form").addEventListener("submit",function(e){
 e.preventDefault();
@@ -1595,7 +1739,7 @@ var confPwd=document.getElementById("confirm-password").value;
 if(oldPwd!==siteConfig.adminPassword)return showToast("Mot de passe actuel incorrect","error");
 if(newPwd.length<6)return showToast("Minimum 6 caracteres","error");
 if(newPwd!==confPwd)return showToast("Les mots de passe ne correspondent pas","error");
-siteConfig.adminPassword=newPwd;saveData();e.target.reset();showToast("Mot de passe modifie !");
+siteConfig.adminPassword=newPwd;saveData(); if(window.saveToFirebase) window.saveToFirebase();e.target.reset();showToast("Mot de passe modifie !");
 });
 
 // Promo
@@ -1609,7 +1753,7 @@ if(!prod)return;
 if(prod.prixOriginal)return showToast("Ce produit a deja une promotion active","error");
 prod.prixOriginal=prod.prix;
 prod.prix=Math.round(prod.prix*(1-reduction/100));
-saveData();updateAll();e.target.reset();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();e.target.reset();
 showToast("Promotion de "+reduction+"% appliquee sur "+prod.nom+" !");
 });
 
@@ -1618,7 +1762,7 @@ document.getElementById("add-realisation-form").addEventListener("submit",functi
 e.preventDefault();
 readPhotoAsBase64(document.getElementById("real-photo")).then(function(photoData){
 realisations.push({titre:document.getElementById("real-titre").value,lieu:document.getElementById("real-lieu").value,desc:document.getElementById("real-desc").value,photo:photoData,date:new Date().toISOString()});
-saveData();updateAll();renderRealisations();renderAdminRealisations();e.target.reset();
+saveData(); if(window.saveToFirebase) window.saveToFirebase();updateAll();renderRealisations();renderAdminRealisations();e.target.reset();
 document.getElementById("real-preview").style.display="none";
 showToast("Realisation ajoutee !");
 });
@@ -1644,7 +1788,7 @@ zone.addEventListener("drop",function(e){e.preventDefault();zone.classList.remov
 }
 
 // TICKER
-function updateTicker(){
+window.updateTicker = function updateTicker(){
 var items=(siteConfig.tickerText||"").split("|").filter(function(t){return t.trim();});
 if(items.length===0)return;
 var inner=document.getElementById("ticker-inner");
