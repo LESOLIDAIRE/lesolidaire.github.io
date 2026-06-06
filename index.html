@@ -336,11 +336,12 @@ body{font-family:'Barlow','Segoe UI',Arial,sans-serif;background:#f2f3f5;color:#
 }
 </style>
 
-<!-- FIREBASE REALTIME DATABASE - Synchronisation temps reel -->
+<!-- FIREBASE REALTIME DATABASE + AUTHENTIFICATION -->
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyAYuW1paoh7x1DICOiJMLd5kRICipFaptE",
@@ -354,6 +355,42 @@ appId: "1:827784328782:web:72a88f2c0ae12628b2b51f"
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
+
+// ============================================================
+// AUTHENTIFICATION FIREBASE
+// ============================================================
+window.firebaseAuth = auth;
+
+// Connexion admin via Firebase Auth
+window.connecterAdminFirebase = function(email, password) {
+return signInWithEmailAndPassword(auth, email, password)
+.then(function(userCredential) {
+window.firebaseUser = userCredential.user;
+console.log("Admin connecte via Firebase:", email);
+return true;
+})
+.catch(function(error) {
+console.log("Erreur connexion Firebase:", error.code);
+return false;
+});
+};
+
+// Deconnexion admin
+window.deconnecterAdminFirebase = function() {
+return signOut(auth).then(function() {
+window.firebaseUser = null;
+console.log("Admin deconnecte");
+});
+};
+
+// Ecouter l etat de connexion
+onAuthStateChanged(auth, function(user) {
+window.firebaseUser = user;
+if (user) {
+console.log("Utilisateur connecte:", user.email);
+}
+});
 
 // ============================================================
 // SYNCHRONISATION FIREBASE - Remplace localStorage
@@ -362,12 +399,16 @@ const db = getDatabase(app);
 // Sauvegarder toutes les donnees sur Firebase
 window.saveToFirebase = function() {
 try {
+// Donnees publiques - toujours sauvegardees
 set(ref(db, 'lesolidaire/produits'), window.produits || []);
 set(ref(db, 'lesolidaire/siteConfig'), window.siteConfig || {});
-set(ref(db, 'lesolidaire/utilisateurs'), window.utilisateurs || []);
-set(ref(db, 'lesolidaire/commandes'), window.commandes || []);
 set(ref(db, 'lesolidaire/realisations'), window.realisations || []);
 set(ref(db, 'lesolidaire/favoris'), window.favoris || []);
+// Donnees privees - seulement si admin connecte via Firebase
+if (window.firebaseUser) {
+set(ref(db, 'lesolidaire/utilisateurs'), window.utilisateurs || []);
+set(ref(db, 'lesolidaire/commandes'), window.commandes || []);
+}
 // Aussi sauvegarder en local pour offline
 localStorage.setItem("ls_produits", JSON.stringify(window.produits || []));
 localStorage.setItem("ls_config", JSON.stringify(window.siteConfig || {}));
@@ -446,6 +487,23 @@ setTimeout(function() {
 window.loadFromFirebase();
 }, 500);
 });
+
+
+// ============================================================
+// REGLES FIREBASE A APPLIQUER DANS LA CONSOLE :
+// {
+// "rules": {
+// "lesolidaire": {
+// "produits": { ".read": true, ".write": "auth != null" },
+// "siteConfig": { ".read": true, ".write": "auth != null" },
+// "realisations": { ".read": true, ".write": "auth != null" },
+// "favoris": { ".read": true, ".write": "auth != null" },
+// "utilisateurs": { ".read": "auth != null", ".write": "auth != null" },
+// "commandes": { ".read": "auth != null", ".write": "auth != null" }
+// }
+// }
+// }
+// ============================================================
 
 console.log("Firebase LE SOLIDAIRE SARL initialise avec succes");
 </script>
@@ -1023,25 +1081,63 @@ localStorage.setItem("ls_favoris",JSON.stringify(favoris));
 document.getElementById("site-logo").addEventListener("dblclick",function(){navigate("admin");});
 
 function checkAdminPassword(){
-var input=document.getElementById("admin-password-input").value;
-if(input===siteConfig.adminPassword){
-adminUnlocked=true;
-document.getElementById("admin-lock").style.display="none";
-document.getElementById("admin-real-content").style.display="block";
-document.getElementById("admin-password-input").value="";
-document.getElementById("lock-error").style.display="none";
-updateAll();renderCharts();
-}else{
-document.getElementById("lock-error").style.display="block";
-document.getElementById("admin-password-input").value="";
+var input = document.getElementById("admin-password-input").value;
+var lockBtn = document.querySelector(".lock-btn");
+var lockError = document.getElementById("lock-error");
+
+// Verification locale d abord
+if(input !== siteConfig.adminPassword) {
+lockError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Mot de passe incorrect';
+lockError.style.display = "block";
+document.getElementById("admin-password-input").value = "";
 document.getElementById("admin-password-input").focus();
+return;
+}
+
+// Connexion via Firebase Auth
+lockBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+lockBtn.disabled = true;
+lockError.style.display = "none";
+
+var email = siteConfig.adminEmail || "comptabilitesolidaire@gmail.com";
+
+if (window.connecterAdminFirebase) {
+window.connecterAdminFirebase(email, input).then(function(success) {
+if (success || input === siteConfig.adminPassword) {
+adminUnlocked = true;
+document.getElementById("admin-lock").style.display = "none";
+document.getElementById("admin-real-content").style.display = "block";
+document.getElementById("admin-password-input").value = "";
+lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Acceder';
+lockBtn.disabled = false;
+updateAll(); renderCharts();
+showToast("Connexion admin reussie !");
+} else {
+lockError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erreur de connexion Firebase';
+lockError.style.display = "block";
+lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Acceder';
+lockBtn.disabled = false;
+document.getElementById("admin-password-input").value = "";
+}
+});
+} else {
+// Fallback sans Firebase
+adminUnlocked = true;
+document.getElementById("admin-lock").style.display = "none";
+document.getElementById("admin-real-content").style.display = "block";
+document.getElementById("admin-password-input").value = "";
+lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Acceder';
+lockBtn.disabled = false;
+updateAll(); renderCharts();
 }
 }
 function lockAdmin(){
-adminUnlocked=false;
-document.getElementById("admin-lock").style.display="flex";
-document.getElementById("admin-real-content").style.display="none";
+adminUnlocked = false;
+if (window.deconnecterAdminFirebase) window.deconnecterAdminFirebase();
+document.getElementById("admin-lock").style.display = "flex";
+document.getElementById("admin-real-content").style.display = "none";
 navigate("accueil");
+showToast("Panel admin verrouille");
 }
 document.getElementById("admin-password-input").addEventListener("keyup",function(e){if(e.key==="Enter")checkAdminPassword();});
 
