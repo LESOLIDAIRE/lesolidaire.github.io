@@ -321,6 +321,29 @@ font-size: 13px;
 .search-count{min-width:auto;}
 .btn-clear{padding:10px 14px;font-size:12px;}
 }
+
+.cpt-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.cpt-head .cpt-id{flex:1;min-width:200px;}
+.cpt-name{font-size:22px;font-weight:800;color:#0D2B6B;}
+.cpt-meta{color:#6b7280;font-size:14px;margin-top:3px;word-break:break-all;}
+.cpt-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.cpt-chip{background:#f2f3f5;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:#0D2B6B;cursor:pointer;}
+.cpt-chip b{color:#CC1818;}
+.cpt-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.cpt-grid .full{grid-column:1/-1;}
+.cpt-field label{display:block;font-weight:600;font-size:12px;text-transform:uppercase;margin-bottom:5px;}
+.cpt-field label small{text-transform:none;font-weight:500;color:#6b7280;}
+.cpt-field input{width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;}
+.cpt-field input[readonly]{background:#f2f3f5;color:#6b7280;}
+.cpt-field .hint{font-size:12px;color:#6b7280;margin-top:4px;}
+.cpt-sec-title{font-size:16px;font-weight:800;color:#0D2B6B;margin-bottom:14px;}
+.tab-count{background:#CC1818;color:#fff;border-radius:10px;font-size:11px;padding:1px 7px;margin-left:2px;}
+.cmd-prods{margin:6px 0 10px;padding-left:18px;font-size:13px;color:#374151;}
+.canal-box{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.canal-opt{flex:1;min-width:140px;border:2px solid #e0e2e7;border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;}
+.canal-opt input{accent-color:#CC1818;}
+.canal-opt:has(input:checked){border-color:#CC1818;background:#fdecea;}
+@media(max-width:600px){.cpt-grid{grid-template-columns:1fr;}}
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
@@ -341,14 +364,26 @@ const auth = getAuth(app);
 window._db = db; window._ref = ref; window._set = set; window._get = get; window._auth = auth;
 window.fbSave = function() {
 try {
-set(ref(db, 'ls/produits'), window.produits || []);
-set(ref(db, 'ls/config'), window.siteConfig || {});
-set(ref(db, 'ls/utilisateurs'), window.utilisateurs || []);
-set(ref(db, 'ls/commandes'), window.commandes || []);
-set(ref(db, 'ls/realisations'), window.realisations || []);
-set(ref(db, 'ls/favoris'), window.favoris || []);
+var lg = function(n) { return function(e) { console.error("Firebase refuse l'ecriture de " + n, e && e.code, e); }; };
+set(ref(db, 'ls/produits'), window.produits || []).catch(lg('produits'));
+set(ref(db, 'ls/config'), window.siteConfig || {}).catch(lg('config'));
+set(ref(db, 'ls/utilisateurs'), window.utilisateurs || []).catch(lg('utilisateurs'));
+set(ref(db, 'ls/realisations'), window.realisations || []).catch(lg('realisations'));
+set(ref(db, 'ls/favoris'), window.favoris || []).catch(lg('favoris'));
 } catch (e) { console.log("fbSave err", e); }
 };
+/* Commandes : jamais reecrites en bloc. Une commande = un enregistrement ls/commandes/<id> */
+window.toArr = function(v) {
+if (!v) return [];
+var m = {}, out = [];
+(Array.isArray(v) ? v : Object.values(v)).forEach(function(x) { if (x && typeof x === "object" && x.id !== undefined) m[x.id] = x; });
+Object.keys(m).forEach(function(k) { out.push(m[k]); });
+return out;
+};
+window.fbSaveCommande = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), cmd); };
+window.fbUpdateStatut = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), cmd); };
+window.fbSaveUser = function(idx, u) { return set(ref(db, 'ls/utilisateurs/' + idx), u); };
+window.fbSaveStock = function(idx, stock) { return set(ref(db, 'ls/produits/' + idx + '/stock'), stock); };
 window.fbLoad = function() {
 document.getElementById("loading-overlay").style.display = "flex";
 get(ref(db, 'ls')).then(function(snap) {
@@ -362,8 +397,9 @@ if (window.produits.length > 0) window.nextId = Math.max.apply(Math, window.prod
 if (d.config) window.siteConfig = Object.assign(window.siteConfig || {}, d.config);
 if (d.utilisateurs && Array.isArray(d.utilisateurs)) { window.utilisateurs = d.utilisateurs;
 localStorage.setItem("ls_users", JSON.stringify(d.utilisateurs)); }
-if (d.commandes && Array.isArray(d.commandes)) { window.commandes = d.commandes;
-localStorage.setItem("ls_commandes", JSON.stringify(d.commandes)); }
+if (d.commandes) { window.commandes = window.toArr(d.commandes);
+commandes = window.commandes;
+localStorage.setItem("ls_commandes", JSON.stringify(window.commandes)); }
 if (d.realisations && Array.isArray(d.realisations)) window.realisations = d.realisations;
 if (d.favoris && Array.isArray(d.favoris)) window.favoris = d.favoris;
 var su = localStorage.getItem("ls_cu");
@@ -390,8 +426,9 @@ if (window.produits.length > 0) window.nextId = Math.max.apply(Math, window.prod
 if (d.config) window.siteConfig = Object.assign(window.siteConfig || {}, d.config);
 if (d.utilisateurs && Array.isArray(d.utilisateurs)) { window.utilisateurs = d.utilisateurs;
 localStorage.setItem("ls_users", JSON.stringify(d.utilisateurs)); }
-if (d.commandes && Array.isArray(d.commandes)) { window.commandes = d.commandes;
-localStorage.setItem("ls_commandes", JSON.stringify(d.commandes)); }
+if (d.commandes) { window.commandes = window.toArr(d.commandes);
+commandes = window.commandes;
+localStorage.setItem("ls_commandes", JSON.stringify(window.commandes)); }
 if (d.realisations && Array.isArray(d.realisations)) window.realisations = d.realisations;
 if (d.favoris && Array.isArray(d.favoris)) window.favoris = d.favoris;
 if (window.updateAll) window.updateAll();
@@ -447,6 +484,10 @@ if (user) return sendEmailVerification(user).then(function() { return { ok: true
 return Promise.resolve({ ok: false });
 };
 window.fbSignOut = function() { return signOut(auth); };
+window.fbAdminLogin = function(pwd) {
+if (auth.currentUser && (auth.currentUser.email || "").toLowerCase() === "comptabilite@lesolidaire.com") return Promise.resolve(true);
+return signInWithEmailAndPassword(auth, "Comptabilite@lesolidaire.com", pwd).then(function() { return true; }).catch(function() { return false; });
+};
 onAuthStateChanged(auth, function(user) { window._firebaseUser = user; });
 document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { if (window.fbLoad) window.fbLoad(); }, 300); });
 </script>
@@ -674,7 +715,7 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 </form>
 </div>
 
-<!-- Panneau d'import Excel am lior  -->
+<!-- Panneau d'import Excel am lior -->
 <div class="admin-panel">
 <div class="panel-title"><i class="fas fa-file-import"></i> Importer des produits depuis Excel</div>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -975,7 +1016,12 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <div id="cart-items"></div>
 <div class="cart-total-row"><span>Total a payer</span><span class="cart-total-amt"><span id="cart-total">0</span> FCFA</span></div>
 <div id="cart-prix-masque-msg" style="display:none; font-size:12px; color:#e65100; margin-top:8px; text-align:center;"><i class="fas fa-info-circle"></i> Contactez-nous pour connaitre le montant total</div>
-<button class="btn" id="validate-order" style="width:100%;justify-content:center;padding:14px;margin-top:8px;"><i class="fas fa-check-circle"></i> Valider la commande</button>
+<div style="margin-top:14px;font-weight:700;font-size:13px;text-transform:uppercase;">Envoyer ma commande par :</div>
+<div class="canal-box">
+<label class="canal-opt"><input type="radio" name="canal-cmd" value="whatsapp" checked><i class="fab fa-whatsapp" style="color:#25D366;font-size:20px;"></i> WhatsApp</label>
+<label class="canal-opt"><input type="radio" name="canal-cmd" value="email"><i class="fas fa-envelope" style="color:#0D2B6B;font-size:18px;"></i> E-mail</label>
+</div>
+<button class="btn" id="validate-order" style="width:100%;justify-content:center;padding:14px;margin-top:12px;"><i class="fas fa-check-circle"></i> Valider la commande</button>
 </div>
 </div>
 <div id="edit-modal" class="modal">
@@ -1566,6 +1612,7 @@ btn.disabled = false;
 updateAll();
 renderCharts();
 showToast("Connexion admin reussie !");
+if (window.fbAdminLogin) window.fbAdminLogin(input).then(function(ok) { if (!ok) showToast("Admin non connecte a Firebase : les modifications risquent de ne pas s enregistrer", "error"); });
 }
 
 function lockAdmin() { adminUnlocked = false;
@@ -1829,32 +1876,54 @@ var p = produits.find(function(x) { return x.id === item.id; });
 if (!p || p.stock < item.quantite) {
 return showToast("Stock insuffisant pour " + (p ? p.nom : "un produit"), "error");
 }
-p.stock -= item.quantite;
 total += p.prix * item.quantite;
 prods.push({ nom: p.nom, quantite: item.quantite });
 }
 
 var num = genererNumeroCommande();
+var rc = document.querySelector('input[name="canal-cmd"]:checked');
+var canal = (rc && rc.value === "email") ? "email" : "whatsapp";
 
 var cmd = {
 id: Date.now(),
 numero: num,
-clientId: utilisateurConnecte.id,
-clientNom: utilisateurConnecte.nom,
+clientId: window.utilisateurConnecte ? window.utilisateurConnecte.id : (window._firebaseUser ? window._firebaseUser.uid : "anonyme"),
+clientUid: window._firebaseUser ? window._firebaseUser.uid : (utilisateurConnecte.uid || ""),
+clientNom: nomUtilisateur(utilisateurConnecte) || utilisateurConnecte.nom,
 clientEmail: utilisateurConnecte.email,
+clientTel: utilisateurConnecte.telephoneAffiche || utilisateurConnecte.telephone || "",
+canal: canal,
 produits: prods.map(function(p) { return { nom: p.nom, quantite: p.quantite, prix: 0 }; }),
 total: total,
 date: new Date().toISOString(),
 statut: "En attente WhatsApp"
 };
 
-commandes.push(cmd);
+if (!window._firebaseUser) return showToast("Session expiree : reconnectez-vous pour commander", "error");
+var btnV = document.getElementById("validate-order"); if (btnV) btnV.disabled = true;
+var waWin = (canal === "whatsapp") ? window.open("", "_blank") : null;
+var panierBackup = panier.slice();
+window.fbSaveCommande(cmd).then(function() {
+if (!window.commandes.some(function(c) { return c.id === cmd.id; })) window.commandes.push(cmd);
+commandes = window.commandes;
 panier = [];
-saveAll();
+saveLocal();
 updateAll();
+if (window.renderCompte) window.renderCompte();
 closeModal("cart-modal");
+if (btnV) btnV.disabled = false;
+showToast(canal === "email" ? "Commande enregistree ! Ouverture de votre messagerie..." : "Commande enregistree ! Redirection vers WhatsApp...");
+ouvrirWhatsAppCommande(cmd, prods, waWin);
+}).catch(function(e) {
+if (btnV) btnV.disabled = false;
+if (waWin) waWin.close();
+console.error("Commande refusee par Firebase", e);
+showToast("Commande NON enregistree (" + ((e && e.code) || "erreur reseau") + "). Reessayez ou contactez-nous.", "error");
+});
+}
 
-showToast("Commande enregistree ! Redirection vers WhatsApp...");
+function ouvrirWhatsAppCommande(cmd, prods, waWin) {
+var num = cmd.numero;
 
 var ligneProduits = prods.map(function(p) {
 return p.nom + " x" + p.quantite;
@@ -1863,13 +1932,19 @@ return p.nom + " x" + p.quantite;
 var txt = "NOUVELLE COMMANDE - LE SOLIDAIRE SARL\n\n" +
 "Numero : " + num + "\n" +
 "Client : " + cmd.clientNom + "\n" +
-"Email : " + cmd.clientEmail + "\n\n" +
+"Email : " + cmd.clientEmail + "\n" +
+(cmd.clientTel ? "Telephone : " + cmd.clientTel + "\n" : "") + "\n" +
 "Produits :\n" + ligneProduits +
 "\n\nTotal : a confirmer avec vous" +
 "\n\nDate : " + new Date(cmd.date).toLocaleDateString('fr-FR') +
 "\n\nMerci de confirmer la disponibilite, les prix et le delai de livraison.";
 
-window.open("https://wa.me/" + siteConfig.whatsapp + "?text=" + encodeURIComponent(txt), "_blank");
+if (cmd.canal === "email") {
+window.location.href = "mailto:" + (siteConfig.email || "") + "?subject=" + encodeURIComponent("Nouvelle commande " + num + " - " + cmd.clientNom) + "&body=" + encodeURIComponent(txt);
+return;
+}
+var waUrl = "https://wa.me/" + siteConfig.whatsapp + "?text=" + encodeURIComponent(txt);
+if (waWin && !waWin.closed) waWin.location.href = waUrl; else window.open(waUrl, "_blank");
 }
 
 // RESET PASSWORD
@@ -1900,78 +1975,79 @@ if (tabEl) tabEl.classList.add("active");
 function renderCompte() {
 var el = document.getElementById("compte-content");
 if (utilisateurConnecte) {
-var mesCmd = commandes.filter(function(c) { return c.clientId === utilisateurConnecte.id; });
+var mesCmd = window.commandes.filter(function(c) { return c.clientId === window.utilisateurConnecte.id; });
+var mesFav = produits.filter(function(p) { return estFav(p.id); });
+var u = utilisateurConnecte;
+var nomAff = nomUtilisateur(u) || u.email;
+var telA = u.telephoneAffiche || u.telephone || "";
 var cmdH = !mesCmd.length ?
 '<div class="empty-state" style="padding:30px 0;"><i class="fas fa-shopping-bag"></i><p>Aucune commande pour le moment</p></div>' :
 mesCmd.slice().reverse().map(function(c) {
-var pl = c.produits.map(function(p) { return p.nom + ' (x' + p.quantite + ')'; }).join(
-', ');
-return '<div class="cmd-card"><div class="cmd-header"><span style="font-weight:700;color:#0D2B6B;"><i class="fas fa-receipt" style="margin-right:6px;"></i>' +
-c.numero + '</span><span style="font-size:12px;color:#6b7280;">' + new Date(c.date)
-.toLocaleDateString('fr-FR') + '</span>' + getStatutBadge(c.statut) +
-'</div><div style="font-size:13px;color:#6b7280;margin-bottom:6px;">' + pl +
-'</div><div style="font-weight:700;color:#CC1818;font-size:16px;">' + c.total
-.toLocaleString('fr-FR') + ' FCFA</div></div>';
+var pl = '<ul class="cmd-prods">' + c.produits.map(function(p) { return '<li>' + escH(p.nom) + ' <b>x' + p.quantite + '</b></li>'; }).join("") + '</ul>';
+var prixH = (c.prixClient != null && c.prixClient !== "") ?
+'<div style="font-weight:700;color:#CC1818;font-size:16px;">' + Number(c.prixClient).toLocaleString('fr-FR') + ' FCFA</div>' :
+'<div style="font-size:13px;color:#6b7280;font-style:italic;">Prix communique par LE SOLIDAIRE ' + (c.canal === "email" ? "par e-mail" : "sur WhatsApp") + '</div>';
+return '<div class="cmd-card"><div class="cmd-header"><span style="font-weight:700;color:#0D2B6B;"><i class="fas fa-receipt" style="margin-right:6px;"></i>' + escH(c.numero) +
+'</span><span style="font-size:12px;color:#6b7280;"><i class="fas ' + (c.canal === "email" ? "fa-envelope" : "fa-comment-dots") + '"></i> ' + new Date(c.date).toLocaleDateString('fr-FR') + '</span>' +
+getStatutBadge(c.statut, c.canal) + '</div>' + pl + prixH + '</div>';
 }).join("");
-var nomA = utilisateurConnecte.nomAffiche || utilisateurConnecte.nom;
-var telA = utilisateurConnecte.telephoneAffiche || utilisateurConnecte.telephone || "";
-var mesFav = produits.filter(function(p) { return estFav(p.id); });
 var favH = !mesFav.length ?
 '<div class="empty-state" style="padding:30px 0;"><i class="fas fa-heart"></i><p>Aucun favori</p></div>' :
 '<div class="products-grid">' + mesFav.map(renderCard).join("") + '</div>';
-var profileHtml = '<div><div class="info-box orange"><i class="fas fa-info-circle"></i><span>Ces modifications n affectent pas votre email ni votre mot de passe de connexion.</span></div><div class="form-group"><label style="font-weight:600;font-size:12px;text-transform:uppercase;display:block;margin-bottom:5px;">Nom affiche</label><input type="text" id="ep-nom" value="' +
-nomA +
-'" style="width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;"></div><div class="form-group" style="margin-top:10px;"><label style="font-weight:600;font-size:12px;text-transform:uppercase;display:block;margin-bottom:5px;">Telephone</label><input type="tel" id="ep-tel" value="' +
-telA +
-'" placeholder="+225 07 XX XX XX XX" style="width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;"></div><button class="btn" onclick="saveProfil()" style="margin-top:12px;"><i class="fas fa-save"></i> Enregistrer mes informations</button></div>';
-var securiteHtml =
-'<div><div class="info-box rouge"><i class="fas fa-shield-alt"></i><span>Changez votre mot de passe regulierement pour plus de securite.</span></div><div class="form-group"><label style="font-weight:600;font-size:12px;text-transform:uppercase;display:block;margin-bottom:5px;">Mot de passe actuel</label><input type="password" id="ep-old" style="width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;"></div><div class="form-group" style="margin-top:10px;"><label style="font-weight:600;font-size:12px;text-transform:uppercase;display:block;margin-bottom:5px;">Nouveau mot de passe</label><input type="password" id="ep-new" placeholder="Min 6 caracteres" style="width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;"></div><div class="form-group" style="margin-top:10px;"><label style="font-weight:600;font-size:12px;text-transform:uppercase;display:block;margin-bottom:5px;">Confirmer</label><input type="password" id="ep-conf" style="width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;"></div><button class="btn rouge" onclick="saveMdp()" style="margin-top:12px;"><i class="fas fa-key"></i> Changer le mot de passe</button><div style="margin-top:20px;border-top:1px solid #e0e2e7;padding-top:16px;"><button class="btn rouge" onclick="logout()" style="width:100%;"><i class="fas fa-sign-out-alt"></i> Se deconnecter</button></div></div>';
-el.innerHTML = '<div class="compte-card" style="margin-bottom:20px;"><div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;"><div class="av-big">' +
-nomA.charAt(0).toUpperCase() +
-'</div><div><div style="font-size:20px;font-weight:700;">' + nomA +
-'</div><div style="color:#6b7280;font-size:14px;margin-top:2px;">' + utilisateurConnecte.email +
-'</div>' + (telA ?
-'<div style="font-size:14px;margin-top:3px;"><i class="fas fa-phone" style="color:#0D2B6B;margin-right:6px;"></i>' +
-telA + '</div>' : '') + '</div></div></div>' +
-'<div class="compte-card"><div class="compte-tabs"><button class="compte-tab ' + (compteSection ===
-"profil" ? "active" : "") +
-'" data-onglet="profil" onclick="changerOngletCompte(\'profil\')"><i class="fas fa-user-circle"></i> Mon profil</button><button class="compte-tab ' +
-(compteSection === "securite" ? "active" : "") +
-'" data-onglet="securite" onclick="changerOngletCompte(\'securite\')"><i class="fas fa-key"></i> Securite</button><button class="compte-tab ' +
-(compteSection === "commandes" ? "active" : "") +
-'" data-onglet="commandes" onclick="changerOngletCompte(\'commandes\')"><i class="fas fa-shopping-bag"></i> Mes commandes</button><button class="compte-tab ' +
-(compteSection === "favoris" ? "active" : "") +
-'" data-onglet="favoris" onclick="changerOngletCompte(\'favoris\')"><i class="fas fa-heart"></i> Mes favoris</button></div>' +
-'<div id="compte-section-profil" class="compte-section ' + (compteSection === "profil" ? "active" :
-"") + '">' + profileHtml + '</div>' +
-'<div id="compte-section-securite" class="compte-section ' + (compteSection === "securite" ?
-"active" : "") + '">' + securiteHtml + '</div>' +
-'<div id="compte-section-commandes" class="compte-section ' + (compteSection === "commandes" ?
-"active" : "") + '">' + cmdH + '</div>' +
-'<div id="compte-section-favoris" class="compte-section ' + (compteSection === "favoris" ?
-"active" : "") + '">' + favH + '</div></div>';
+var profileHtml = '<div class="cpt-sec-title"><i class="fas fa-id-card"></i> Informations personnelles</div>' +
+'<div class="cpt-grid">' +
+'<div class="cpt-field"><label>Nom</label><input type="text" id="ep-nom" value="' + escH(u.nomAffiche || u.nom) + '" placeholder="Votre nom"></div>' +
+'<div class="cpt-field"><label>Prenoms <small>(facultatif)</small></label><input type="text" id="ep-prenoms" value="' + escH(u.prenoms || "") + '" placeholder="Vos prenoms"></div>' +
+'<div class="cpt-field full"><label>Adresse e-mail</label><input type="email" id="ep-email" value="' + escH(u.email) + '" readonly><div class="hint"><i class="fas fa-lock"></i> Votre e-mail sert a vous connecter, il ne peut pas etre modifie ici.</div></div>' +
+'<div class="cpt-field full"><label>Numero de telephone</label><input type="tel" id="ep-tel" value="' + escH(telA) + '" placeholder="+225 07 XX XX XX XX"></div>' +
+'</div><button class="btn" onclick="saveProfil()" style="margin-top:16px;"><i class="fas fa-save"></i> Enregistrer mes informations</button>';
+var securiteHtml = '<div class="cpt-sec-title"><i class="fas fa-shield-alt"></i> Mot de passe</div>' +
+'<div class="info-box rouge"><i class="fas fa-shield-alt"></i><span>Changez votre mot de passe regulierement pour plus de securite.</span></div>' +
+'<div class="cpt-grid"><div class="cpt-field full"><label>Mot de passe actuel</label><input type="password" id="ep-old"></div>' +
+'<div class="cpt-field"><label>Nouveau mot de passe</label><input type="password" id="ep-new" placeholder="Min 6 caracteres"></div>' +
+'<div class="cpt-field"><label>Confirmer</label><input type="password" id="ep-conf"></div></div>' +
+'<button class="btn rouge" onclick="saveMdp()" style="margin-top:16px;"><i class="fas fa-key"></i> Changer le mot de passe</button>';
+function tab(id, ico, txt, n) { return '<button class="compte-tab ' + (compteSection === id ? "active" : "") + '" data-onglet="' + id + '" onclick="changerOngletCompte(\'' + id + '\')"><i class="fas ' + ico + '"></i> ' + txt + (n ? ' <span class="tab-count">' + n + '</span>' : '') + '</button>'; }
+function sec(id, html) { return '<div id="compte-section-' + id + '" class="compte-section ' + (compteSection === id ? "active" : "") + '">' + html + '</div>'; }
+el.innerHTML = '<div class="compte-card"><div class="cpt-head"><div class="av-big">' + escH(nomAff.charAt(0).toUpperCase()) + '</div>' +
+'<div class="cpt-id"><div class="cpt-name">' + escH(nomAff) + '</div><div class="cpt-meta"><i class="fas fa-envelope" style="color:#0D2B6B;margin-right:6px;"></i>' + escH(u.email) + '</div>' +
+(telA ? '<div class="cpt-meta"><i class="fas fa-phone" style="color:#0D2B6B;margin-right:6px;"></i>' + escH(telA) + '</div>' : '') +
+'<div class="cpt-chips"><span class="cpt-chip" onclick="changerOngletCompte(\'commandes\')"><i class="fas fa-shopping-bag"></i> Commandes <b>' + mesCmd.length + '</b></span><span class="cpt-chip" onclick="changerOngletCompte(\'favoris\')"><i class="fas fa-heart"></i> Favoris <b>' + mesFav.length + '</b></span></div></div>' +
+'<button class="btn rouge" onclick="logout()" style="align-self:flex-start;"><i class="fas fa-sign-out-alt"></i> Deconnexion</button></div></div>' +
+'<div class="compte-card"><div class="compte-tabs">' + tab("profil", "fa-user-circle", "Mon profil") + tab("commandes", "fa-shopping-bag", "Mes commandes", mesCmd.length) + tab("favoris", "fa-heart", "Mes favoris", mesFav.length) + tab("securite", "fa-key", "Securite") + '</div>' +
+sec("profil", profileHtml) + sec("commandes", cmdH) + sec("favoris", favH) + sec("securite", securiteHtml) + '</div>';
 } else {
 el.innerHTML =
-'<div class="auth-grid"><div class="compte-card"><div class="panel-title"><i class="fas fa-sign-in-alt"></i> Connexion</div><form id="login-form"><div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="l-pwd" placeholder="Votre mot de passe" required></div><a class="forgot-link" onclick="openModal(\'forgot-modal\')"><i class="fas fa-question-circle"></i> Mot de passe oublie ?</a><button type="submit" class="btn" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-sign-in-alt"></i> Se connecter</button></form></div><div class="compte-card"><div class="panel-title"><i class="fas fa-user-plus"></i> Creer un compte</div><form id="register-form"><div class="form-group"><label>Nom complet</label><input type="text" id="r-nom" placeholder="Votre nom" required></div><div class="form-group"><label>Email</label><input type="email" id="r-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Telephone</label><input type="tel" id="r-tel" placeholder="+225 07 XX XX XX XX"></div><div class="form-group"><label>Mot de passe</label><input type="password" id="r-pwd" placeholder="Min 6 caracteres" required></div><button type="submit" class="btn" style="width:100%;justify-content:center;"><i class="fas fa-user-plus"></i> Creer mon compte</button></form></div></div>';
+'<div class="auth-grid"><div class="compte-card"><div class="panel-title"><i class="fas fa-sign-in-alt"></i> Connexion</div><form id="login-form"><div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="l-pwd" placeholder="Votre mot de passe" required></div><a class="forgot-link" onclick="openModal(\'forgot-modal\')"><i class="fas fa-question-circle"></i> Mot de passe oublie ?</a><button type="submit" class="btn" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-sign-in-alt"></i> Se connecter</button></form></div><div class="compte-card"><div class="panel-title"><i class="fas fa-user-plus"></i> Creer un compte</div><form id="register-form"><div class="form-group"><label>Nom</label><input type="text" id="r-nom" placeholder="Votre nom" required></div><div class="form-group"><label>Prenoms (facultatif)</label><input type="text" id="r-prenoms" placeholder="Vos prenoms"></div><div class="form-group"><label>Email</label><input type="email" id="r-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Telephone</label><input type="tel" id="r-tel" placeholder="+225 07 XX XX XX XX"></div><div class="form-group"><label>Mot de passe</label><input type="password" id="r-pwd" placeholder="Min 6 caracteres" required></div><button type="submit" class="btn" style="width:100%;justify-content:center;"><i class="fas fa-user-plus"></i> Creer mon compte</button></form></div></div>';
 document.getElementById("login-form").addEventListener("submit", handleLogin);
 document.getElementById("register-form").addEventListener("submit", handleRegister);
 }
 }
 
-function saveProfil() { var ne = document.getElementById("ep-nom"),
-te = document.getElementById("ep-tel"); if (!ne) { showToast("Erreur champs", "error"); return; } var nom = ne
-.value.trim(),
-tel = te ? te.value.trim() : ""; if (!nom) { showToast("Le nom ne peut pas etre vide", "error"); return; } var idx =
-utilisateurs.findIndex(function(u) { return u.id === utilisateurConnecte.id; }); if (idx > -1) { utilisateurs[
-idx].nomAffiche = nom;
+function saveProfil() {
+var ne = document.getElementById("ep-nom"), pe = document.getElementById("ep-prenoms"), te = document.getElementById("ep-tel");
+if (!ne) { showToast("Erreur champs", "error"); return; }
+var nom = ne.value.trim(), prenoms = pe ? pe.value.trim() : "", tel = te ? te.value.trim() : "";
+if (!nom) { showToast("Le nom ne peut pas etre vide", "error"); return; }
+var idx = utilisateurs.findIndex(function(u) { return u.id === utilisateurConnecte.id; });
+if (idx < 0) { showToast("Compte introuvable", "error"); return; }
+var avant = JSON.stringify(utilisateurs[idx]);
+utilisateurs[idx].nomAffiche = nom;
+utilisateurs[idx].prenoms = prenoms;
 utilisateurs[idx].telephoneAffiche = tel;
 utilisateurConnecte = utilisateurs[idx];
 window.utilisateurs = utilisateurs;
 window.utilisateurConnecte = utilisateurConnecte;
 localStorage.setItem("ls_cu", JSON.stringify(utilisateurConnecte));
-saveAll();
-updateAll();
-showToast("Informations mises a jour !"); } }
+localStorage.setItem("ls_users", JSON.stringify(utilisateurs));
+window.fbSaveUser(idx, utilisateurs[idx]).then(function() {
+updateAll(); showToast("Informations mises a jour !");
+}).catch(function(e) {
+utilisateurs[idx] = JSON.parse(avant); utilisateurConnecte = utilisateurs[idx]; window.utilisateurConnecte = utilisateurConnecte;
+localStorage.setItem("ls_cu", JSON.stringify(utilisateurConnecte)); updateAll();
+showToast("Informations NON enregistrees (" + ((e && e.code) || "erreur") + ")", "error");
+});
+}
 
 function saveMdp() { var ael = document.getElementById("ep-old"),
 nel = document.getElementById("ep-new"),
@@ -2040,6 +2116,7 @@ navigate("compte"); } else { restore();
 showToast("Email ou mot de passe incorrect", "error"); } } }
 
 function handleRegister(e) { e.preventDefault(); var nom = document.getElementById("r-nom").value.trim(),
+prenoms = document.getElementById("r-prenoms") ? document.getElementById("r-prenoms").value.trim() : "",
 email = document.getElementById("r-email").value.trim().toLowerCase(),
 tel = document.getElementById("r-tel").value.trim(),
 pwd = document.getElementById("r-pwd").value,
@@ -2050,11 +2127,12 @@ btn = e.target.querySelector("button[type=submit]"); if (pwd.length < 6) { showT
 btn.disabled = true; } function restore() { if (btn) { btn.innerHTML =
 '<i class="fas fa-user-plus"></i> Creer mon compte';
 btn.disabled = false; } } if (window.fbInscription) { window.fbInscription(email, pwd).then(function(r) { if (
-r.ok) { var nu = { id: Date.now(), uid: r.uid, nom: nom, email: email, telephone: tel,
+r.ok) { var nu = { id: Date.now(), uid: r.uid, nom: nom, prenoms: prenoms, email: email, telephone: tel,
 password: pwd, dateInscription: new Date().toISOString() };
 utilisateurs.push(nu);
 window.utilisateurs = utilisateurs;
-saveAll();
+saveLocal();
+window.fbSaveUser(utilisateurs.length - 1, nu).catch(function(e) { showToast("Compte cree mais profil non enregistre (" + ((e && e.code) || "erreur") + ")", "error"); });
 restore();
 document.getElementById("compte-content").innerHTML =
 '<div class="compte-card" style="text-align:center;padding:40px;"><div style="width:80px;height:80px;border-radius:50%;background:#e6f4ea;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="fas fa-envelope" style="font-size:36px;color:#1e7e34;"></i></div><h3 style="font-family:Barlow Condensed,Arial,sans-serif;font-size:24px;font-weight:800;margin-bottom:12px;text-transform:uppercase;">Email de confirmation envoye !</h3><p style="color:#6b7280;font-size:15px;line-height:1.6;margin-bottom:20px;">Un email a ete envoye a <strong>' +
@@ -2222,7 +2300,10 @@ saveAll();
 updateAll();
 showToast("Compte client supprime"); }
 
-function getStatutBadge(s) {
+function escH(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function nomUtilisateur(u) { if (!u) return ""; var n = u.nomAffiche || u.nom || ""; return (n + (u.prenoms ? " " + u.prenoms : "")).trim(); }
+function getStatutBadge(s, canal) {
+var label = (s === "En attente WhatsApp" && canal === "email") ? "En attente (e-mail)" : s;
 var c = "s-prep",
 i = "fa-clock";
 if (s === "En attente WhatsApp") { c = "s-wa";
@@ -2230,31 +2311,50 @@ i = "fa-whatsapp"; } else if (s === "Expedie") { c = "s-exp";
 i = "fa-truck"; } else if (s === "Livre") { c = "s-liv";
 i = "fa-check-circle"; } else if (s === "Annule") { c = "s-ann";
 i = "fa-times-circle"; }
-return '<span class="statut-badge ' + c + '"><i class="fab ' + i + '" style="font-size:10px;"></i> ' + s +
+return '<span class="statut-badge ' + c + '"><i class="fab ' + i + '" style="font-size:10px;"></i> ' + label +
 '</span>';
 }
 
 function changerStatut(cid, val) { var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
+var ancien = cmd.statut, ancienDeduit = !!cmd.stockDeduit;
+var accepte = (val !== "En attente WhatsApp" && val !== "Annule");
+var deltas = [];
+function ajuster(signe) { cmd.produits.forEach(function(it) { var p = produits.find(function(x) { return x.nom === it.nom; }); if (p) { var d = signe * it.quantite; if (signe < 0 && p.stock + d < 0) d = -p.stock; p.stock += d; deltas.push([p, d]); } }); }
+if (accepte && !cmd.stockDeduit) { ajuster(-1); cmd.stockDeduit = true; }
+else if (!accepte && cmd.stockDeduit) { ajuster(1); cmd.stockDeduit = false; }
+deltas.forEach(function(x) { if (window.fbSaveStock) window.fbSaveStock(produits.indexOf(x[0]), x[0].stock).catch(function() {}); });
 cmd.statut = val;
 window.commandes = commandes;
-saveAll();
+saveLocal();
+window.fbUpdateStatut(cmd).then(function() { updateAll(); showToast("Statut mis a jour : " + val); }).catch(function(e) {
+cmd.statut = ancien; cmd.stockDeduit = ancienDeduit;
+deltas.forEach(function(x) { x[0].stock -= x[1]; if (window.fbSaveStock) window.fbSaveStock(produits.indexOf(x[0]), x[0].stock).catch(function() {}); });
 updateAll();
-showToast("Statut mis a jour : " + val); }
+showToast("Statut NON enregistre (" + ((e && e.code) || "erreur") + ")", "error"); }); }
+
+function definirPrixCommande(cid) {
+var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
+var v = document.getElementById("px-" + cid).value.trim();
+var ap = cmd.prixClient, at = cmd.total;
+if (v === "") { cmd.prixClient = null; } else { var n = Number(v); if (isNaN(n) || n < 0) return showToast("Prix invalide", "error"); cmd.prixClient = n; cmd.total = n; }
+window.fbUpdateStatut(cmd).then(function() { saveLocal(); updateAll(); showToast(v === "" ? "Prix masque pour le client" : "Prix enregistre : le client le voit"); }).catch(function(e) {
+cmd.prixClient = ap; cmd.total = at; updateAll(); showToast("Prix NON enregistre (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
 
 function renderOrdres() { var el = document.getElementById("orders-list"); if (!el) return; if (!commandes.length) { el
 .innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune commande</p></div>'; return; }
 el.innerHTML = commandes.slice().reverse().map(function(c) {
 var pl = c.produits.map(function(p) { return p.nom + ' x' + p.quantite; }).join(', ');
 return '<div class="order-card"><div class="order-header"><span class="order-id"><i class="fas fa-receipt" style="margin-right:6px;"></i>' +
-c.numero + '</span>' + getStatutBadge(c.statut) +
+c.numero + '</span>' + (c.canal === 'email' ? '<span style="font-size:12px;color:#0D2B6B;"><i class="fas fa-envelope"></i> E-mail</span>' : '<span style="font-size:12px;color:#1e7e34;"><i class="fab fa-whatsapp"></i> WhatsApp</span>') + getStatutBadge(c.statut, c.canal) +
 '</div><div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-user" style="color:#0D2B6B;margin-right:5px;"></i><strong>' +
-c.clientNom + '</strong> &mdash; ' + c.clientEmail + ' &mdash; ' + new Date(c.date)
+c.clientNom + '</strong> &mdash; ' + c.clientEmail + (c.clientTel ? ' &mdash; ' + c.clientTel : '') + ' &mdash; ' + new Date(c.date)
 .toLocaleDateString('fr-FR') +
 '</div><div style="font-size:13px;color:#6b7280;margin-bottom:8px;"><i class="fas fa-box" style="color:#0D2B6B;margin-right:5px;"></i>' +
 pl +
 '</div><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;"><span style="font-weight:700;color:#CC1818;font-size:16px;">' +
-c.total.toLocaleString('fr-FR') +
-' FCFA</span><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;font-weight:600;color:#6b7280;">Statut :</span><select class="statut-select" onchange="changerStatut(' +
+(c.total || 0).toLocaleString('fr-FR') +
+' FCFA</span><span style="display:flex;align-items:center;gap:6px;"><input type="number" min="0" id="px-' + c.id + '" value="' + (c.prixClient != null ? c.prixClient : "") + '" placeholder="Prix client (FCFA)" style="width:150px;padding:6px 10px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:13px;"><button class="btn" onclick="definirPrixCommande(' + c.id + ')" style="padding:6px 12px;font-size:12px;"><i class="fas fa-save"></i> Prix</button></span><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;font-weight:600;color:#6b7280;">Statut :</span><select class="statut-select" onchange="changerStatut(' +
 c.id + ',this.value)"><option value="En attente WhatsApp"' + (c.statut === "En attente WhatsApp" ?
 " selected" : "") +
 '>En attente WhatsApp</option><option value="En preparation"' + (c.statut === "En preparation" ?
