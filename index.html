@@ -339,6 +339,52 @@ font-size: 13px;
 .cpt-sec-title{font-size:16px;font-weight:800;color:#0D2B6B;margin-bottom:14px;}
 .tab-count{background:#CC1818;color:#fff;border-radius:10px;font-size:11px;padding:1px 7px;margin-left:2px;}
 .cmd-prods{margin:6px 0 10px;padding-left:18px;font-size:13px;color:#374151;}
+.cpt-hero{background:linear-gradient(135deg,#0D2B6B 0%,#1e3c72 100%);color:#fff;border-radius:12px;padding:24px 26px;margin-bottom:20px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.cpt-hero .av-big{background:#fff;color:#0D2B6B;width:72px;height:72px;font-size:30px;}
+.cpt-hero-id{flex:1;min-width:220px;}
+.cpt-hero-name{font-size:24px;font-weight:800;line-height:1.2;}
+.cpt-hero-sub{opacity:.85;font-size:14px;margin-top:4px;word-break:break-all;}
+.cpt-badge{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;letter-spacing:.4px;margin-bottom:8px;}
+.cpt-prog{min-width:220px;max-width:280px;flex:0 1 260px;}
+.cpt-prog-bar{height:8px;background:rgba(255,255,255,.25);border-radius:6px;overflow:hidden;margin:6px 0 8px;}
+.cpt-prog-bar>div{height:100%;background:#f59e0b;border-radius:6px;}
+.cpt-layout{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start;}
+.cpt-side{padding:12px;margin-bottom:0;}
+.cpt-side .compte-tab{width:100%;border-radius:8px;padding:12px 14px;border-bottom:none;margin:0 0 4px;text-align:left;}
+.cpt-side .compte-tab.active{background:#e8f0fe;color:#0D2B6B;border-bottom:none;margin-bottom:4px;}
+.cpt-side .compte-tab:hover{background:#f2f3f5;}
+.cpt-main .compte-card{margin-bottom:16px;}
+.cpt-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+.cpt-stat{background:#fff;border-radius:10px;padding:18px;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center;cursor:pointer;}
+.cpt-stat b{display:block;font-size:30px;color:#CC1818;}
+.cpt-stat span{font-size:13px;color:#6b7280;font-weight:600;}
+.cpt-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.type-card{border:2px solid #e0e2e7;border-radius:10px;padding:14px 16px;cursor:pointer;display:flex;gap:12px;align-items:center;}
+.type-card input{accent-color:#CC1818;}
+.type-card:has(input:checked){border-color:#0D2B6B;background:#e8f0fe;}
+.type-card i{font-size:22px;color:#0D2B6B;}
+.type-card small{display:block;color:#6b7280;font-weight:500;}
+.cpt-field select,.cpt-field textarea{width:100%;padding:10px 14px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:14px;font-family:inherit;background:#fff;}
+.cpt-field .req{color:#CC1818;}
+.cpt-savebar{position:sticky;bottom:0;background:#fff;border-top:1px solid #e0e2e7;padding:12px 0 0;margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+@media(max-width:800px){.cpt-layout{grid-template-columns:1fr;}.cpt-side{display:flex;overflow-x:auto;gap:4px;padding:8px;}.cpt-side .compte-tab{width:auto;white-space:nowrap;margin:0;}.cpt-stats{grid-template-columns:1fr 1fr 1fr;}.type-cards{grid-template-columns:1fr;}}
+.cmd-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:#f2f3f5;border-radius:8px;}
+.cmd-toolbar label{font-weight:600;font-size:13px;cursor:pointer;display:flex;gap:8px;align-items:center;}
+.cmd-toolbar .btn{padding:8px 14px;font-size:13px;}.cmd-toolbar .btn:disabled{opacity:.45;cursor:not-allowed;}
+.recu-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1.1fr);gap:20px;align-items:start;}
+.recu-chk{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin:8px 0 14px;}
+.recu-chk label{font-size:13px;font-weight:600;display:flex;gap:8px;align-items:center;cursor:pointer;text-transform:none;letter-spacing:0;margin:0;}
+.recu-prev{position:sticky;top:10px;}
+.recu-prev iframe{width:100%;height:680px;border:1px solid #e0e2e7;border-radius:8px;background:#fff;}
+@media(max-width:900px){.recu-grid{grid-template-columns:1fr;}.recu-prev{position:static;}}
+.tbl-wrap{overflow-x:auto;}
+.tbl-cmd{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0;}
+.tbl-cmd th{background:#f2f3f5;text-align:left;padding:8px 10px;font-size:12px;text-transform:uppercase;}
+.tbl-cmd td{padding:6px 10px;border-bottom:1px solid #e0e2e7;}
+.pu-input{width:130px;padding:6px 10px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:13px;}
+.cmd-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+.cmd-actions .btn{padding:8px 14px;font-size:13px;}
 .canal-box{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
 .canal-opt{flex:1;min-width:140px;border:2px solid #e0e2e7;border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;}
 .canal-opt input{accent-color:#CC1818;}
@@ -375,14 +421,38 @@ set(ref(db, 'ls/favoris'), window.favoris || []).catch(lg('favoris'));
 /* Commandes : jamais reecrites en bloc. Une commande = un enregistrement ls/commandes/<id> */
 window.toArr = function(v) {
 if (!v) return [];
-var m = {}, out = [];
-(Array.isArray(v) ? v : Object.values(v)).forEach(function(x) { if (x && typeof x === "object" && x.id !== undefined) m[x.id] = x; });
-Object.keys(m).forEach(function(k) { out.push(m[k]); });
+var m = {}, ks = {};
+var keys = Array.isArray(v) ? v.map(function(x, i) { return String(i); }) : Object.keys(v);
+keys.forEach(function(k) { var x = v[k]; if (x && typeof x === "object" && x.id !== undefined) { m[x.id] = x; (ks[x.id] = ks[x.id] || []).push(k); } });
+return Object.keys(m).map(function(id) { m[id]._ks = ks[id]; return m[id]; });
+};
+function propre(o) { var c = {}; Object.keys(o).forEach(function(k) { if (k.charAt(0) !== "_") c[k] = o[k]; }); return c; }
+window.fbSupprimerCle = function(key) { return set(ref(db, 'ls/commandes/' + key), null); };
+window.fbSaveCommande = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), propre(cmd)); };
+window.fbUpdateStatut = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), propre(cmd)); };
+window.fbSaveUser = function(idx, u) { return set(ref(db, 'ls/utilisateurs/' + idx), u); };
+window.avisToArr = function(v) {
+if (!v) return [];
+var out = [];
+if (Array.isArray(v)) { v.forEach(function(a, i) { if (a && typeof a === "object") { a._k = String(i); out.push(a); } }); }
+else { Object.keys(v).forEach(function(k) { var a = v[k]; if (a && typeof a === "object") { a._k = k; out.push(a); } }); }
 return out;
 };
-window.fbSaveCommande = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), cmd); };
-window.fbUpdateStatut = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), cmd); };
-window.fbSaveUser = function(idx, u) { return set(ref(db, 'ls/utilisateurs/' + idx), u); };
+window.fbSaveAvis = function(idx, key, avis) { return set(ref(db, 'ls/produits/' + idx + '/avis/' + key), avis); };
+window.fbMigrerAvis = function() {
+var users = window.utilisateurs || [];
+(window.produits || []).forEach(function(p, idx) {
+(p.avis || []).forEach(function(a) {
+if (a.clientUid) return;
+var u = users.find(function(x) { return x.id === a.clientId; });
+if (!u || !u.uid) return;
+var n = Object.assign({}, a, { clientUid: u.uid }); var oldK = a._k; delete n._k;
+set(ref(db, 'ls/produits/' + idx + '/avis/' + u.uid), n).then(function() {
+if (oldK !== undefined && String(oldK) !== u.uid) return set(ref(db, 'ls/produits/' + idx + '/avis/' + oldK), null);
+}).catch(function() {});
+});
+});
+};
 window.fbSaveStock = function(idx, stock) { return set(ref(db, 'ls/produits/' + idx + '/stock'), stock); };
 window.fbLoad = function() {
 document.getElementById("loading-overlay").style.display = "flex";
@@ -391,13 +461,13 @@ if (snap.exists()) {
 var d = snap.val();
 if (d.produits && Array.isArray(d.produits)) {
 window.produits = d.produits;
-window.produits.forEach(function(p) { if (!p.avis) p.avis = []; if (p.prixOriginal === undefined) p.prixOriginal = null; });
+window.produits.forEach(function(p) { p.avis = window.avisToArr(p.avis); if (p.prixOriginal === undefined) p.prixOriginal = null; });
 if (window.produits.length > 0) window.nextId = Math.max.apply(Math, window.produits.map(function(p) { return p.id; })) + 1;
 }
 if (d.config) window.siteConfig = Object.assign(window.siteConfig || {}, d.config);
 if (d.utilisateurs && Array.isArray(d.utilisateurs)) { window.utilisateurs = d.utilisateurs;
 localStorage.setItem("ls_users", JSON.stringify(d.utilisateurs)); }
-if (d.commandes) { window.commandes = window.toArr(d.commandes);
+{ window.commandes = window.toArr(d.commandes);
 commandes = window.commandes;
 localStorage.setItem("ls_commandes", JSON.stringify(window.commandes)); }
 if (d.realisations && Array.isArray(d.realisations)) window.realisations = d.realisations;
@@ -420,13 +490,13 @@ if (!snap.exists()) return;
 var d = snap.val();
 if (d.produits && Array.isArray(d.produits)) {
 window.produits = d.produits;
-window.produits.forEach(function(p) { if (!p.avis) p.avis = []; if (p.prixOriginal === undefined) p.prixOriginal = null; });
+window.produits.forEach(function(p) { p.avis = window.avisToArr(p.avis); if (p.prixOriginal === undefined) p.prixOriginal = null; });
 if (window.produits.length > 0) window.nextId = Math.max.apply(Math, window.produits.map(function(p) { return p.id; })) + 1;
 }
 if (d.config) window.siteConfig = Object.assign(window.siteConfig || {}, d.config);
 if (d.utilisateurs && Array.isArray(d.utilisateurs)) { window.utilisateurs = d.utilisateurs;
 localStorage.setItem("ls_users", JSON.stringify(d.utilisateurs)); }
-if (d.commandes) { window.commandes = window.toArr(d.commandes);
+{ window.commandes = window.toArr(d.commandes);
 commandes = window.commandes;
 localStorage.setItem("ls_commandes", JSON.stringify(window.commandes)); }
 if (d.realisations && Array.isArray(d.realisations)) window.realisations = d.realisations;
@@ -681,6 +751,7 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <button class="admin-tab" data-tab="t-realisations"><i class="fas fa-hard-hat"></i> Realisations</button>
 <button class="admin-tab" data-tab="t-clients"><i class="fas fa-users"></i> Clients</button>
 <button class="admin-tab" data-tab="t-commandes"><i class="fas fa-shopping-bag"></i> Commandes</button>
+<button class="admin-tab" data-tab="t-recu"><i class="fas fa-print"></i> Recu</button>
 <button class="admin-tab" data-tab="t-parametres"><i class="fas fa-cog"></i> Parametres</button>
 <button class="admin-tab" data-tab="t-apparence"><i class="fas fa-palette"></i> Apparence</button>
 <button class="admin-tab" data-tab="t-securite"><i class="fas fa-key"></i> Securite</button>
@@ -801,6 +872,55 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <!-- COMMANDES -->
 <div id="t-commandes" class="admin-sec">
 <div class="admin-panel"><div class="panel-title"><i class="fas fa-shopping-bag"></i> Toutes les commandes <span id="nb-cmd" style="color:#CC1818;">(0)</span></div><div id="orders-list"></div></div>
+</div>
+
+<!-- RECU -->
+<div id="t-recu" class="admin-sec">
+<div class="recu-grid">
+<div class="admin-panel">
+<div class="panel-title"><i class="fas fa-print"></i> Aspect du recu de commande</div>
+<div class="form-grid">
+<div class="form-group"><label>Format par defaut</label><select id="rc-format"><option value="A4">A4 (grand)</option><option value="A5">A5 (moitie de A4)</option></select></div>
+<div class="form-group"><label>Titre du recu</label><input type="text" id="rc-titre"></div>
+</div>
+<div class="form-group"><label>Logo du recu</label>
+<div class="upload-zone"><input type="file" id="rc-logo-file" accept="image/*" onchange="chargerLogoRecu(this)"><i class="fas fa-upload"></i><p>Importer un logo pour le recu</p><span>Sinon le logo du site est utilise</span></div>
+<img id="rc-logo-prev" style="display:none;max-height:70px;margin-top:8px;" alt="Logo">
+<button type="button" class="bsm b-del" id="rc-logo-del" onclick="retirerLogoRecu()" style="display:none;margin-top:6px;"><i class="fas fa-trash"></i> Retirer ce logo</button></div>
+<div class="form-grid">
+<div class="form-group"><label>Position de l en-tete</label><select id="rc-logoPosition"><option value="gauche">Logo a gauche, coordonnees a droite</option><option value="droite">Logo a droite, coordonnees a gauche</option><option value="centre">Tout centre</option></select></div>
+<div class="form-group"><label>Hauteur du logo (px)</label><input type="number" id="rc-logoHauteur" min="30" max="160"></div>
+<div class="form-group"><label>Nom affiche (vide = nom du site)</label><input type="text" id="rc-nomSociete"></div>
+<div class="form-group"><label>Couleur principale</label><input type="color" id="rc-couleur" style="height:40px;padding:2px;"></div>
+<div class="form-group"><label>Client / Commande</label><select id="rc-disposition"><option value="cote">Cote a cote</option><option value="empile">L un sous l autre</option></select></div>
+<div class="form-group"><label>Taille du texte</label><input type="number" id="rc-police" min="10" max="16"></div>
+</div>
+<div class="form-group"><label>Informations legales (RCCM, NCC, compte bancaire...) - une par ligne</label><textarea id="rc-infosLegales" rows="3" placeholder="RCCM : CI-SPE-2020-B-XXXX&#10;NCC : XXXXXXX"></textarea></div>
+<label style="font-weight:700;font-size:13px;text-transform:uppercase;">Elements a afficher</label>
+<div class="recu-chk">
+<label><input type="checkbox" id="rc-afficherLogo"> Logo</label>
+<label><input type="checkbox" id="rc-afficherAdresse"> Adresse</label>
+<label><input type="checkbox" id="rc-afficherTelephone"> Telephone</label>
+<label><input type="checkbox" id="rc-afficherEmail"> E-mail</label>
+<label><input type="checkbox" id="rc-afficherClient"> Bloc client</label>
+<label><input type="checkbox" id="rc-afficherDates"> Dates et statut</label>
+<label><input type="checkbox" id="rc-afficherPU"> Colonne prix unitaire</label>
+<label><input type="checkbox" id="rc-afficherMontantLettres"> Montant en lettres</label>
+<label><input type="checkbox" id="rc-afficherModePaiement"> Mode de paiement (cases)</label>
+<label><input type="checkbox" id="rc-afficherSignatures"> Signatures</label>
+</div>
+<div class="form-grid">
+<div class="form-group"><label>Signature 1</label><input type="text" id="rc-signature1"></div>
+<div class="form-group"><label>Signature 2</label><input type="text" id="rc-signature2"></div>
+</div>
+<div class="form-group"><label>Pied de page</label><input type="text" id="rc-piedPage"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+<button class="btn" onclick="sauvegarderRecu()"><i class="fas fa-save"></i> Enregistrer</button>
+<button class="btn rouge" onclick="reinitialiserRecu()"><i class="fas fa-undo"></i> Reinitialiser</button>
+</div>
+</div>
+<div class="admin-panel recu-prev"><div class="panel-title"><i class="fas fa-eye"></i> Apercu (exemple)</div><iframe id="recu-preview" title="Apercu du recu"></iframe></div>
+</div>
 </div>
 
 <!-- PARAMETRES -->
@@ -1019,7 +1139,8 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <div style="margin-top:14px;font-weight:700;font-size:13px;text-transform:uppercase;">Envoyer ma commande par :</div>
 <div class="canal-box">
 <label class="canal-opt"><input type="radio" name="canal-cmd" value="whatsapp" checked><i class="fab fa-whatsapp" style="color:#25D366;font-size:20px;"></i> WhatsApp</label>
-<label class="canal-opt"><input type="radio" name="canal-cmd" value="email"><i class="fas fa-envelope" style="color:#0D2B6B;font-size:18px;"></i> E-mail</label>
+<label class="canal-opt"><input type="radio" name="canal-cmd" value="email"><i class="fas fa-envelope" style="color:#0D2B6B;font-size:18px;"></i> E-mail (Gmail)</label>
+<label class="canal-opt"><input type="radio" name="canal-cmd" value="mailto"><i class="fas fa-at" style="color:#6b7280;font-size:18px;"></i> Autre messagerie</label>
 </div>
 <button class="btn" id="validate-order" style="width:100%;justify-content:center;padding:14px;margin-top:12px;"><i class="fas fa-check-circle"></i> Valider la commande</button>
 </div>
@@ -1059,7 +1180,8 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 </div>
 </div>
 <div class="form-group"><label>Votre commentaire</label><textarea id="note-commentaire" rows="3" placeholder="Partagez votre experience..."></textarea></div>
-<button class="btn" onclick="submitNote()" style="width:100%;justify-content:center;"><i class="fas fa-paper-plane"></i> Publier mon avis</button>
+<button class="btn" id="note-submit-btn" onclick="submitNote()" style="width:100%;justify-content:center;"><i class="fas fa-paper-plane"></i> Publier mon avis</button>
+<button class="btn rouge" id="note-del-btn" onclick="retirerMonAvis()" style="width:100%;justify-content:center;margin-top:10px;display:none;"><i class="fas fa-trash"></i> Retirer mon avis</button>
 </div>
 </div>
 <div id="forgot-modal" class="modal">
@@ -1130,7 +1252,7 @@ favoris = [],
 noteSelectionnee = 0,
 chartCA = null,
 chartSt = null,
-compteSection = "profil";
+compteSection = "apercu";
 
 window.produits = produits;
 window.siteConfig = siteConfig;
@@ -1612,7 +1734,7 @@ btn.disabled = false;
 updateAll();
 renderCharts();
 showToast("Connexion admin reussie !");
-if (window.fbAdminLogin) window.fbAdminLogin(input).then(function(ok) { if (!ok) showToast("Admin non connecte a Firebase : les modifications risquent de ne pas s enregistrer", "error"); });
+if (window.fbAdminLogin) window.fbAdminLogin(input).then(function(ok) { if (!ok) showToast("Admin non connecte a Firebase : les modifications risquent de ne pas s enregistrer", "error"); else if (window.fbMigrerAvis) window.fbMigrerAvis(); });
 }
 
 function lockAdmin() { adminUnlocked = false;
@@ -1718,24 +1840,62 @@ parseInt(s.dataset.v);
 document.querySelectorAll(".star-opt").forEach(function(x) { x.style.color = parseInt(x.dataset.v) <=
 noteSelectionnee ? "#f59e0b" : "#d1d5db"; }); }); });
 
+function monAvis(prod) {
+if (!prod || !utilisateurConnecte) return null;
+var uid = window._firebaseUser ? window._firebaseUser.uid : (utilisateurConnecte.uid || "");
+return (prod.avis || []).find(function(a) { return (uid && a.clientUid === uid) || a.clientId === utilisateurConnecte.id; }) || null;
+}
+
+function colorerEtoiles() { document.querySelectorAll(".star-opt").forEach(function(x) { x.style.color = parseInt(x.dataset.v) <= noteSelectionnee ? "#f59e0b" : "#d1d5db"; }); }
+
 function ouvrirNote(pid) { if (!utilisateurConnecte) { showToast("Connectez-vous pour noter", "error"); return; }
+var prod = produits.find(function(p) { return p.id === pid; });
+var mine = monAvis(prod);
 document.getElementById("note-pid").value = pid;
-document.getElementById("note-commentaire").value = "";
-noteSelectionnee = 0;
-document.querySelectorAll(".star-opt").forEach(function(s) { s.style.color = "#d1d5db"; });
+document.getElementById("note-commentaire").value = mine ? (mine.commentaire || "") : "";
+noteSelectionnee = mine ? mine.note : 0;
+colorerEtoiles();
+document.getElementById("note-del-btn").style.display = mine ? "flex" : "none";
+document.getElementById("note-submit-btn").innerHTML = mine ? '<i class="fas fa-save"></i> Modifier mon avis' : '<i class="fas fa-paper-plane"></i> Publier mon avis';
 openModal("note-modal"); }
 
-function submitNote() { var pid = parseInt(document.getElementById("note-pid").value); if (!noteSelectionnee) { showToast(
-"Selectionnez une note", "error"); return; } var prod = produits.find(function(p) { return p.id === pid; }); if (
-!prod) return; if (!prod.avis) prod.avis = []; if (prod.avis.find(function(a) { return a.clientId ===
-utilisateurConnecte.id; })) { showToast("Vous avez deja note ce produit", "error"); return; }
-prod.avis.push({ clientId: utilisateurConnecte.id, clientNom: utilisateurConnecte.nom, note: noteSelectionnee,
-commentaire: document.getElementById("note-commentaire").value.trim(), date: new Date().toISOString() });
-window.produits = produits;
-saveAll();
-updateAll();
-closeModal("note-modal");
-showToast("Merci pour votre avis !"); }
+function submitNote() {
+var pid = parseInt(document.getElementById("note-pid").value);
+if (!noteSelectionnee) { showToast("Selectionnez une note", "error"); return; }
+var prod = produits.find(function(p) { return p.id === pid; }); if (!prod) return;
+if (!window._firebaseUser) { showToast("Session expiree : reconnectez-vous", "error"); return; }
+var uid = window._firebaseUser.uid, mine = monAvis(prod), idx = produits.indexOf(prod);
+var key = (mine && mine._k !== undefined) ? mine._k : uid;
+var avis = { clientId: utilisateurConnecte.id, clientUid: uid, clientNom: nomUtilisateur(utilisateurConnecte) || utilisateurConnecte.nom, note: noteSelectionnee,
+commentaire: document.getElementById("note-commentaire").value.trim(), date: new Date().toISOString() };
+window.fbSaveAvis(idx, key, avis).then(function() {
+if (mine) { Object.assign(mine, avis); } else { avis._k = key; prod.avis.push(avis); }
+updateAll(); closeModal("note-modal");
+showToast(mine ? "Avis modifie !" : "Merci pour votre avis !");
+}).catch(function(e) { showToast("Avis NON enregistre (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
+
+function retirerMonAvis() {
+var pid = parseInt(document.getElementById("note-pid").value);
+var prod = produits.find(function(p) { return p.id === pid; }); var mine = monAvis(prod);
+if (!mine) { closeModal("note-modal"); return; }
+if (!confirm("Retirer votre avis sur ce produit ?")) return;
+var key = mine._k !== undefined ? mine._k : (mine.clientUid || ""), idx = produits.indexOf(prod);
+if (key === "") { showToast("Avis introuvable", "error"); return; }
+window.fbSaveAvis(idx, key, null).then(function() {
+prod.avis = prod.avis.filter(function(a) { return a !== mine; });
+updateAll(); closeModal("note-modal"); showToast("Votre avis a ete retire");
+}).catch(function(e) { showToast("Avis NON retire (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
+
+function adminSupprimerAvis(pid, key) {
+var prod = produits.find(function(p) { return p.id === pid; }); if (!prod) return;
+if (!confirm("Supprimer cet avis ?")) return;
+window.fbSaveAvis(produits.indexOf(prod), key, null).then(function() {
+prod.avis = prod.avis.filter(function(a) { return String(a._k) !== String(key); });
+updateAll(); showToast("Avis supprime");
+}).catch(function(e) { showToast("Avis NON supprime (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
 
 // FAVORIS
 function toggleFav(pid) { if (!utilisateurConnecte) { showToast("Connectez-vous pour ajouter aux favoris", "error"); return; }
@@ -1882,7 +2042,10 @@ prods.push({ nom: p.nom, quantite: item.quantite });
 
 var num = genererNumeroCommande();
 var rc = document.querySelector('input[name="canal-cmd"]:checked');
-var canal = (rc && rc.value === "email") ? "email" : "whatsapp";
+var modeEnvoi = rc ? rc.value : "whatsapp";
+var canal = (modeEnvoi === "whatsapp") ? "whatsapp" : "email";
+var mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+var viaGmail = (modeEnvoi === "email" && !mobile);
 
 var cmd = {
 id: Date.now(),
@@ -1892,6 +2055,12 @@ clientUid: window._firebaseUser ? window._firebaseUser.uid : (utilisateurConnect
 clientNom: nomUtilisateur(utilisateurConnecte) || utilisateurConnecte.nom,
 clientEmail: utilisateurConnecte.email,
 clientTel: utilisateurConnecte.telephoneAffiche || utilisateurConnecte.telephone || "",
+clientType: utilisateurConnecte.typeCompte || "particulier",
+clientSociete: utilisateurConnecte.societe || "",
+clientRccm: utilisateurConnecte.rccm || "",
+clientNcc: utilisateurConnecte.ncc || "",
+clientAdresse: [utilisateurConnecte.adresse, utilisateurConnecte.quartier, utilisateurConnecte.ville].filter(Boolean).join(", "),
+clientIndications: utilisateurConnecte.indications || "",
 canal: canal,
 produits: prods.map(function(p) { return { nom: p.nom, quantite: p.quantite, prix: 0 }; }),
 total: total,
@@ -1901,7 +2070,8 @@ statut: "En attente WhatsApp"
 
 if (!window._firebaseUser) return showToast("Session expiree : reconnectez-vous pour commander", "error");
 var btnV = document.getElementById("validate-order"); if (btnV) btnV.disabled = true;
-var waWin = (canal === "whatsapp") ? window.open("", "_blank") : null;
+var waWin = (canal === "whatsapp" || viaGmail) ? window.open("", "_blank") : null;
+if (waWin) { try { waWin.document.write('<p style="font-family:Arial,sans-serif;padding:30px;font-size:18px;">Enregistrement de votre commande en cours...</p>'); } catch (x) {} }
 var panierBackup = panier.slice();
 window.fbSaveCommande(cmd).then(function() {
 if (!window.commandes.some(function(c) { return c.id === cmd.id; })) window.commandes.push(cmd);
@@ -1913,7 +2083,7 @@ if (window.renderCompte) window.renderCompte();
 closeModal("cart-modal");
 if (btnV) btnV.disabled = false;
 showToast(canal === "email" ? "Commande enregistree ! Ouverture de votre messagerie..." : "Commande enregistree ! Redirection vers WhatsApp...");
-ouvrirWhatsAppCommande(cmd, prods, waWin);
+ouvrirWhatsAppCommande(cmd, prods, waWin, viaGmail);
 }).catch(function(e) {
 if (btnV) btnV.disabled = false;
 if (waWin) waWin.close();
@@ -1922,7 +2092,7 @@ showToast("Commande NON enregistree (" + ((e && e.code) || "erreur reseau") + ")
 });
 }
 
-function ouvrirWhatsAppCommande(cmd, prods, waWin) {
+function ouvrirWhatsAppCommande(cmd, prods, waWin, viaGmail) {
 var num = cmd.numero;
 
 var ligneProduits = prods.map(function(p) {
@@ -1933,14 +2103,20 @@ var txt = "NOUVELLE COMMANDE - LE SOLIDAIRE SARL\n\n" +
 "Numero : " + num + "\n" +
 "Client : " + cmd.clientNom + "\n" +
 "Email : " + cmd.clientEmail + "\n" +
-(cmd.clientTel ? "Telephone : " + cmd.clientTel + "\n" : "") + "\n" +
+(cmd.clientSociete ? "Societe : " + cmd.clientSociete + "\n" : "") + (cmd.clientTel ? "Telephone : " + cmd.clientTel + "\n" : "") + (cmd.clientAdresse ? "Livraison : " + cmd.clientAdresse + "\n" : "") + "\n" +
 "Produits :\n" + ligneProduits +
 "\n\nTotal : a confirmer avec vous" +
 "\n\nDate : " + new Date(cmd.date).toLocaleDateString('fr-FR') +
 "\n\nMerci de confirmer la disponibilite, les prix et le delai de livraison.";
 
 if (cmd.canal === "email") {
-window.location.href = "mailto:" + (siteConfig.email || "") + "?subject=" + encodeURIComponent("Nouvelle commande " + num + " - " + cmd.clientNom) + "&body=" + encodeURIComponent(txt);
+var dest = siteConfig.email || "", sujet = "Nouvelle commande " + num + " - " + cmd.clientNom;
+if (viaGmail && waWin && !waWin.closed) {
+waWin.location.href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(dest) + "&su=" + encodeURIComponent(sujet) + "&body=" + encodeURIComponent(txt);
+} else {
+if (waWin && !waWin.closed) waWin.close();
+window.location.href = "mailto:" + dest + "?subject=" + encodeURIComponent(sujet) + "&body=" + encodeURIComponent(txt);
+}
 return;
 }
 var waUrl = "https://wa.me/" + siteConfig.whatsapp + "?text=" + encodeURIComponent(txt);
@@ -1972,69 +2148,141 @@ var tabEl = document.querySelector(".compte-tab[data-onglet='" + onglet + "']");
 if (tabEl) tabEl.classList.add("active");
 }
 
+function nomCompte(u) { if (!u) return ""; if (u.typeCompte === "entreprise" && u.societe) return u.societe; return nomUtilisateur(u); }
+function completudeProfil(u) {
+var ent = (u.typeCompte === "entreprise");
+var champs = [["nom", u.nomAffiche || u.nom], ["telephone", u.telephoneAffiche || u.telephone], ["ville", u.ville], ["adresse", u.adresse]];
+if (ent) champs = [["raison sociale", u.societe]].concat(champs, [["RCCM", u.rccm], ["NCC", u.ncc]]);
+var manq = champs.filter(function(c) { return !c[1] || !String(c[1]).trim(); }).map(function(c) { return c[0]; });
+return { pct: Math.round(100 * (champs.length - manq.length) / champs.length), manquants: manq };
+}
+function majTypeCompte() {
+var r = document.querySelector('input[name="pf-type"]:checked'); var ent = r && r.value === "entreprise";
+var b = document.getElementById("pf-bloc-societe"); if (b) b.style.display = ent ? "" : "none";
+var t = document.getElementById("pf-titre-contact"); if (t) t.textContent = ent ? "Personne a contacter" : "Identite";
+var t2 = document.getElementById("pf-titre-adr"); if (t2) t2.textContent = ent ? "Adresse du siege / de livraison" : "Adresse de livraison";
+}
+
+function majInscription() {
+var r = document.querySelector('input[name="r-type"]:checked'); var ent = r && r.value === "entreprise";
+var b = document.getElementById("r-bloc-societe"); if (b) b.style.display = ent ? "" : "none";
+var l = document.getElementById("r-lbl-nom"); if (l) l.textContent = ent ? "Nom du contact" : "Nom";
+}
+
 function renderCompte() {
 var el = document.getElementById("compte-content");
+if (champActif(el)) return;
 if (utilisateurConnecte) {
 var mesCmd = window.commandes.filter(function(c) { return c.clientId === window.utilisateurConnecte.id; });
 var mesFav = produits.filter(function(p) { return estFav(p.id); });
 var u = utilisateurConnecte;
-var nomAff = nomUtilisateur(u) || u.email;
-var telA = u.telephoneAffiche || u.telephone || "";
-var cmdH = !mesCmd.length ?
-'<div class="empty-state" style="padding:30px 0;"><i class="fas fa-shopping-bag"></i><p>Aucune commande pour le moment</p></div>' :
-mesCmd.slice().reverse().map(function(c) {
-var pl = '<ul class="cmd-prods">' + c.produits.map(function(p) { return '<li>' + escH(p.nom) + ' <b>x' + p.quantite + '</b></li>'; }).join("") + '</ul>';
-var prixH = (c.prixClient != null && c.prixClient !== "") ?
-'<div style="font-weight:700;color:#CC1818;font-size:16px;">' + Number(c.prixClient).toLocaleString('fr-FR') + ' FCFA</div>' :
+var ent = (u.typeCompte === "entreprise");
+var nomAff = nomCompte(u) || u.email;
+var cp = completudeProfil(u);
+var enCours = mesCmd.filter(function(c) { return c.statut !== "Livre" && c.statut !== "Annule"; }).length;
+function cmdCarte(c) {
+var prixOk = (c.prixClient != null && c.prixClient !== "");
+var pl = '<ul class="cmd-prods">' + c.produits.map(function(p) { return '<li>' + escH(p.nom) + ' <b>x' + p.quantite + '</b>' + (prixOk && p.prix > 0 ? ' &mdash; ' + Number(p.prix).toLocaleString('fr-FR') + ' FCFA l unite = <b>' + (p.prix * p.quantite).toLocaleString('fr-FR') + ' FCFA</b>' : '') + '</li>'; }).join("") + '</ul>';
+var prixH = prixOk ?
+'<div style="font-weight:700;color:#CC1818;font-size:16px;">Total : ' + Number(c.prixClient).toLocaleString('fr-FR') + ' FCFA</div>' :
 '<div style="font-size:13px;color:#6b7280;font-style:italic;">Prix communique par LE SOLIDAIRE ' + (c.canal === "email" ? "par e-mail" : "sur WhatsApp") + '</div>';
 return '<div class="cmd-card"><div class="cmd-header"><span style="font-weight:700;color:#0D2B6B;"><i class="fas fa-receipt" style="margin-right:6px;"></i>' + escH(c.numero) +
 '</span><span style="font-size:12px;color:#6b7280;"><i class="fas ' + (c.canal === "email" ? "fa-envelope" : "fa-comment-dots") + '"></i> ' + new Date(c.date).toLocaleDateString('fr-FR') + '</span>' +
 getStatutBadge(c.statut, c.canal) + '</div>' + pl + prixH + '</div>';
-}).join("");
+}
+var cmdH = !mesCmd.length ?
+'<div class="empty-state" style="padding:30px 0;"><i class="fas fa-shopping-bag"></i><p>Aucune commande pour le moment</p></div>' :
+mesCmd.slice().reverse().map(cmdCarte).join("");
 var favH = !mesFav.length ?
 '<div class="empty-state" style="padding:30px 0;"><i class="fas fa-heart"></i><p>Aucun favori</p></div>' :
 '<div class="products-grid">' + mesFav.map(renderCard).join("") + '</div>';
-var profileHtml = '<div class="cpt-sec-title"><i class="fas fa-id-card"></i> Informations personnelles</div>' +
-'<div class="cpt-grid">' +
-'<div class="cpt-field"><label>Nom</label><input type="text" id="ep-nom" value="' + escH(u.nomAffiche || u.nom) + '" placeholder="Votre nom"></div>' +
-'<div class="cpt-field"><label>Prenoms <small>(facultatif)</small></label><input type="text" id="ep-prenoms" value="' + escH(u.prenoms || "") + '" placeholder="Vos prenoms"></div>' +
-'<div class="cpt-field full"><label>Adresse e-mail</label><input type="email" id="ep-email" value="' + escH(u.email) + '" readonly><div class="hint"><i class="fas fa-lock"></i> Votre e-mail sert a vous connecter, il ne peut pas etre modifie ici.</div></div>' +
-'<div class="cpt-field full"><label>Numero de telephone</label><input type="tel" id="ep-tel" value="' + escH(telA) + '" placeholder="+225 07 XX XX XX XX"></div>' +
-'</div><button class="btn" onclick="saveProfil()" style="margin-top:16px;"><i class="fas fa-save"></i> Enregistrer mes informations</button>';
-var securiteHtml = '<div class="cpt-sec-title"><i class="fas fa-shield-alt"></i> Mot de passe</div>' +
+
+var apercuHtml = '<div class="cpt-stats">' +
+'<div class="cpt-stat" onclick="changerOngletCompte(\'commandes\')"><b>' + mesCmd.length + '</b><span>Commandes</span></div>' +
+'<div class="cpt-stat" onclick="changerOngletCompte(\'commandes\')"><b>' + enCours + '</b><span>En cours</span></div>' +
+'<div class="cpt-stat" onclick="changerOngletCompte(\'favoris\')"><b>' + mesFav.length + '</b><span>Favoris</span></div></div>' +
+'<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-bolt"></i> Actions rapides</div><div class="cpt-actions">' +
+'<button class="btn" onclick="navigate(\'produits\')"><i class="fas fa-store"></i> Parcourir les produits</button>' +
+'<button class="btn" onclick="navigate(\'devis\')"><i class="fas fa-file-invoice"></i> Demander un devis</button>' +
+'<button class="btn rouge" onclick="changerOngletCompte(\'profil\')"><i class="fas fa-user-edit"></i> Mettre a jour mon profil</button></div></div>' +
+'<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-clock"></i> Dernieres commandes</div>' +
+(mesCmd.length ? mesCmd.slice(-3).reverse().map(cmdCarte).join("") : '<div class="empty-state" style="padding:20px 0;"><i class="fas fa-shopping-bag"></i><p>Aucune commande pour le moment</p></div>') + '</div>';
+
+function F(id, label, val, o) { o = o || {};
+return '<div class="cpt-field' + (o.full ? ' full' : '') + '"><label>' + label + (o.req ? ' <span class="req">*</span>' : '') + (o.opt ? ' <small>(facultatif)</small>' : '') + '</label>' +
+(o.select ? '<select id="' + id + '">' + o.select.map(function(x) { return '<option value="' + escH(x) + '"' + (x === val ? ' selected' : '') + '>' + escH(x || "-- Choisir --") + '</option>'; }).join("") + '</select>' :
+o.area ? '<textarea id="' + id + '" rows="2" placeholder="' + escH(o.ph || "") + '">' + escH(val) + '</textarea>' :
+'<input type="' + (o.type || "text") + '" id="' + id + '" value="' + escH(val) + '" placeholder="' + escH(o.ph || "") + '"' + (o.ro ? ' readonly' : '') + '>') +
+(o.hint ? '<div class="hint">' + o.hint + '</div>' : '') + '</div>';
+}
+var telA = u.telephoneAffiche || u.telephone || "";
+var profileHtml =
+'<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-id-badge"></i> Type de compte</div><div class="type-cards">' +
+'<label class="type-card"><input type="radio" name="pf-type" value="particulier"' + (!ent ? ' checked' : '') + ' onchange="majTypeCompte()"><i class="fas fa-user"></i><span><b>Particulier</b><small>Achat a titre personnel</small></span></label>' +
+'<label class="type-card"><input type="radio" name="pf-type" value="entreprise"' + (ent ? ' checked' : '') + ' onchange="majTypeCompte()"><i class="fas fa-building"></i><span><b>Entreprise / Societe</b><small>Achat pour une structure, facture au nom de la societe</small></span></label></div></div>' +
+'<div class="compte-card" id="pf-bloc-societe" style="' + (ent ? '' : 'display:none;') + '"><div class="cpt-sec-title"><i class="fas fa-building"></i> Informations de la societe</div><div class="cpt-grid">' +
+F("pf-societe", "Raison sociale", u.societe || "", { req: 1, full: 1, ph: "Ex : ENTREPRISE KOUASSI & FILS SARL" }) +
+F("pf-forme", "Forme juridique", u.formeJuridique || "", { select: ["", "SARL", "SARLU", "SA", "SAS", "Entreprise individuelle", "GIE", "Association / ONG", "Autre"] }) +
+F("pf-secteur", "Secteur d activite", u.secteur || "", { opt: 1, ph: "Ex : BTP, commerce, transport..." }) +
+F("pf-rccm", "N° RCCM", u.rccm || "", { opt: 1, ph: "CI-ABJ-XXXX-X-XXXXX" }) +
+F("pf-ncc", "N° compte contribuable (NCC)", u.ncc || "", { opt: 1, ph: "XXXXXXXX X" }) + '</div></div>' +
+'<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-user"></i> <span id="pf-titre-contact">' + (ent ? 'Personne a contacter' : 'Identite') + '</span></div><div class="cpt-grid">' +
+F("pf-civilite", "Civilite", u.civilite || "", { select: ["", "M.", "Mme", "Mlle"] }) +
+F("pf-fonction", "Fonction", u.fonction || "", { opt: 1, ph: "Ex : Gerant, Conducteur de travaux" }) +
+F("pf-nom", "Nom", u.nomAffiche || u.nom || "", { req: 1, ph: "Votre nom" }) +
+F("pf-prenoms", "Prenoms", u.prenoms || "", { opt: 1, ph: "Vos prenoms" }) + '</div></div>' +
+'<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-address-book"></i> Coordonnees</div><div class="cpt-grid">' +
+F("pf-email", "Adresse e-mail", u.email, { full: 1, ro: 1, type: "email", hint: '<i class="fas fa-lock"></i> Votre e-mail sert a vous connecter, il ne peut pas etre modifie ici.' }) +
+F("pf-tel", "Telephone", telA, { req: 1, type: "tel", ph: "+225 07 XX XX XX XX" }) +
+F("pf-whatsapp", "WhatsApp", u.whatsapp || "", { opt: 1, type: "tel", ph: "Si different du telephone" }) +
+F("pf-contact", "Moyen de contact prefere", u.contactPrefere || "", { select: ["", "WhatsApp", "Appel telephonique", "E-mail"] }) + '</div></div>' +
+'<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-truck"></i> <span id="pf-titre-adr">' + (ent ? 'Adresse du siege / de livraison' : 'Adresse de livraison') + '</span></div><div class="cpt-grid">' +
+F("pf-ville", "Ville / Commune", u.ville || "", { req: 1, ph: "Ex : San Pedro" }) +
+F("pf-quartier", "Quartier", u.quartier || "", { opt: 1, ph: "Ex : Bardot" }) +
+F("pf-adresse", "Adresse / Rue / Lot", u.adresse || "", { full: 1, ph: "Ex : Lot 45, pres du marche" }) +
+F("pf-indic", "Indications pour le livreur", u.indications || "", { full: 1, area: 1, opt: 1, ph: "Point de repere, horaires de reception..." }) + '</div></div>' +
+'<div class="cpt-savebar"><button class="btn" onclick="saveProfil()"><i class="fas fa-save"></i> Enregistrer mes informations</button><span style="font-size:12px;color:#6b7280;"><span style="color:#CC1818;">*</span> champs obligatoires</span></div>';
+var securiteHtml = '<div class="compte-card"><div class="cpt-sec-title"><i class="fas fa-shield-alt"></i> Mot de passe</div>' +
 '<div class="info-box rouge"><i class="fas fa-shield-alt"></i><span>Changez votre mot de passe regulierement pour plus de securite.</span></div>' +
 '<div class="cpt-grid"><div class="cpt-field full"><label>Mot de passe actuel</label><input type="password" id="ep-old"></div>' +
 '<div class="cpt-field"><label>Nouveau mot de passe</label><input type="password" id="ep-new" placeholder="Min 6 caracteres"></div>' +
 '<div class="cpt-field"><label>Confirmer</label><input type="password" id="ep-conf"></div></div>' +
-'<button class="btn rouge" onclick="saveMdp()" style="margin-top:16px;"><i class="fas fa-key"></i> Changer le mot de passe</button>';
+'<button class="btn rouge" onclick="saveMdp()" style="margin-top:16px;"><i class="fas fa-key"></i> Changer le mot de passe</button></div>';
 function tab(id, ico, txt, n) { return '<button class="compte-tab ' + (compteSection === id ? "active" : "") + '" data-onglet="' + id + '" onclick="changerOngletCompte(\'' + id + '\')"><i class="fas ' + ico + '"></i> ' + txt + (n ? ' <span class="tab-count">' + n + '</span>' : '') + '</button>'; }
 function sec(id, html) { return '<div id="compte-section-' + id + '" class="compte-section ' + (compteSection === id ? "active" : "") + '">' + html + '</div>'; }
-el.innerHTML = '<div class="compte-card"><div class="cpt-head"><div class="av-big">' + escH(nomAff.charAt(0).toUpperCase()) + '</div>' +
-'<div class="cpt-id"><div class="cpt-name">' + escH(nomAff) + '</div><div class="cpt-meta"><i class="fas fa-envelope" style="color:#0D2B6B;margin-right:6px;"></i>' + escH(u.email) + '</div>' +
-(telA ? '<div class="cpt-meta"><i class="fas fa-phone" style="color:#0D2B6B;margin-right:6px;"></i>' + escH(telA) + '</div>' : '') +
-'<div class="cpt-chips"><span class="cpt-chip" onclick="changerOngletCompte(\'commandes\')"><i class="fas fa-shopping-bag"></i> Commandes <b>' + mesCmd.length + '</b></span><span class="cpt-chip" onclick="changerOngletCompte(\'favoris\')"><i class="fas fa-heart"></i> Favoris <b>' + mesFav.length + '</b></span></div></div>' +
-'<button class="btn rouge" onclick="logout()" style="align-self:flex-start;"><i class="fas fa-sign-out-alt"></i> Deconnexion</button></div></div>' +
-'<div class="compte-card"><div class="compte-tabs">' + tab("profil", "fa-user-circle", "Mon profil") + tab("commandes", "fa-shopping-bag", "Mes commandes", mesCmd.length) + tab("favoris", "fa-heart", "Mes favoris", mesFav.length) + tab("securite", "fa-key", "Securite") + '</div>' +
-sec("profil", profileHtml) + sec("commandes", cmdH) + sec("favoris", favH) + sec("securite", securiteHtml) + '</div>';
+el.innerHTML = '<div class="cpt-hero"><div class="av-big">' + escH(nomAff.charAt(0).toUpperCase()) + '</div>' +
+'<div class="cpt-hero-id"><span class="cpt-badge"><i class="fas ' + (ent ? 'fa-building' : 'fa-user') + '"></i> ' + (ent ? 'COMPTE ENTREPRISE' : 'COMPTE PARTICULIER') + '</span>' +
+'<div class="cpt-hero-name">' + escH(nomAff) + '</div>' +
+(ent && nomUtilisateur(u) ? '<div class="cpt-hero-sub"><i class="fas fa-user-tie"></i> ' + escH(nomUtilisateur(u)) + '</div>' : '') +
+'<div class="cpt-hero-sub"><i class="fas fa-envelope"></i> ' + escH(u.email) + (telA ? ' &nbsp; <i class="fas fa-phone"></i> ' + escH(telA) : '') + '</div></div>' +
+'<div class="cpt-prog"><div style="font-size:13px;font-weight:700;">Profil complete a ' + cp.pct + '%</div><div class="cpt-prog-bar"><div style="width:' + cp.pct + '%;"></div></div>' +
+(cp.pct < 100 ? '<div style="font-size:12px;opacity:.85;">A renseigner : ' + escH(cp.manquants.join(", ")) + '</div>' : '<div style="font-size:12px;opacity:.85;"><i class="fas fa-check-circle"></i> Profil complet</div>') + '</div></div>' +
+'<div class="cpt-layout"><aside class="compte-card cpt-side">' + tab("apercu", "fa-th-large", "Apercu") + tab("profil", "fa-user-circle", "Mon profil") + tab("commandes", "fa-shopping-bag", "Mes commandes", mesCmd.length) + tab("favoris", "fa-heart", "Mes favoris", mesFav.length) + tab("securite", "fa-key", "Securite") +
+'<button class="compte-tab" onclick="logout()" style="color:#CC1818;"><i class="fas fa-sign-out-alt"></i> Deconnexion</button></aside>' +
+'<div class="cpt-main">' + sec("apercu", apercuHtml) + sec("profil", profileHtml) + sec("commandes", '<div class="compte-card">' + cmdH + '</div>') + sec("favoris", '<div class="compte-card">' + favH + '</div>') + sec("securite", securiteHtml) + '</div></div>';
 } else {
 el.innerHTML =
-'<div class="auth-grid"><div class="compte-card"><div class="panel-title"><i class="fas fa-sign-in-alt"></i> Connexion</div><form id="login-form"><div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="l-pwd" placeholder="Votre mot de passe" required></div><a class="forgot-link" onclick="openModal(\'forgot-modal\')"><i class="fas fa-question-circle"></i> Mot de passe oublie ?</a><button type="submit" class="btn" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-sign-in-alt"></i> Se connecter</button></form></div><div class="compte-card"><div class="panel-title"><i class="fas fa-user-plus"></i> Creer un compte</div><form id="register-form"><div class="form-group"><label>Nom</label><input type="text" id="r-nom" placeholder="Votre nom" required></div><div class="form-group"><label>Prenoms (facultatif)</label><input type="text" id="r-prenoms" placeholder="Vos prenoms"></div><div class="form-group"><label>Email</label><input type="email" id="r-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Telephone</label><input type="tel" id="r-tel" placeholder="+225 07 XX XX XX XX"></div><div class="form-group"><label>Mot de passe</label><input type="password" id="r-pwd" placeholder="Min 6 caracteres" required></div><button type="submit" class="btn" style="width:100%;justify-content:center;"><i class="fas fa-user-plus"></i> Creer mon compte</button></form></div></div>';
+'<div class="auth-grid"><div class="compte-card"><div class="panel-title"><i class="fas fa-sign-in-alt"></i> Connexion</div><form id="login-form"><div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="l-pwd" placeholder="Votre mot de passe" required></div><a class="forgot-link" onclick="openModal(\'forgot-modal\')"><i class="fas fa-question-circle"></i> Mot de passe oublie ?</a><button type="submit" class="btn" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-sign-in-alt"></i> Se connecter</button></form></div><div class="compte-card"><div class="panel-title"><i class="fas fa-user-plus"></i> Creer un compte</div><form id="register-form"><div class="form-group"><label>Vous etes</label><div class="type-cards"><label class="type-card"><input type="radio" name="r-type" value="particulier" checked onchange="majInscription()"><i class="fas fa-user"></i><span><b>Particulier</b></span></label><label class="type-card"><input type="radio" name="r-type" value="entreprise" onchange="majInscription()"><i class="fas fa-building"></i><span><b>Entreprise</b></span></label></div></div><div class="form-group" id="r-bloc-societe" style="display:none;"><label>Raison sociale</label><input type="text" id="r-societe" placeholder="Nom de la societe"></div><div class="form-group"><label id="r-lbl-nom">Nom</label><input type="text" id="r-nom" placeholder="Votre nom" required></div><div class="form-group"><label>Prenoms (facultatif)</label><input type="text" id="r-prenoms" placeholder="Vos prenoms"></div><div class="form-group"><label>Email</label><input type="email" id="r-email" placeholder="votre@email.com" required></div><div class="form-group"><label>Telephone</label><input type="tel" id="r-tel" placeholder="+225 07 XX XX XX XX"></div><div class="form-group"><label>Mot de passe</label><input type="password" id="r-pwd" placeholder="Min 6 caracteres" required></div><button type="submit" class="btn" style="width:100%;justify-content:center;"><i class="fas fa-user-plus"></i> Creer mon compte</button></form></div></div>';
 document.getElementById("login-form").addEventListener("submit", handleLogin);
 document.getElementById("register-form").addEventListener("submit", handleRegister);
 }
 }
 
 function saveProfil() {
-var ne = document.getElementById("ep-nom"), pe = document.getElementById("ep-prenoms"), te = document.getElementById("ep-tel");
-if (!ne) { showToast("Erreur champs", "error"); return; }
-var nom = ne.value.trim(), prenoms = pe ? pe.value.trim() : "", tel = te ? te.value.trim() : "";
-if (!nom) { showToast("Le nom ne peut pas etre vide", "error"); return; }
+function v(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+if (!document.getElementById("pf-nom")) { showToast("Erreur champs", "error"); return; }
+var r = document.querySelector('input[name="pf-type"]:checked'); var type = (r && r.value === "entreprise") ? "entreprise" : "particulier";
+if (type === "entreprise" && !v("pf-societe")) { showToast("Indiquez la raison sociale de la societe", "error"); return; }
+if (!v("pf-nom")) { showToast("Le nom ne peut pas etre vide", "error"); return; }
+if (!v("pf-tel")) { showToast("Indiquez votre numero de telephone", "error"); return; }
 var idx = utilisateurs.findIndex(function(u) { return u.id === utilisateurConnecte.id; });
 if (idx < 0) { showToast("Compte introuvable", "error"); return; }
 var avant = JSON.stringify(utilisateurs[idx]);
-utilisateurs[idx].nomAffiche = nom;
-utilisateurs[idx].prenoms = prenoms;
-utilisateurs[idx].telephoneAffiche = tel;
+Object.assign(utilisateurs[idx], { typeCompte: type, civilite: v("pf-civilite"), nomAffiche: v("pf-nom"), prenoms: v("pf-prenoms"), fonction: v("pf-fonction"),
+societe: type === "entreprise" ? v("pf-societe") : "", formeJuridique: type === "entreprise" ? v("pf-forme") : "", secteur: type === "entreprise" ? v("pf-secteur") : "",
+rccm: type === "entreprise" ? v("pf-rccm") : "", ncc: type === "entreprise" ? v("pf-ncc") : "",
+telephoneAffiche: v("pf-tel"), whatsapp: v("pf-whatsapp"), contactPrefere: v("pf-contact"),
+ville: v("pf-ville"), quartier: v("pf-quartier"), adresse: v("pf-adresse"), indications: v("pf-indic") });
 utilisateurConnecte = utilisateurs[idx];
 window.utilisateurs = utilisateurs;
 window.utilisateurConnecte = utilisateurConnecte;
@@ -2117,17 +2365,19 @@ showToast("Email ou mot de passe incorrect", "error"); } } }
 
 function handleRegister(e) { e.preventDefault(); var nom = document.getElementById("r-nom").value.trim(),
 prenoms = document.getElementById("r-prenoms") ? document.getElementById("r-prenoms").value.trim() : "",
+typeC = (document.querySelector('input[name="r-type"]:checked') || {}).value === "entreprise" ? "entreprise" : "particulier",
+societe = document.getElementById("r-societe") ? document.getElementById("r-societe").value.trim() : "",
 email = document.getElementById("r-email").value.trim().toLowerCase(),
 tel = document.getElementById("r-tel").value.trim(),
 pwd = document.getElementById("r-pwd").value,
-btn = e.target.querySelector("button[type=submit]"); if (pwd.length < 6) { showToast(
+btn = e.target.querySelector("button[type=submit]"); if (typeC === "entreprise" && !societe) { showToast("Indiquez la raison sociale", "error"); return; } if (pwd.length < 6) { showToast(
 "Minimum 6 caracteres", "error"); return; } if (utilisateurs.find(function(u) { return u.email
 .toLowerCase() === email; })) { showToast("Cet email est deja utilise", "error"); return; } if (btn) { btn
 .innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inscription...';
 btn.disabled = true; } function restore() { if (btn) { btn.innerHTML =
 '<i class="fas fa-user-plus"></i> Creer mon compte';
 btn.disabled = false; } } if (window.fbInscription) { window.fbInscription(email, pwd).then(function(r) { if (
-r.ok) { var nu = { id: Date.now(), uid: r.uid, nom: nom, prenoms: prenoms, email: email, telephone: tel,
+r.ok) { var nu = { id: Date.now(), uid: r.uid, typeCompte: typeC, societe: typeC === 'entreprise' ? societe : '', nom: nom, prenoms: prenoms, email: email, telephone: tel,
 password: pwd, dateInscription: new Date().toISOString() };
 utilisateurs.push(nu);
 window.utilisateurs = utilisateurs;
@@ -2251,7 +2501,7 @@ showToast("Produit supprime"); }
 function renderAvis() { var el = document.getElementById("avis-list"); if (!el) return; var tousAvis = [];
 produits.forEach(function(p) { (p.avis || []).forEach(function(a) { tousAvis.push({ produitNom: p.nom,
 produitId: p.id, clientNom: a.clientNom, note: a.note, commentaire: a.commentaire,
-date: a.date, clientId: a.clientId }); }); }); var nbEl = document.getElementById("nb-avis"); if (
+date: a.date, clientId: a.clientId, key: a._k }); }); }); var nbEl = document.getElementById("nb-avis"); if (
 nbEl) nbEl.textContent = "(" + tousAvis.length + ")"; if (!tousAvis.length) { el.innerHTML =
 '<div class="empty-state" style="padding:30px 0;"><i class="fas fa-star"></i><p>Aucun avis client pour le moment</p></div>';
 return; }
@@ -2263,9 +2513,10 @@ a.produitNom + '</span><span style="color:#6b7280;font-size:12px;margin-left:8px
 .toLocaleDateString('fr-FR') + '</span></div><div style="color:#f59e0b;font-size:15px;margin-bottom:6px;">' +
 renderStars(a.note) + ' <span style="color:#6b7280;font-size:12px;">(' + a.note +
 '/5)</span></div>' + (a.commentaire ?
-'<div style="font-size:13px;color:#333;font-style:italic;">"' + a.commentaire +
+'<div style="font-size:13px;color:#333;font-style:italic;">"' + escH(a.commentaire) +
 '"</div>' :
 '<div style="font-size:12px;color:#9ba3af;">Aucun commentaire</div>') +
+(a.key !== undefined ? '<div style="margin-top:8px;"><button class="bsm b-del" onclick="adminSupprimerAvis(' + a.produitId + ',\'' + String(a.key).replace(/[^A-Za-z0-9_-]/g, "") + '\')"><i class="fas fa-trash"></i> Supprimer</button></div>' : '') +
 '</div>';
 }).join(""); }
 
@@ -2332,37 +2583,233 @@ deltas.forEach(function(x) { x[0].stock -= x[1]; if (window.fbSaveStock) window.
 updateAll();
 showToast("Statut NON enregistre (" + ((e && e.code) || "erreur") + ")", "error"); }); }
 
-function definirPrixCommande(cid) {
+var STATUTS_CMD = ["En attente WhatsApp", "En preparation", "Expedie", "Livre", "Annule"];
+
+function fmtF(n) { return Number(n).toLocaleString('fr-FR'); }
+
+function majTotalCmd(cid) {
 var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
-var v = document.getElementById("px-" + cid).value.trim();
-var ap = cmd.prixClient, at = cmd.total;
-if (v === "") { cmd.prixClient = null; } else { var n = Number(v); if (isNaN(n) || n < 0) return showToast("Prix invalide", "error"); cmd.prixClient = n; cmd.total = n; }
-window.fbUpdateStatut(cmd).then(function() { saveLocal(); updateAll(); showToast(v === "" ? "Prix masque pour le client" : "Prix enregistre : le client le voit"); }).catch(function(e) {
-cmd.prixClient = ap; cmd.total = at; updateAll(); showToast("Prix NON enregistre (" + ((e && e.code) || "erreur") + ")", "error"); });
+var tot = 0, tous = true;
+cmd.produits.forEach(function(p, i) {
+var v = parseFloat((document.getElementById("pu-" + cid + "-" + i) || {}).value);
+var lt = document.getElementById("lt-" + cid + "-" + i);
+if (v > 0) { tot += v * p.quantite; if (lt) lt.textContent = fmtF(v * p.quantite); } else { tous = false; if (lt) lt.textContent = "-"; }
+});
+var te = document.getElementById("tot-" + cid); if (te) te.textContent = tous ? fmtF(tot) + " FCFA" : "-";
 }
 
-function renderOrdres() { var el = document.getElementById("orders-list"); if (!el) return; if (!commandes.length) { el
+function enregistrerPrixCommande(cid) {
+var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
+var vals = cmd.produits.map(function(p, i) { return (document.getElementById("pu-" + cid + "-" + i).value || "").trim(); });
+var backup = JSON.stringify({ p: cmd.produits, pc: cmd.prixClient, t: cmd.total });
+if (vals.every(function(v) { return v === ""; })) {
+cmd.produits.forEach(function(p) { p.prix = 0; }); cmd.prixClient = null;
+} else {
+var tot = 0;
+for (var i = 0; i < vals.length; i++) { var n = Number(vals[i]); if (vals[i] === "" || isNaN(n) || n <= 0) { showToast("Renseignez le prix de chaque article", "error"); return; } }
+cmd.produits.forEach(function(p, i) { p.prix = Number(vals[i]); tot += p.prix * p.quantite; });
+cmd.total = tot; cmd.prixClient = tot;
+}
+window.fbUpdateStatut(cmd).then(function() { saveLocal(); updateAll(); showToast(cmd.prixClient == null ? "Prix retires : le client ne voit plus de prix" : "Prix enregistres : total " + fmtF(cmd.prixClient) + " FCFA"); }).catch(function(e) {
+var o = JSON.parse(backup); cmd.produits = o.p; cmd.prixClient = o.pc; cmd.total = o.t; updateAll();
+showToast("Prix NON enregistres (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
+
+/* ---- Nombre en lettres (francais) ---- */
+var _U = ["zero", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
+var _T = ["", "", "vingt", "trente", "quarante", "cinquante", "soixante"];
+function _m100(n, fin) {
+if (n < 20) return _U[n];
+var d = Math.floor(n / 10), u = n % 10;
+if (d < 7) return _T[d] + (u === 1 ? " et un" : u ? "-" + _U[u] : "");
+if (d === 7) return "soixante" + (u === 1 ? " et onze" : "-" + _U[10 + u]);
+if (d === 8) return u === 0 ? (fin ? "quatre-vingts" : "quatre-vingt") : "quatre-vingt-" + _U[u];
+return "quatre-vingt-" + _U[10 + u];
+}
+function _m1000(n, fin) {
+var c = Math.floor(n / 100), r = n % 100, t = "";
+if (c) t = (c === 1 ? "cent" : _U[c] + " cent") + (c > 1 && r === 0 && fin ? "s" : "");
+if (r) t += (t ? " " : "") + _m100(r, fin);
+return t;
+}
+function nombreEnLettres(n) {
+n = Math.round(n); if (n === 0) return "zero";
+var md = Math.floor(n / 1e9), m = Math.floor((n % 1e9) / 1e6), k = Math.floor((n % 1e6) / 1e3), r = n % 1000, p = [];
+if (md) p.push(_m1000(md, false) + " milliard" + (md > 1 ? "s" : ""));
+if (m) p.push(_m1000(m, false) + " million" + (m > 1 ? "s" : ""));
+if (k) p.push(k === 1 ? "mille" : _m1000(k, false) + " mille");
+if (r) p.push(_m1000(r, true));
+return p.join(" ");
+}
+
+var RECU_DEFAUT = { format: "A4", titre: "REÇU DE COMMANDE", afficherLogo: true, logoData: null, logoPosition: "gauche", logoHauteur: 70, nomSociete: "", couleur: "#0D2B6B",
+disposition: "cote", police: 13, infosLegales: "", afficherAdresse: true, afficherTelephone: true, afficherEmail: true, afficherClient: true, afficherDates: true, afficherPU: true,
+afficherMontantLettres: true, afficherModePaiement: false, afficherSignatures: true, signature1: "Le client", signature2: "Le responsable", piedPage: "Merci de votre confiance" };
+var _recuLogo = null;
+function getRecuCfg() { var c = Object.assign({}, RECU_DEFAUT, siteConfig.recu || {}); if (!(siteConfig.recu && siteConfig.recu.couleur)) c.couleur = siteConfig.colorSecondary || RECU_DEFAUT.couleur; return c; }
+
+function construireRecuHTML(cmd, cfg, format, apercu) {
+var A5 = (format === "A5");
+var fs = (Number(cfg.police) || 13) * (A5 ? 0.88 : 1);
+var coul = cfg.couleur || "#0D2B6B";
+var logoSrc = cfg.logoData || siteConfig.logoData;
+var logo = (cfg.afficherLogo && logoSrc) ? '<img src="' + logoSrc + '" style="max-height:' + Math.round((Number(cfg.logoHauteur) || 70) * (A5 ? 0.85 : 1)) + 'px;max-width:220px;object-fit:contain;display:block;">' : '';
+var nom = cfg.nomSociete || siteConfig.companyName || "";
+var ct = [];
+if (cfg.afficherAdresse && siteConfig.adresse) ct.push(escH(siteConfig.adresse));
+if (cfg.afficherTelephone && siteConfig.telephone) ct.push("Tél : " + escH(siteConfig.telephone) + (siteConfig.telephone2 ? " / " + escH(siteConfig.telephone2) : ""));
+if (cfg.afficherEmail && siteConfig.email) ct.push(escH(siteConfig.email));
+(cfg.infosLegales || "").split("\n").forEach(function(l) { if (l.trim()) ct.push(escH(l.trim())); });
+var ident = '<div>' + logo + '<div class="co">' + escH(nom) + '</div></div>';
+var coord = '<div class="sm">' + ct.join("<br>") + '</div>';
+var entete;
+if (cfg.logoPosition === "centre") entete = '<div class="top c1"><div style="display:flex;flex-direction:column;align-items:center;">' + (logo ? logo.replace("display:block", "display:block;margin:0 auto 4px") : '') + '<div class="co">' + escH(nom) + '</div></div>' + coord + '</div>';
+else if (cfg.logoPosition === "droite") entete = '<div class="top">' + coord.replace('class="sm"', 'class="sm" style="text-align:left;"') + ident + '</div>';
+else entete = '<div class="top">' + ident + coord.replace('class="sm"', 'class="sm" style="text-align:right;"') + '</div>';
+var stLabel = { "En preparation": "En préparation", "Expedie": "Expédié", "Livre": "Livré" }[cmd.statut] || cmd.statut;
+var cl = [];
+if (cmd.clientSociete) { cl.push('<b>' + escH(cmd.clientSociete) + '</b>'); cl.push('Contact : ' + escH(cmd.clientNom)); if (cmd.clientRccm) cl.push('RCCM : ' + escH(cmd.clientRccm)); if (cmd.clientNcc) cl.push('NCC : ' + escH(cmd.clientNcc)); }
+else cl.push('<b>' + escH(cmd.clientNom) + '</b>');
+if (cmd.clientTel) cl.push('Tél : ' + escH(cmd.clientTel));
+if (cmd.clientEmail) cl.push(escH(cmd.clientEmail));
+if (cmd.clientAdresse) cl.push(escH(cmd.clientAdresse));
+var boxes = "";
+if (cfg.afficherClient) boxes += '<div><span class="bt">Client</span><br>' + cl.join('<br>') + '</div>';
+if (cfg.afficherDates) boxes += '<div><span class="bt">Commande</span><br>Date : ' + new Date(cmd.date).toLocaleDateString('fr-FR') + '<br>Édité le : ' + new Date().toLocaleDateString('fr-FR') + '<br>Statut : ' + escH(stLabel) + '</div>';
+var lignes = cmd.produits.map(function(p, i) {
+return '<tr><td class="c">' + (i + 1) + '</td><td>' + escH(p.nom) + '</td><td class="c">' + p.quantite + '</td>' + (cfg.afficherPU ? '<td class="r">' + fmtF(p.prix) + '</td>' : '') + '<td class="r">' + fmtF(p.prix * p.quantite) + '</td></tr>';
+}).join("");
+var total = cmd.produits.reduce(function(t, p) { return t + p.prix * p.quantite; }, 0);
+var lettres = nombreEnLettres(total); lettres = lettres.charAt(0).toUpperCase() + lettres.slice(1);
+var marge = A5 ? "8mm" : "14mm";
+return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu ' + escH(cmd.numero) + '</title><style>' +
+'@page{size:' + (A5 ? "A5" : "A4") + ';margin:' + marge + ';}*{box-sizing:border-box;}body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:' + fs + 'px;margin:0;' + (apercu ? 'max-width:' + (A5 ? 560 : 794) + 'px;margin:0 auto;padding:18px;' : '') + '}' +
+'.top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:3px solid ' + coul + ';padding-bottom:10px;margin-bottom:14px;}.top.c1{flex-direction:column;text-align:center;}.top.c1 .sm{text-align:center;}' +
+'.co{font-size:' + (fs * 1.5) + 'px;font-weight:800;color:' + coul + ';}.sm{color:#555;font-size:' + (fs * 0.92) + 'px;line-height:1.5;}' +
+'h1{text-align:center;font-size:' + (fs * 1.7) + 'px;letter-spacing:1px;margin:4px 0 2px;color:' + coul + ';}.num{text-align:center;font-weight:700;margin-bottom:14px;}' +
+'.box{display:flex;' + (cfg.disposition === "empile" ? 'flex-direction:column;' : '') + 'gap:12px;margin-bottom:14px;}.box>div{flex:1;border:1px solid #ccc;border-radius:6px;padding:8px 12px;line-height:1.55;}.bt{font-weight:800;color:' + coul + ';}' +
+'table{width:100%;border-collapse:collapse;margin-bottom:10px;}th{background:' + coul + ';color:#fff;padding:7px;font-size:' + (fs * 0.92) + 'px;text-align:left;}' +
+'td{border-bottom:1px solid #ddd;padding:7px;}.c{text-align:center;}.r{text-align:right;}' +
+'.tot{display:flex;justify-content:flex-end;margin-bottom:8px;}.tot div{border:2px solid ' + coul + ';padding:7px 16px;font-size:' + (fs * 1.25) + 'px;font-weight:800;}' +
+'.let{margin:8px 0 14px;font-style:italic;}.pay{margin:8px 0 14px;}.sig{display:flex;justify-content:space-between;margin-top:' + (A5 ? 22 : 32) + 'px;}.sig div{width:44%;text-align:center;border-top:1px solid #333;padding-top:6px;}' +
+'.foot{margin-top:24px;text-align:center;color:#777;font-size:' + (fs * 0.85) + 'px;border-top:1px solid #ddd;padding-top:8px;}' +
+'</style></head><body>' + entete +
+'<h1>' + escH(cfg.titre || "REÇU DE COMMANDE") + '</h1><div class="num">N° ' + escH(cmd.numero) + '</div>' +
+(boxes ? '<div class="box">' + boxes + '</div>' : '') +
+'<table><thead><tr><th class="c" style="width:34px;">N°</th><th>Désignation</th><th class="c" style="width:50px;">Qté</th>' + (cfg.afficherPU ? '<th class="r" style="width:100px;">Prix unit. (FCFA)</th>' : '') + '<th class="r" style="width:110px;">Montant (FCFA)</th></tr></thead><tbody>' + lignes + '</tbody></table>' +
+'<div class="tot"><div>TOTAL : ' + fmtF(total) + ' FCFA</div></div>' +
+(cfg.afficherMontantLettres ? '<div class="let">Arrêté le présent reçu à la somme de : <b>' + escH(lettres) + ' francs CFA</b>.</div>' : '') +
+(cfg.afficherModePaiement ? '<div class="pay">Mode de paiement : &#9744; Espèces &nbsp; &#9744; Mobile Money &nbsp; &#9744; Chèque &nbsp; &#9744; Virement</div>' : '') +
+(cfg.afficherSignatures ? '<div class="sig"><div>' + escH(cfg.signature1 || "") + '</div><div>' + escH(cfg.signature2 || "") + '</div></div>' : '') +
+(cfg.piedPage ? '<div class="foot">' + escH(cfg.piedPage) + '</div>' : '') +
+'</body></html>';
+}
+
+function imprimerRecu(cid, fmt) {
+var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
+if (cmd.prixClient == null || !(cmd.prixClient > 0)) { showToast("Renseignez le prix de chaque article puis cliquez sur Enregistrer les prix", "error"); return; }
+if (cmd.statut === "En attente WhatsApp" || cmd.statut === "Annule") { showToast("Le recu s imprime une fois la commande acceptee (En preparation, Expedie ou Livre)", "error"); return; }
+var sel = document.getElementById("fmt-" + cid);
+var format = fmt || (sel ? sel.value : getRecuCfg().format);
+var html = construireRecuHTML(cmd, getRecuCfg(), format, false);
+var w = window.open("", "_blank");
+if (w) { w.document.open(); w.document.write(html); w.document.close(); setTimeout(function() { try { w.focus(); w.print(); } catch (x) {} }, 500); return; }
+var f = document.createElement("iframe"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;";
+document.body.appendChild(f); f.contentDocument.open(); f.contentDocument.write(html); f.contentDocument.close();
+setTimeout(function() { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(function() { document.body.removeChild(f); }, 2000); }, 500);
+}
+
+/* ---- Reglages du recu (admin) ---- */
+var RC_TXT = ["format", "titre", "logoPosition", "logoHauteur", "nomSociete", "couleur", "disposition", "police", "infosLegales", "signature1", "signature2", "piedPage"];
+var RC_BOOL = ["afficherLogo", "afficherAdresse", "afficherTelephone", "afficherEmail", "afficherClient", "afficherDates", "afficherPU", "afficherMontantLettres", "afficherModePaiement", "afficherSignatures"];
+function lireRecuForm() {
+var c = {};
+RC_TXT.forEach(function(k) { var e = document.getElementById("rc-" + k); if (e) c[k] = e.value; });
+RC_BOOL.forEach(function(k) { var e = document.getElementById("rc-" + k); if (e) c[k] = e.checked; });
+c.logoHauteur = Number(c.logoHauteur) || 70; c.police = Number(c.police) || 13; c.logoData = _recuLogo;
+return c;
+}
+function majLogoRecuUI() {
+var p = document.getElementById("rc-logo-prev"), d = document.getElementById("rc-logo-del");
+if (p) { p.style.display = _recuLogo ? "block" : "none"; if (_recuLogo) p.src = _recuLogo; }
+if (d) d.style.display = _recuLogo ? "inline-flex" : "none";
+}
+function remplirRecuForm() {
+var c = getRecuCfg(); _recuLogo = c.logoData || null;
+RC_TXT.forEach(function(k) { var e = document.getElementById("rc-" + k); if (e) e.value = c[k] == null ? "" : c[k]; });
+RC_BOOL.forEach(function(k) { var e = document.getElementById("rc-" + k); if (e) e.checked = !!c[k]; });
+majLogoRecuUI(); apercuRecu();
+if (!window._rcBound) { window._rcBound = true;
+RC_TXT.concat(RC_BOOL).forEach(function(k) { var e = document.getElementById("rc-" + k); if (e) { e.addEventListener("input", apercuRecu); e.addEventListener("change", apercuRecu); } }); }
+}
+function apercuRecu() {
+var f = document.getElementById("recu-preview"); if (!f) return;
+var cfg = lireRecuForm();
+var ex = { numero: "LESOL-20261118-004", clientNom: "Kouakou Issouf", clientSociete: "ENTREPRISE EXEMPLE SARL", clientRccm: "CI-SPE-2020-B-0000", clientNcc: "0000000 A", clientTel: "07 00 00 00 00", clientEmail: "client@exemple.com", clientAdresse: "Lot 45, Bardot, San Pedro",
+date: new Date().toISOString(), statut: "En preparation", produits: [{ nom: "CIMENT CIMAF 50kg", quantite: 10, prix: 4200 }, { nom: "PEINTURE VINYLUX 20L", quantite: 2, prix: 25000 }, { nom: "BROUETTE METALLIQUE", quantite: 1, prix: 28000 }] };
+f.srcdoc = construireRecuHTML(ex, cfg, cfg.format, true);
+}
+function sauvegarderRecu() { siteConfig.recu = lireRecuForm(); window.siteConfig = siteConfig; saveAll(); showToast("Aspect du recu enregistre !"); }
+function reinitialiserRecu() { if (!confirm("Remettre le recu a son aspect d origine ?")) return; delete siteConfig.recu; window.siteConfig = siteConfig; saveAll(); remplirRecuForm(); showToast("Recu reinitialise"); }
+function retirerLogoRecu() { _recuLogo = null; majLogoRecuUI(); apercuRecu(); }
+function chargerLogoRecu(input) {
+var f = input.files && input.files[0]; if (!f) return;
+var r = new FileReader();
+r.onload = function(e) { var img = new Image(); img.onload = function() {
+var k = Math.min(1, 500 / img.width, 250 / img.height), cv = document.createElement("canvas");
+cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+_recuLogo = cv.toDataURL("image/png"); majLogoRecuUI(); apercuRecu(); }; img.src = e.target.result; };
+r.readAsDataURL(f);
+}
+
+/* ---- Suppression de commandes ---- */
+function barreSelectionCmd() {
+return '<div class="cmd-toolbar"><label><input type="checkbox" id="sel-all-cmd" onchange="toutSelectionnerCmd(this.checked)"> Tout selectionner</label>' +
+'<button class="btn rouge" id="btn-del-sel" onclick="supprimerSelectionCmd()" disabled><i class="fas fa-trash"></i> Supprimer la selection (0)</button></div>';
+}
+function idsSelectionnes() { return Array.prototype.map.call(document.querySelectorAll(".sel-cmd:checked"), function(x) { return Number(x.value); }); }
+function majSelectionCmd() {
+var n = idsSelectionnes().length, b = document.getElementById("btn-del-sel");
+if (b) { b.disabled = !n; b.innerHTML = '<i class="fas fa-trash"></i> Supprimer la selection (' + n + ')'; }
+var all = document.getElementById("sel-all-cmd"), tot = document.querySelectorAll(".sel-cmd").length; if (all) all.checked = (n > 0 && n === tot);
+}
+function toutSelectionnerCmd(v) { document.querySelectorAll(".sel-cmd").forEach(function(x) { x.checked = v; }); majSelectionCmd(); }
+function supprimerSelectionCmd() { supprimerCommandes(idsSelectionnes()); }
+function supprimerCommandes(ids) {
+var cmds = ids.map(function(id) { return commandes.find(function(c) { return c.id === id; }); }).filter(Boolean); if (!cmds.length) return;
+var msg = cmds.length === 1 ? "Supprimer definitivement la commande " + cmds[0].numero + " ?" : "Supprimer definitivement ces " + cmds.length + " commandes ?";
+if (!confirm(msg + "\\nCette action est irreversible.")) return;
+Promise.all(cmds.map(function(c) { return Promise.all((c._ks && c._ks.length ? c._ks : [String(c.id)]).map(function(k) { return window.fbSupprimerCle(k); })); })).then(function() {
+cmds.filter(function(c) { return c.stockDeduit; }).forEach(function(c) { c.produits.forEach(function(it) { var p = produits.find(function(x) { return x.nom === it.nom; }); if (p) { p.stock += it.quantite; window.fbSaveStock(produits.indexOf(p), p.stock).catch(function() {}); } }); });
+window.commandes = commandes.filter(function(c) { return ids.indexOf(c.id) < 0; }); commandes = window.commandes;
+saveLocal(); updateAll(); showToast(cmds.length === 1 ? "Commande supprimee" : cmds.length + " commandes supprimees");
+}).catch(function(e) { showToast("Suppression NON effectuee (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
+
+function champActif(el) { var a = document.activeElement; return !!(el && a && el.contains(a) && /INPUT|TEXTAREA|SELECT/.test(a.tagName)); }
+
+function renderOrdres() { var el = document.getElementById("orders-list"); if (!el) return; if (champActif(el)) return; if (!commandes.length) { el
 .innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune commande</p></div>'; return; }
-el.innerHTML = commandes.slice().reverse().map(function(c) {
-var pl = c.produits.map(function(p) { return p.nom + ' x' + p.quantite; }).join(', ');
-return '<div class="order-card"><div class="order-header"><span class="order-id"><i class="fas fa-receipt" style="margin-right:6px;"></i>' +
-c.numero + '</span>' + (c.canal === 'email' ? '<span style="font-size:12px;color:#0D2B6B;"><i class="fas fa-envelope"></i> E-mail</span>' : '<span style="font-size:12px;color:#1e7e34;"><i class="fab fa-whatsapp"></i> WhatsApp</span>') + getStatutBadge(c.statut, c.canal) +
-'</div><div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-user" style="color:#0D2B6B;margin-right:5px;"></i><strong>' +
-c.clientNom + '</strong> &mdash; ' + c.clientEmail + (c.clientTel ? ' &mdash; ' + c.clientTel : '') + ' &mdash; ' + new Date(c.date)
-.toLocaleDateString('fr-FR') +
-'</div><div style="font-size:13px;color:#6b7280;margin-bottom:8px;"><i class="fas fa-box" style="color:#0D2B6B;margin-right:5px;"></i>' +
-pl +
-'</div><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;"><span style="font-weight:700;color:#CC1818;font-size:16px;">' +
-(c.total || 0).toLocaleString('fr-FR') +
-' FCFA</span><span style="display:flex;align-items:center;gap:6px;"><input type="number" min="0" id="px-' + c.id + '" value="' + (c.prixClient != null ? c.prixClient : "") + '" placeholder="Prix client (FCFA)" style="width:150px;padding:6px 10px;border:1.5px solid #e0e2e7;border-radius:6px;font-size:13px;"><button class="btn" onclick="definirPrixCommande(' + c.id + ')" style="padding:6px 12px;font-size:12px;"><i class="fas fa-save"></i> Prix</button></span><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;font-weight:600;color:#6b7280;">Statut :</span><select class="statut-select" onchange="changerStatut(' +
-c.id + ',this.value)"><option value="En attente WhatsApp"' + (c.statut === "En attente WhatsApp" ?
-" selected" : "") +
-'>En attente WhatsApp</option><option value="En preparation"' + (c.statut === "En preparation" ?
-" selected" : "") + '>En preparation</option><option value="Expedie"' + (c.statut ===
-"Expedie" ? " selected" : "") +
-'>Expedie</option><option value="Livre"' + (c.statut === "Livre" ? " selected" : "") +
-'>Livre</option><option value="Annule"' + (c.statut === "Annule" ? " selected" : "") +
-'>Annule</option></select></div></div></div>';
+el.innerHTML = barreSelectionCmd() + commandes.slice().reverse().map(function(c) {
+var tous = c.produits.every(function(p) { return p.prix > 0; });
+var tot = tous ? c.produits.reduce(function(t, p) { return t + p.prix * p.quantite; }, 0) : 0;
+var lignes = c.produits.map(function(p, i) {
+var pu = p.prix > 0 ? p.prix : "";
+return '<tr><td>' + escH(p.nom) + '</td><td style="text-align:center;">' + p.quantite + '</td><td><input type="number" min="0" step="any" class="pu-input" id="pu-' + c.id + '-' + i + '" value="' + pu + '" placeholder="Prix unitaire" oninput="majTotalCmd(' + c.id + ')"></td><td style="text-align:right;font-weight:600;" id="lt-' + c.id + '-' + i + '">' + (pu ? fmtF(pu * p.quantite) : '-') + '</td></tr>';
+}).join("");
+var opts = STATUTS_CMD.map(function(st) { return '<option value="' + st + '"' + (c.statut === st ? " selected" : "") + '>' + st + '</option>'; }).join("");
+return '<div class="order-card"><div class="order-header"><span class="order-id"><input type="checkbox" class="sel-cmd" value="' + c.id + '" onchange="majSelectionCmd()" style="margin-right:8px;transform:scale(1.2);"><i class="fas fa-receipt" style="margin-right:6px;"></i>' + escH(c.numero) + '</span>' +
+(c.canal === 'email' ? '<span style="font-size:12px;color:#0D2B6B;"><i class="fas fa-envelope"></i> E-mail</span>' : '<span style="font-size:12px;color:#1e7e34;"><i class="fab fa-whatsapp"></i> WhatsApp</span>') + getStatutBadge(c.statut, c.canal) +
+'</div><div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-user" style="color:#0D2B6B;margin-right:5px;"></i>' + (c.clientSociete ? '<strong>' + escH(c.clientSociete) + '</strong> &mdash; ' : '') + '<strong>' + escH(c.clientNom) + '</strong> &mdash; ' + escH(c.clientEmail) + (c.clientTel ? ' &mdash; ' + escH(c.clientTel) : '') + ' &mdash; ' + new Date(c.date).toLocaleDateString('fr-FR') + '</div>' +
+(c.clientAdresse ? '<div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-map-marker-alt" style="color:#0D2B6B;margin-right:5px;"></i>' + escH(c.clientAdresse) + (c.clientIndications ? ' &mdash; <em>' + escH(c.clientIndications) + '</em>' : '') + '</div>' : '') +
+'<div class="tbl-wrap"><table class="tbl-cmd"><thead><tr><th>Article</th><th style="text-align:center;">Qte</th><th>Prix unitaire (FCFA)</th><th style="text-align:right;">Montant</th></tr></thead><tbody>' + lignes + '</tbody></table></div>' +
+'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;"><span style="font-weight:700;font-size:15px;">TOTAL : <span id="tot-' + c.id + '" style="color:#CC1818;">' + (tous ? fmtF(tot) + ' FCFA' : '-') + '</span></span>' +
+'<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;font-weight:600;color:#6b7280;">Statut :</span><select class="statut-select" onchange="changerStatut(' + c.id + ',this.value)">' + opts + '</select></div></div>' +
+'<div class="cmd-actions"><button class="btn" onclick="enregistrerPrixCommande(' + c.id + ')"><i class="fas fa-save"></i> Enregistrer les prix</button>' +
+'<select class="statut-select" id="fmt-' + c.id + '" title="Format du recu"><option value="A4"' + (getRecuCfg().format === "A4" ? " selected" : "") + '>A4</option><option value="A5"' + (getRecuCfg().format === "A5" ? " selected" : "") + '>A5</option></select>' +
+'<button class="btn rouge" onclick="imprimerRecu(' + c.id + ')"><i class="fas fa-print"></i> Imprimer le recu</button>' +
+'<button class="btn" style="background:#6b7280;" onclick="supprimerCommandes([' + c.id + '])"><i class="fas fa-trash"></i> Supprimer</button></div></div>';
 }).join(""); }
 
 function renderPromos() { var el = document.getElementById("promos-list"); if (!el) return; var proms = produits.filter(
@@ -2689,6 +3136,7 @@ document.querySelectorAll(".admin-sec").forEach(function(s) { s.classList.remove
 tab.classList.add("active");
 var sec = document.getElementById(tab.dataset.tab); if (sec) sec.classList.add("active");
 if (tab.dataset.tab === "t-dashboard") setTimeout(renderCharts, 100);
+if (tab.dataset.tab === "t-recu") remplirRecuForm();
 }); });
 document.querySelectorAll(".upload-zone").forEach(function(z) { z.addEventListener("dragover", function(e) {
 e.preventDefault();
