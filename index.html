@@ -378,6 +378,13 @@ font-size: 13px;
 .recu-prev{position:sticky;top:10px;}
 .recu-prev iframe{width:100%;height:680px;border:1px solid #e0e2e7;border-radius:8px;background:#fff;}
 @media(max-width:900px){.recu-grid{grid-template-columns:1fr;}.recu-prev{position:static;}}
+.cmd-filtres{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.cmd-filtre{border:1.5px solid #e0e2e7;background:#fff;border-radius:20px;padding:6px 14px;font-weight:600;font-size:13px;cursor:pointer;color:#6b7280;}
+.cmd-filtre.active{background:#0D2B6B;border-color:#0D2B6B;color:#fff;}
+.tag-devis{background:#fff3e0;color:#e65100;border-radius:10px;font-size:11px;font-weight:800;padding:2px 9px;}
+.devis-texte{background:#f2f3f5;border-radius:8px;padding:10px 12px;font-size:13px;margin:6px 0;color:#374151;}
+.dispo-tag{font-size:11px;font-weight:700;border-radius:10px;padding:1px 8px;margin-left:4px;}
+.dispo-ok{background:#e6f4ea;color:#1e7e34;}.dispo-ko{background:#fdecea;color:#c62828;}.dispo-cmd{background:#fff3e0;color:#e65100;}
 .tbl-wrap{overflow-x:auto;}
 .tbl-cmd{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0;}
 .tbl-cmd th{background:#f2f3f5;text-align:left;padding:8px 10px;font-size:12px;text-transform:uppercase;}
@@ -393,7 +400,7 @@ font-size: 13px;
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 const firebaseConfig = {
 apiKey: "AIzaSyAYuW1paoh7x1DICOiJMLd5kRICipFaptE",
@@ -408,17 +415,12 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 window._db = db; window._ref = ref; window._set = set; window._get = get; window._auth = auth;
-window.fbSave = function() {
-try {
-var lg = function(n) { return function(e) { console.error("Firebase refuse l'ecriture de " + n, e && e.code, e); }; };
-set(ref(db, 'ls/produits'), window.produits || []).catch(lg('produits'));
-set(ref(db, 'ls/config'), window.siteConfig || {}).catch(lg('config'));
-set(ref(db, 'ls/utilisateurs'), window.utilisateurs || []).catch(lg('utilisateurs'));
-set(ref(db, 'ls/realisations'), window.realisations || []).catch(lg('realisations'));
-set(ref(db, 'ls/favoris'), window.favoris || []).catch(lg('favoris'));
-} catch (e) { console.log("fbSave err", e); }
-};
-/* Commandes : jamais reecrites en bloc. Une commande = un enregistrement ls/commandes/<id> */
+var ADMIN_EMAIL = "comptabilite@lesolidaire.com";
+function estAdmin(u) { return !!(u && (u.email || "").toLowerCase() === ADMIN_EMAIL); }
+window.estAdminFb = function() { return estAdmin(auth.currentUser); };
+try { localStorage.removeItem("ls_users"); localStorage.removeItem("ls_commandes"); } catch (e) {}
+function propre(o) { var c = {}; Object.keys(o).forEach(function(k) { if (k.charAt(0) !== "_") c[k] = o[k]; }); return c; }
+function propreUser(u) { var c = propre(u); delete c.password; return c; }
 window.toArr = function(v) {
 if (!v) return [];
 var m = {}, ks = {};
@@ -426,11 +428,38 @@ var keys = Array.isArray(v) ? v.map(function(x, i) { return String(i); }) : Obje
 keys.forEach(function(k) { var x = v[k]; if (x && typeof x === "object" && x.id !== undefined) { m[x.id] = x; (ks[x.id] = ks[x.id] || []).push(k); } });
 return Object.keys(m).map(function(id) { m[id]._ks = ks[id]; return m[id]; });
 };
-function propre(o) { var c = {}; Object.keys(o).forEach(function(k) { if (k.charAt(0) !== "_") c[k] = o[k]; }); return c; }
-window.fbSupprimerCle = function(key) { return set(ref(db, 'ls/commandes/' + key), null); };
-window.fbSaveCommande = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), propre(cmd)); };
-window.fbUpdateStatut = function(cmd) { return set(ref(db, 'ls/commandes/' + cmd.id), propre(cmd)); };
-window.fbSaveUser = function(idx, u) { return set(ref(db, 'ls/utilisateurs/' + idx), u); };
+function listeObjets(v) { if (!v) return []; return (Array.isArray(v) ? v : Object.values(v)).filter(function(x) { return x && typeof x === "object"; }); }
+
+/* ---------- Ecritures ---------- */
+window.fbSave = function() {
+if (!estAdmin(auth.currentUser)) return;
+var lg = function(n) { return function(e) { console.error("Firebase refuse l'ecriture de " + n, e && e.code, e); }; };
+var cfg = Object.assign({}, window.siteConfig || {}); delete cfg.adminPassword;
+var prods = (window.produits || []).map(function(p) { var c = Object.assign({}, p); c.avis = (p.avis || []).map(propre); return c; });
+set(ref(db, 'ls/produits'), prods).catch(lg('produits'));
+set(ref(db, 'ls/config'), cfg).catch(lg('config'));
+set(ref(db, 'ls/realisations'), window.realisations || []).catch(lg('realisations'));
+};
+window.cuid = function(cmd) { return cmd.clientUid || "_sans_compte"; };
+function cmdPath(cmd) { return (cmd.type === "devis" && !cmd.clientUid) ? 'devis/' + cmd.id : 'clients/' + window.cuid(cmd) + '/commandes/' + cmd.id; }
+window.fbSaveCommande = function(cmd) { return set(ref(db, cmdPath(cmd)), propre(cmd)); };
+window.fbUpdateStatut = window.fbSaveCommande;
+window.fbSupprimerCmd = function(cmd) { return set(ref(db, cmdPath(cmd)), null); };
+window.fbNumero = function(prefix) {
+var d = new Date(), ds = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+return runTransaction(ref(db, 'compteurs/' + prefix + '_' + ds), function(cur) { return (cur || 0) + 1; }).then(function(r) {
+return prefix + '-' + ds + '-' + String(r.snapshot.val()).padStart(3, '0');
+});
+};
+window.fbSaveUser = function(idx, u) { return set(ref(db, 'clients/' + u.uid + '/profil'), propreUser(u)); };
+window.fbSaveFavoris = function() {
+var u = auth.currentUser; if (!u || estAdmin(u)) return Promise.resolve();
+var id = window.utilisateurConnecte && window.utilisateurConnecte.id;
+var mine = (window.favoris || []).filter(function(f) { return String(f).indexOf(id + "_") === 0; });
+return set(ref(db, 'clients/' + u.uid + '/favoris'), mine.length ? mine : null);
+};
+window.fbNettoyer = function() { if (!estAdmin(auth.currentUser)) return Promise.resolve(); return set(ref(db, 'ls/config/adminPassword'), null); };
+window.fbSaveStock = function(idx, stock) { return set(ref(db, 'ls/produits/' + idx + '/stock'), stock); };
 window.avisToArr = function(v) {
 if (!v) return [];
 var out = [];
@@ -453,61 +482,134 @@ if (oldK !== undefined && String(oldK) !== u.uid) return set(ref(db, 'ls/produit
 });
 });
 };
-window.fbSaveStock = function(idx, stock) { return set(ref(db, 'ls/produits/' + idx + '/stock'), stock); };
-window.fbLoad = function() {
-document.getElementById("loading-overlay").style.display = "flex";
-get(ref(db, 'ls')).then(function(snap) {
-if (snap.exists()) {
-var d = snap.val();
-if (d.produits && Array.isArray(d.produits)) {
-window.produits = d.produits;
+
+/* ---------- Lecture : catalogue public ---------- */
+function appliquerPublic(key, v) {
+if (key === "produits") {
+if (Array.isArray(v)) {
+window.produits = v;
 window.produits.forEach(function(p) { p.avis = window.avisToArr(p.avis); if (p.prixOriginal === undefined) p.prixOriginal = null; });
 if (window.produits.length > 0) window.nextId = Math.max.apply(Math, window.produits.map(function(p) { return p.id; })) + 1;
 }
-if (d.config) window.siteConfig = Object.assign(window.siteConfig || {}, d.config);
-if (d.utilisateurs && Array.isArray(d.utilisateurs)) { window.utilisateurs = d.utilisateurs;
-localStorage.setItem("ls_users", JSON.stringify(d.utilisateurs)); }
-{ window.commandes = window.toArr(d.commandes);
-commandes = window.commandes;
-localStorage.setItem("ls_commandes", JSON.stringify(window.commandes)); }
-if (d.realisations && Array.isArray(d.realisations)) window.realisations = d.realisations;
-if (d.favoris && Array.isArray(d.favoris)) window.favoris = d.favoris;
-var su = localStorage.getItem("ls_cu");
-if (su && su != "null") { var so = JSON.parse(su); var ue = window.utilisateurs.find(function(u) { return u.id === so.id; }); if (ue) window.utilisateurConnecte = ue;
-else localStorage.removeItem("ls_cu"); }
+} else if (key === "config") {
+if (v) { var c = Object.assign({}, v); delete c.adminPassword; window.siteConfig = Object.assign(window.siteConfig || {}, c); delete window.siteConfig.adminPassword; }
+} else if (key === "realisations") {
+if (Array.isArray(v)) window.realisations = v;
 }
-document.getElementById("loading-overlay").style.display = "none";
-if (window.updateAll) window.updateAll();
-if (window.updateTicker) window.updateTicker();
-if (window.appliquerLogo) window.appliquerLogo();
-if (window.appliquerBannieres) window.appliquerBannieres();
-if (window.appliquerPagesLegales) window.appliquerPagesLegales();
-if (window.initRecherche) window.initRecherche();
-}).catch(function(e) { document.getElementById("loading-overlay").style.display = "none"; if (window.updateAll) window.updateAll(); });
-};
-onValue(ref(db, 'ls'), function(snap) {
-if (!snap.exists()) return;
-var d = snap.val();
-if (d.produits && Array.isArray(d.produits)) {
-window.produits = d.produits;
-window.produits.forEach(function(p) { p.avis = window.avisToArr(p.avis); if (p.prixOriginal === undefined) p.prixOriginal = null; });
-if (window.produits.length > 0) window.nextId = Math.max.apply(Math, window.produits.map(function(p) { return p.id; })) + 1;
 }
-if (d.config) window.siteConfig = Object.assign(window.siteConfig || {}, d.config);
-if (d.utilisateurs && Array.isArray(d.utilisateurs)) { window.utilisateurs = d.utilisateurs;
-localStorage.setItem("ls_users", JSON.stringify(d.utilisateurs)); }
-{ window.commandes = window.toArr(d.commandes);
-commandes = window.commandes;
-localStorage.setItem("ls_commandes", JSON.stringify(window.commandes)); }
-if (d.realisations && Array.isArray(d.realisations)) window.realisations = d.realisations;
-if (d.favoris && Array.isArray(d.favoris)) window.favoris = d.favoris;
+function rafraichir() {
 if (window.updateAll) window.updateAll();
 if (window.applyColors) window.applyColors();
 if (window.updateTicker) window.updateTicker();
 if (window.appliquerLogo) window.appliquerLogo();
 if (window.appliquerBannieres) window.appliquerBannieres();
 if (window.appliquerPagesLegales) window.appliquerPagesLegales();
+}
+var CLES_PUBLIQUES = ["produits", "config", "realisations"];
+window.fbLoad = function() {
+var ov = document.getElementById("loading-overlay"); ov.style.display = "flex";
+Promise.all(CLES_PUBLIQUES.map(function(k) { return get(ref(db, 'ls/' + k)); })).then(function(snaps) {
+snaps.forEach(function(sn, i) { if (sn.exists()) appliquerPublic(CLES_PUBLIQUES[i], sn.val()); });
+ov.style.display = "none"; rafraichir();
+if (window.initRecherche) window.initRecherche();
+}).catch(function(e) { ov.style.display = "none"; if (window.updateAll) window.updateAll(); });
+};
+CLES_PUBLIQUES.forEach(function(k) {
+onValue(ref(db, 'ls/' + k), function(snap) { if (!snap.exists()) return; appliquerPublic(k, snap.val()); rafraichir(); });
 });
+
+/* ---------- Lecture : donnees privees (clients/<uid>) ---------- */
+var _unsubPrive = null, _unsubDevis = null;
+var _cmClients = [], _cmDevis = [];
+function fusionAdmin() {
+var cm = _cmClients.concat(_cmDevis);
+cm.sort(function(a, b) { return a.id - b.id; });
+window.commandes = cm; commandes = window.commandes;
+}
+function modelAdmin(d) {
+d = d || {};
+var us = [], cm = [];
+Object.keys(d).forEach(function(uid) {
+if (uid === "_meta") return;
+var c = d[uid] || {};
+if (c.profil && typeof c.profil === "object" && !c.profil.supprime) us.push(c.profil);
+window.toArr(c.commandes).forEach(function(x) { if (!x.clientUid && uid !== "_sans_compte") x.clientUid = uid; cm.push(x); });
+});
+window.utilisateurs = us; _cmClients = cm; fusionAdmin();
+}
+function modelClient(uid, d) {
+d = d || {};
+var prof = d.profil;
+if (prof && prof.supprime) { signOut(auth); return; }
+window.commandes = window.toArr(d.commandes); commandes = window.commandes;
+window.favoris = listeObjets(d.favoris).length ? Object.values(d.favoris) : [];
+if (prof) {
+window.utilisateurs = [prof]; window.utilisateurConnecte = prof;
+try { localStorage.setItem("ls_cu", JSON.stringify(prof)); } catch (e) {}
+}
+}
+function viderPrive() {
+window.utilisateurs = []; window.commandes = []; window.favoris = []; window.utilisateurConnecte = null;
+try { localStorage.removeItem("ls_cu"); } catch (e) {}
+}
+onAuthStateChanged(auth, function(user) {
+window._firebaseUser = user;
+if (_unsubPrive) { _unsubPrive(); _unsubPrive = null; }
+if (_unsubDevis) { _unsubDevis(); _unsubDevis = null; }
+_cmClients = []; _cmDevis = [];
+if (!user) { viderPrive(); if (window.updateAll) window.updateAll(); return; }
+if (estAdmin(user)) {
+window.utilisateurConnecte = null;
+_unsubPrive = onValue(ref(db, 'clients'), function(snap) { modelAdmin(snap.val()); if (window.updateAll) window.updateAll(); }, function(e) { console.error("Lecture clients refusee", e && e.code); });
+_unsubDevis = onValue(ref(db, 'devis'), function(snap) { _cmDevis = window.toArr(snap.val()); fusionAdmin(); if (window.updateAll) window.updateAll(); }, function(e) { console.error("Lecture devis refusee", e && e.code); });
+return;
+}
+if (!user.emailVerified) { viderPrive(); if (window.updateAll) window.updateAll(); return; }
+_unsubPrive = onValue(ref(db, 'clients/' + user.uid), function(snap) { modelClient(user.uid, snap.val()); if (window.updateAll) window.updateAll(); }, function(e) { console.error("Lecture du compte refusee", e && e.code); });
+});
+window.fbChargerProfil = function(uid, email) {
+return get(ref(db, 'clients/' + uid + '/profil')).then(function(s) {
+var p = s.val();
+if (p) return p.supprime ? null : p;
+var np = { id: Date.now(), uid: uid, typeCompte: "particulier", nom: (email || "").split("@")[0], email: email, telephone: "", auto: true, dateInscription: new Date().toISOString() };
+return set(ref(db, 'clients/' + uid + '/profil'), np).then(function() { return np; });
+});
+};
+
+/* ---------- Migration des anciennes donnees vers clients/<uid> (admin) ---------- */
+window.fbMigrerClients = function() {
+if (!estAdmin(auth.currentUser)) return Promise.resolve(null);
+return get(ref(db, 'clients/_meta/migre')).then(function(s) {
+if (s.val() === true) return null;
+return Promise.all([get(ref(db, 'ls/utilisateurs')), get(ref(db, 'ls/commandes')), get(ref(db, 'ls/favoris')), get(ref(db, 'clients'))]).then(function(r) {
+var us = listeObjets(r[0].val()), cm = window.toArr(r[1].val()), fv = listeObjets(r[2].val()).length ? Object.values(r[2].val()) : [], ex = r[3].val() || {};
+var byId = {}; us.forEach(function(u) { byId[u.id] = u; });
+var ops = [], n = { clients: 0, commandes: 0, favoris: 0, sansCompte: 0 };
+us.forEach(function(u) {
+if (!u.uid) { n.sansCompte++; return; }
+var e = ex[u.uid] && ex[u.uid].profil; if (e && !e.auto) return;
+ops.push(set(ref(db, 'clients/' + u.uid + '/profil'), propreUser(u))); n.clients++;
+});
+cm.forEach(function(c) {
+var u = byId[c.clientId]; var uid = c.clientUid || (u && u.uid) || "_sans_compte";
+if (ex[uid] && ex[uid].commandes && ex[uid].commandes[c.id]) return;
+var cc = propre(c); cc.clientUid = uid === "_sans_compte" ? "" : uid;
+ops.push(set(ref(db, 'clients/' + uid + '/commandes/' + c.id), cc)); n.commandes++;
+});
+var grp = {};
+fv.forEach(function(k) { var u = byId[String(k).split("_")[0]]; if (u && u.uid) (grp[u.uid] = grp[u.uid] || []).push(k); });
+Object.keys(grp).forEach(function(uid) { if (ex[uid] && ex[uid].favoris) return; ops.push(set(ref(db, 'clients/' + uid + '/favoris'), grp[uid])); n.favoris++; });
+return Promise.all(ops).then(function() { return set(ref(db, 'clients/_meta/migre'), true); }).then(function() { return n; });
+});
+});
+};
+window.fbPurgerAnciennes = function() {
+if (!estAdmin(auth.currentUser)) return Promise.reject({ code: "admin-requis" });
+return get(ref(db, 'clients/_meta/migre')).then(function(s) {
+if (s.val() !== true) return Promise.reject({ code: "migration-non-faite" });
+return Promise.all([set(ref(db, 'ls/utilisateurs'), null), set(ref(db, 'ls/commandes'), null), set(ref(db, 'ls/favoris'), null)]);
+});
+};
 window.fbInscription = function(email, password) {
 return createUserWithEmailAndPassword(auth, email, password).then(function(uc) {
 return sendEmailVerification(uc.user).then(function() { return { ok: true, uid: uc.user.uid }; });
@@ -543,7 +645,7 @@ if (!user) return Promise.resolve({ ok: false, msg: "Non connecte" });
 var cred = EmailAuthProvider.credential(user.email, ancien);
 return reauthenticateWithCredential(user, cred).then(function() { return updatePassword(user, nouveau); }).then(function() { return { ok: true }; }).catch(function(e) {
 var msg = "Erreur";
-if (e.code === "auth/wrong-password") msg = "Ancien mot de passe incorrect";
+if (e.code === "auth/wrong-password" || e.code === "auth/invalid-credential") msg = "Ancien mot de passe incorrect";
 if (e.code === "auth/weak-password") msg = "Nouveau mot de passe trop faible";
 return { ok: false, msg: msg };
 });
@@ -555,10 +657,14 @@ return Promise.resolve({ ok: false });
 };
 window.fbSignOut = function() { return signOut(auth); };
 window.fbAdminLogin = function(pwd) {
-if (auth.currentUser && (auth.currentUser.email || "").toLowerCase() === "comptabilite@lesolidaire.com") return Promise.resolve(true);
-return signInWithEmailAndPassword(auth, "Comptabilite@lesolidaire.com", pwd).then(function() { return true; }).catch(function() { return false; });
+return signInWithEmailAndPassword(auth, "Comptabilite@lesolidaire.com", pwd).then(function() { return { ok: true }; }).catch(function(e) {
+var msg = "Mot de passe incorrect";
+if (e.code === "auth/user-not-found") msg = "Le compte administrateur n existe pas dans Firebase";
+if (e.code === "auth/too-many-requests") msg = "Trop de tentatives. Reessayez plus tard.";
+if (e.code === "auth/network-request-failed") msg = "Pas de connexion internet";
+return { ok: false, msg: msg };
+});
 };
-onAuthStateChanged(auth, function(user) { window._firebaseUser = user; });
 document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { if (window.fbLoad) window.fbLoad(); }, 300); });
 </script>
 </head>
@@ -731,10 +837,10 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <div class="lock-icon"><i class="fas fa-lock"></i></div>
 <div class="lock-title">Administration</div>
 <div class="lock-subtitle">Entrez votre mot de passe pour acceder au panel d administration</div>
-<input type="password" class="lock-input" id="admin-pwd-input" placeholder="..." maxlength="30">
-<div class="lock-error" id="lock-error"><i class="fas fa-exclamation-circle"></i> Mot de passe incorrect</div>
+<input type="password" class="lock-input" id="admin-pwd-input" placeholder="Mot de passe administrateur" maxlength="64" autocomplete="current-password">
+<div class="lock-error" id="lock-error"><i class="fas fa-exclamation-circle"></i> <span id="lock-error-txt">Mot de passe incorrect</span></div>
 <button class="lock-btn" id="lock-btn" onclick="checkAdminPwd()"><i class="fas fa-unlock-alt"></i> Acceder</button>
-<div style="margin-top:16px;font-size:12px;color:#6b7280;">Mot de passe par defaut : <strong>admin123</strong></div>
+<div style="margin-top:16px;font-size:13px;"><a href="#" onclick="resetAdminPwd();return false;" style="color:#0D2B6B;font-weight:600;">Mot de passe oublie ?</a></div>
 </div>
 </div>
 <div id="admin-content" class="admin-content">
@@ -882,6 +988,7 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <div class="form-grid">
 <div class="form-group"><label>Format par defaut</label><select id="rc-format"><option value="A4">A4 (grand)</option><option value="A5">A5 (moitie de A4)</option></select></div>
 <div class="form-group"><label>Titre du recu</label><input type="text" id="rc-titre"></div>
+<div class="form-group"><label>Titre du devis</label><input type="text" id="rc-titreDevis"></div>
 </div>
 <div class="form-group"><label>Logo du recu</label>
 <div class="upload-zone"><input type="file" id="rc-logo-file" accept="image/*" onchange="chargerLogoRecu(this)"><i class="fas fa-upload"></i><p>Importer un logo pour le recu</p><span>Sinon le logo du site est utilise</span></div>
@@ -899,6 +1006,8 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <label style="font-weight:700;font-size:13px;text-transform:uppercase;">Elements a afficher</label>
 <div class="recu-chk">
 <label><input type="checkbox" id="rc-afficherLogo"> Logo</label>
+<label><input type="checkbox" id="rc-afficherNom"> Nom sous le logo</label>
+<label><input type="checkbox" id="rc-afficherTrait"> Trait sous l en-tete</label>
 <label><input type="checkbox" id="rc-afficherAdresse"> Adresse</label>
 <label><input type="checkbox" id="rc-afficherTelephone"> Telephone</label>
 <label><input type="checkbox" id="rc-afficherEmail"> E-mail</label>
@@ -940,6 +1049,14 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <button class="btn" onclick="sauvegarderLogo()"><i class="fas fa-save"></i> Appliquer le logo</button>
 <button class="btn rouge" onclick="supprimerLogo()"><i class="fas fa-times"></i> Supprimer le logo</button>
 </div>
+</div>
+<div class="admin-panel">
+<div class="panel-title"><i class="fas fa-boxes"></i> Affichage du stock</div>
+<div class="toggle-wrap">
+<div class="toggle-info"><div class="ti-title">Afficher le stock sur les articles</div><div class="ti-sub">Si desactive : les clients ne voient plus les quantites (seul « Indisponible » apparait quand le stock est a 0)</div></div>
+<label class="toggle"><input type="checkbox" id="toggle-stock" onchange="toggleStock(this.checked)"><span class="toggle-slider"></span></label>
+</div>
+<div id="stock-status" style="font-size:13px;color:#6b7280;"></div>
 </div>
 <div class="admin-panel">
 <div class="panel-title"><i class="fas fa-eye"></i> Affichage des prix</div>
@@ -1109,9 +1226,17 @@ document.addEventListener("DOMContentLoaded", function() { setTimeout(function()
 <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="pwd-new" placeholder="Nouveau mot de passe (min 6 car.)"></div>
 <div class="form-group"><label>Confirmer</label><input type="password" id="pwd-confirm" placeholder="Confirmer le nouveau mot de passe"></div>
 </div>
-<div class="info-box orange"><i class="fas fa-exclamation-triangle"></i><span>Notez votre mot de passe dans un endroit sur. En cas d oubli, effacez les donnees du navigateur.</span></div>
+<div class="info-box orange"><i class="fas fa-exclamation-triangle"></i><span>Ce mot de passe est celui du compte Firebase Comptabilite@lesolidaire.com. En cas d oubli, utilisez « Mot de passe oublie ? » sur l ecran de connexion admin.</span></div>
 <button type="submit" class="btn rouge"><i class="fas fa-key"></i> Changer le mot de passe</button>
 </form>
+</div>
+<div class="admin-panel">
+<div class="panel-title"><i class="fas fa-database"></i> Confidentialite des donnees clients</div>
+<p style="font-size:13px;color:#6b7280;margin-bottom:12px;">Les profils, commandes et favoris sont maintenant stockes separement pour chaque client : un client ne peut voir que ses propres donnees. La migration des anciennes donnees se lance automatiquement a votre connexion admin.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+<button class="btn" onclick="lancerMigration()"><i class="fas fa-sync"></i> Relancer la migration</button>
+<button class="btn rouge" onclick="purgerAnciennes()"><i class="fas fa-trash"></i> Supprimer les anciennes donnees</button>
+</div>
 </div>
 </div>
 </div>
@@ -1223,7 +1348,6 @@ adresse: "Abidjan, Yopougon, Cote d Ivoire",
 horaires: "Lundi - Samedi : 8h - 18h",
 colorPrimary: "#CC1818",
 colorSecondary: "#0D2B6B",
-adminPassword: "admin123",
 afficherPrix: true,
 logoData: null,
 tickerText: "Livraison rapide partout en Cote d Ivoire|Materiaux BTP de qualite certifiee|Paiement Mobile Money : Orange Money - MTN - Wave|Commandes en gros disponibles",
@@ -1573,9 +1697,9 @@ function saveLocal() {
 try {
 localStorage.setItem("ls_produits", JSON.stringify(produits));
 localStorage.setItem("ls_config", JSON.stringify(siteConfig));
-localStorage.setItem("ls_users", JSON.stringify(utilisateurs));
+if (!window.fbSave) { localStorage.setItem("ls_users", JSON.stringify(utilisateurs));
+localStorage.setItem("ls_commandes", JSON.stringify(commandes)); }
 localStorage.setItem("ls_cart", JSON.stringify(panier));
-localStorage.setItem("ls_commandes", JSON.stringify(commandes));
 localStorage.setItem("ls_realisations", JSON.stringify(realisations));
 localStorage.setItem("ls_favoris", JSON.stringify(favoris));
 localStorage.setItem("ls_cu", JSON.stringify(utilisateurConnecte));
@@ -1716,28 +1840,53 @@ if (el) el.value = nt[id] || "";
 document.getElementById("site-logo").addEventListener("dblclick", function() { navigate("admin"); });
 document.getElementById("admin-pwd-input").addEventListener("keyup", function(e) { if (e.key === "Enter") checkAdminPwd(); });
 
+function lancerMigration() {
+if (!window._firebaseUser) return;
+get_meta_reset();
+}
+function get_meta_reset() {
+if (!window._set || !window._ref) return;
+window._set(window._ref(window._db, 'clients/_meta/migre'), false).then(function() { return window.fbMigrerClients(); }).then(function(n) { showToast(n ? "Migration terminee : " + n.clients + " client(s), " + n.commandes + " commande(s), " + n.favoris + " favoris" + (n.sansCompte ? " (" + n.sansCompte + " compte(s) sans identifiant ignore(s))" : "") : "Rien a migrer"); }).catch(function(e) { showToast("Migration impossible (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
+function purgerAnciennes() {
+if (!confirm("Supprimer definitivement les anciennes donnees (ls/utilisateurs, ls/commandes, ls/favoris) ?\nFaites-le seulement apres avoir verifie que les clients et commandes s affichent bien. Exportez une sauvegarde depuis la console Firebase avant.")) return;
+window.fbPurgerAnciennes().then(function() { showToast("Anciennes donnees supprimees"); }).catch(function(e) { showToast(e && e.code === "migration-non-faite" ? "Lancez d abord la migration" : "Suppression impossible (" + ((e && e.code) || "erreur") + ")", "error"); });
+}
+
+function resetAdminPwd() {
+if (!window.fbResetPassword) return;
+window.fbResetPassword("Comptabilite@lesolidaire.com").then(function(r) { showToast(r.ok ? "Un lien de reinitialisation a ete envoye a Comptabilite@lesolidaire.com" : (r.msg || "Erreur"), r.ok ? undefined : "error"); });
+}
+
 function checkAdminPwd() {
 var input = document.getElementById("admin-pwd-input").value,
 btn = document.getElementById("lock-btn"),
 err = document.getElementById("lock-error");
-if (input !== siteConfig.adminPassword) { err.style.display = "block";
-document.getElementById("admin-pwd-input").value = ""; return; }
+if (!input) return;
+if (!window.fbAdminLogin) { document.getElementById("lock-error-txt").textContent = "Service de connexion indisponible"; err.style.display = "block"; return; }
 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
 btn.disabled = true;
 err.style.display = "none";
+window.fbAdminLogin(input).then(function(r) {
+btn.innerHTML = '<i class="fas fa-unlock-alt"></i> Acceder';
+btn.disabled = false;
+document.getElementById("admin-pwd-input").value = "";
+if (!r.ok) { document.getElementById("lock-error-txt").textContent = r.msg; err.style.display = "block"; return; }
 adminUnlocked = true;
 document.getElementById("admin-lock").style.display = "none";
 document.getElementById("admin-content").style.display = "block";
-document.getElementById("admin-pwd-input").value = "";
-btn.innerHTML = '<i class="fas fa-unlock-alt"></i> Acceder';
-btn.disabled = false;
 updateAll();
-renderCharts();
+try { renderCharts(); } catch (x) {}
 showToast("Connexion admin reussie !");
-if (window.fbAdminLogin) window.fbAdminLogin(input).then(function(ok) { if (!ok) showToast("Admin non connecte a Firebase : les modifications risquent de ne pas s enregistrer", "error"); else if (window.fbMigrerAvis) window.fbMigrerAvis(); });
+if (window.fbNettoyer) window.fbNettoyer().catch(function() {});
+if (window.fbMigrerClients) window.fbMigrerClients().then(function(n) {
+if (n) showToast("Donnees migrees : " + n.clients + " client(s), " + n.commandes + " commande(s)");
+}).catch(function(e) { showToast("Migration impossible (" + ((e && e.code) || "erreur") + ")", "error"); });
+if (window.fbMigrerAvis) setTimeout(window.fbMigrerAvis, 2500);
+});
 }
 
-function lockAdmin() { adminUnlocked = false;
+function lockAdmin() { adminUnlocked = false; if (window.fbSignOut) window.fbSignOut();
 document.getElementById("admin-lock").style.display = "flex";
 document.getElementById("admin-content").style.display = "none";
 navigate("accueil");
@@ -1789,7 +1938,14 @@ saveAll(); var s = document.getElementById("prix-status"); if (s) s.textContent 
 updateProduits();
 showToast(val ? "Prix affiches" : "Prix masques"); }
 
-function updateTogglePrix() { var t = document.getElementById("toggle-prix"); if (!t) return; var aff = (siteConfig
+function toggleStock(val) { siteConfig.afficherStock = val;
+window.siteConfig = siteConfig;
+saveAll(); updateTogglePrix();
+updateProduits();
+showToast(val ? "Stock affiche" : "Stock masque"); }
+
+function updateTogglePrix() { var ts = document.getElementById("toggle-stock"); if (ts) { var as = (siteConfig.afficherStock !== false); ts.checked = as; var ss = document.getElementById("stock-status"); if (ss) ss.textContent = as ? "Le stock est visible" : "Le stock est masque"; }
+var t = document.getElementById("toggle-prix"); if (!t) return; var aff = (siteConfig
 .afficherPrix === undefined) ? true : siteConfig.afficherPrix;
 t.checked = aff; var s = document.getElementById("prix-status"); if (s) s.textContent = aff ?
 "Les prix sont visibles" : "Les prix sont masques"; }
@@ -1903,7 +2059,8 @@ var key = utilisateurConnecte.id + "_" + pid; var idx = favoris.indexOf(key); if
 showToast("Retire des favoris"); } else { favoris.push(key);
 showToast("Ajoute aux favoris !"); }
 window.favoris = favoris;
-saveAll();
+saveLocal();
+if (window.fbSaveFavoris) window.fbSaveFavoris().catch(function(e) { showToast("Favoris NON enregistres (" + ((e && e.code) || "erreur") + ")", "error"); });
 updateAll(); }
 
 function estFav(pid) { if (!utilisateurConnecte) return false; return favoris.indexOf(utilisateurConnecte.id + "_" + pid) >
@@ -1911,8 +2068,9 @@ function estFav(pid) { if (!utilisateurConnecte) return false; return favoris.in
 
 // CARTE PRODUIT
 function renderCard(p) {
-var stClass = p.stock === 0 ? "out" : p.stock < 5 ? "low" : "";
-var stTxt = p.stock === 0 ? "Rupture de stock" : p.stock < 5 ? "Plus que " + p.stock + " en stock" : "En stock : " + p
+var affStock = (siteConfig.afficherStock !== false);
+var stClass = p.stock === 0 ? "out" : (affStock && p.stock < 5) ? "low" : "";
+var stTxt = !affStock ? (p.stock === 0 ? "Indisponible" : "") : p.stock === 0 ? "Rupture de stock" : p.stock < 5 ? "Plus que " + p.stock + " en stock" : "En stock : " + p
 .stock;
 var imgH = p.photo ? '<img src="' + p.photo + '" alt="' + p.nom + '" style="width:100%;height:100%;object-fit:cover;">' :
 '<div class="product-img-ph"><i class="fas fa-image"></i></div>';
@@ -1934,7 +2092,7 @@ return '<div class="product-card">' + promoH +
 '<div>' + prixH + '</div>' +
 '<div class="product-stars"><span class="stars">' + renderStars(moy) + '</span><span class="stars-count">(' +
 nbAvis + ' avis)</span></div>' +
-'<div class="product-stock ' + stClass + '">' + stTxt + '</div>' +
+(stTxt ? '<div class="product-stock ' + stClass + '">' + stTxt + '</div>' : '') +
 '<div class="product-actions">' +
 '<button class="btn-add" onclick="addToCart(' + p.id + ')" ' + dis + '><i class="fas fa-cart-plus"></i> Ajouter</button>' +
 '<button class="btn-ico ' + favCls + '" onclick="toggleFav(' + p.id +
@@ -2040,40 +2198,43 @@ total += p.prix * item.quantite;
 prods.push({ nom: p.nom, quantite: item.quantite });
 }
 
-var num = genererNumeroCommande();
 var rc = document.querySelector('input[name="canal-cmd"]:checked');
 var modeEnvoi = rc ? rc.value : "whatsapp";
 var canal = (modeEnvoi === "whatsapp") ? "whatsapp" : "email";
 var mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 var viaGmail = (modeEnvoi === "email" && !mobile);
+var uc = utilisateurConnecte;
 
-var cmd = {
+if (!window._firebaseUser) return showToast("Session expiree : reconnectez-vous pour commander", "error");
+var btnV = document.getElementById("validate-order"); if (btnV) btnV.disabled = true;
+var waWin = (canal === "whatsapp" || viaGmail) ? window.open("", "_blank") : null;
+if (waWin) { try { waWin.document.write('<p style="font-family:Arial,sans-serif;padding:30px;font-size:18px;">Enregistrement de votre commande en cours...</p>'); } catch (x) {} }
+
+var cmd;
+var numP = window.fbNumero ? window.fbNumero("LESOL").catch(function() { return genererNumeroCommande(); }) : Promise.resolve(genererNumeroCommande());
+numP.then(function(num) {
+cmd = {
 id: Date.now(),
 numero: num,
-clientId: window.utilisateurConnecte ? window.utilisateurConnecte.id : (window._firebaseUser ? window._firebaseUser.uid : "anonyme"),
-clientUid: window._firebaseUser ? window._firebaseUser.uid : (utilisateurConnecte.uid || ""),
-clientNom: nomUtilisateur(utilisateurConnecte) || utilisateurConnecte.nom,
-clientEmail: utilisateurConnecte.email,
-clientTel: utilisateurConnecte.telephoneAffiche || utilisateurConnecte.telephone || "",
-clientType: utilisateurConnecte.typeCompte || "particulier",
-clientSociete: utilisateurConnecte.societe || "",
-clientRccm: utilisateurConnecte.rccm || "",
-clientNcc: utilisateurConnecte.ncc || "",
-clientAdresse: [utilisateurConnecte.adresse, utilisateurConnecte.quartier, utilisateurConnecte.ville].filter(Boolean).join(", "),
-clientIndications: utilisateurConnecte.indications || "",
+clientId: uc.id,
+clientUid: window._firebaseUser.uid,
+clientNom: nomUtilisateur(uc) || uc.nom,
+clientEmail: uc.email,
+clientTel: uc.telephoneAffiche || uc.telephone || "",
+clientType: uc.typeCompte || "particulier",
+clientSociete: uc.societe || "",
+clientRccm: uc.rccm || "",
+clientNcc: uc.ncc || "",
+clientAdresse: [uc.adresse, uc.quartier, uc.ville].filter(Boolean).join(", "),
+clientIndications: uc.indications || "",
 canal: canal,
 produits: prods.map(function(p) { return { nom: p.nom, quantite: p.quantite, prix: 0 }; }),
 total: total,
 date: new Date().toISOString(),
 statut: "En attente WhatsApp"
 };
-
-if (!window._firebaseUser) return showToast("Session expiree : reconnectez-vous pour commander", "error");
-var btnV = document.getElementById("validate-order"); if (btnV) btnV.disabled = true;
-var waWin = (canal === "whatsapp" || viaGmail) ? window.open("", "_blank") : null;
-if (waWin) { try { waWin.document.write('<p style="font-family:Arial,sans-serif;padding:30px;font-size:18px;">Enregistrement de votre commande en cours...</p>'); } catch (x) {} }
-var panierBackup = panier.slice();
-window.fbSaveCommande(cmd).then(function() {
+return window.fbSaveCommande(cmd);
+}).then(function() {
 if (!window.commandes.some(function(c) { return c.id === cmd.id; })) window.commandes.push(cmd);
 commandes = window.commandes;
 panier = [];
@@ -2181,14 +2342,23 @@ var nomAff = nomCompte(u) || u.email;
 var cp = completudeProfil(u);
 var enCours = mesCmd.filter(function(c) { return c.statut !== "Livre" && c.statut !== "Annule"; }).length;
 function cmdCarte(c) {
+var devis = (c.type === "devis");
 var prixOk = (c.prixClient != null && c.prixClient !== "");
-var pl = '<ul class="cmd-prods">' + c.produits.map(function(p) { return '<li>' + escH(p.nom) + ' <b>x' + p.quantite + '</b>' + (prixOk && p.prix > 0 ? ' &mdash; ' + Number(p.prix).toLocaleString('fr-FR') + ' FCFA l unite = <b>' + (p.prix * p.quantite).toLocaleString('fr-FR') + ' FCFA</b>' : '') + '</li>'; }).join("") + '</ul>';
+var pl = '<ul class="cmd-prods">' + c.produits.map(function(p) {
+var det = '';
+if (prixOk && p.prix > 0) det = ' &mdash; ' + Number(p.prix).toLocaleString('fr-FR') + ' FCFA l unite = <b>' + (p.prix * p.quantite).toLocaleString('fr-FR') + ' FCFA</b>';
+var dp = p.dispo ? ' <span class="dispo-tag dispo-' + (p.dispo === "Disponible" ? "ok" : p.dispo === "Indisponible" ? "ko" : "cmd") + '">' + escH(p.dispo) + '</span>' : '';
+return '<li>' + escH(p.nom) + ' <b>x' + p.quantite + '</b>' + det + dp + '</li>'; }).join("") + '</ul>';
 var prixH = prixOk ?
 '<div style="font-weight:700;color:#CC1818;font-size:16px;">Total : ' + Number(c.prixClient).toLocaleString('fr-FR') + ' FCFA</div>' :
 '<div style="font-size:13px;color:#6b7280;font-style:italic;">Prix communique par LE SOLIDAIRE ' + (c.canal === "email" ? "par e-mail" : "sur WhatsApp") + '</div>';
-return '<div class="cmd-card"><div class="cmd-header"><span style="font-weight:700;color:#0D2B6B;"><i class="fas fa-receipt" style="margin-right:6px;"></i>' + escH(c.numero) +
+var imprimable = prixOk && c.statut !== "Annule" && (devis || c.statut !== "En attente WhatsApp");
+var cf = getRecuCfg().format;
+var impH = imprimable ? '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><select class="statut-select" id="cfmt-' + c.id + '" title="Format"><option value="A4"' + (cf === "A4" ? " selected" : "") + '>A4</option><option value="A5"' + (cf === "A5" ? " selected" : "") + '>A5</option></select>' +
+'<button class="btn" style="padding:8px 14px;font-size:13px;" onclick="imprimerRecu(' + c.id + ', document.getElementById(\'cfmt-' + c.id + '\').value)"><i class="fas fa-print"></i> ' + (devis ? 'Imprimer le devis' : 'Imprimer le recu') + '</button></div>' : '';
+return '<div class="cmd-card"><div class="cmd-header"><span style="font-weight:700;color:#0D2B6B;"><i class="fas ' + (devis ? 'fa-file-invoice' : 'fa-receipt') + '" style="margin-right:6px;"></i>' + escH(c.numero) + (devis ? ' <span class="tag-devis">DEVIS</span>' : '') +
 '</span><span style="font-size:12px;color:#6b7280;"><i class="fas ' + (c.canal === "email" ? "fa-envelope" : "fa-comment-dots") + '"></i> ' + new Date(c.date).toLocaleDateString('fr-FR') + '</span>' +
-getStatutBadge(c.statut, c.canal) + '</div>' + pl + prixH + '</div>';
+getStatutBadge(c.statut, c.canal, c.type) + '</div>' + pl + prixH + impH + '</div>';
 }
 var cmdH = !mesCmd.length ?
 '<div class="empty-state" style="padding:30px 0;"><i class="fas fa-shopping-bag"></i><p>Aucune commande pour le moment</p></div>' :
@@ -2287,7 +2457,6 @@ utilisateurConnecte = utilisateurs[idx];
 window.utilisateurs = utilisateurs;
 window.utilisateurConnecte = utilisateurConnecte;
 localStorage.setItem("ls_cu", JSON.stringify(utilisateurConnecte));
-localStorage.setItem("ls_users", JSON.stringify(utilisateurs));
 window.fbSaveUser(idx, utilisateurs[idx]).then(function() {
 updateAll(); showToast("Informations mises a jour !");
 }).catch(function(e) {
@@ -2304,20 +2473,9 @@ cel = document.getElementById("ep-conf"); if (!ael || !nel || !cel) { showToast(
 nw = nel.value,
 cnf = cel.value; if (!anc || !nw || !cnf) { showToast("Remplissez tous les champs", "error"); return; } if (nw
 .length < 6) { showToast("Minimum 6 caracteres", "error"); return; } if (nw !== cnf) { showToast(
-"Les mots de passe ne correspondent pas", "error"); return; } if (anc !== utilisateurConnecte.password) { showToast(
-"Ancien mot de passe incorrect", "error"); return; } function app() { var ix = utilisateurs.findIndex(
-function(u) { return u.id === utilisateurConnecte.id; }); if (ix > -1) { utilisateurs[ix].password = nw;
-utilisateurConnecte.password = nw;
-window.utilisateurs = utilisateurs;
-window.utilisateurConnecte = utilisateurConnecte;
-localStorage.setItem("ls_cu", JSON.stringify(utilisateurConnecte));
-saveAll();
-ael.value = "";
-nel.value = "";
-cel.value = "";
-showToast("Mot de passe change !"); } } if (window.fbChangerMdp) { window.fbChangerMdp(anc, nw).then(
-function(r) { if (r.ok) app();
-else showToast(r.msg || "Erreur Firebase", "error"); }); } else app(); }
+"Les mots de passe ne correspondent pas", "error"); return; }
+if (!window.fbChangerMdp) { showToast("Service indisponible", "error"); return; }
+window.fbChangerMdp(anc, nw).then(function(r) { if (r.ok) { ael.value = ""; nel.value = ""; cel.value = ""; showToast("Mot de passe change !"); } else showToast(r.msg || "Erreur", "error"); }); }
 
 function handleLogin(e) { e.preventDefault(); var email = document.getElementById("l-email").value.trim().toLowerCase(),
 pwd = document.getElementById("l-pwd").value,
@@ -2325,43 +2483,26 @@ btn = e.target.querySelector("button[type=submit]"); if (btn) { btn.innerHTML =
 '<i class="fas fa-spinner fa-spin"></i> Connexion...';
 btn.disabled = true; } function restore() { if (btn) { btn.innerHTML =
 '<i class="fas fa-sign-in-alt"></i> Se connecter';
-btn.disabled = false; } } if (window.fbConnexion) { window.fbConnexion(email, pwd).then(function(r) { if (r
-.ok) { var u = utilisateurs.find(function(x) { return x.email.toLowerCase() === email; }); if (u) {
+btn.disabled = false; } }
+if (!window.fbConnexion) { restore(); showToast("Service de connexion indisponible", "error"); return; }
+window.fbConnexion(email, pwd).then(function(r) {
+if (!r.ok) { restore();
+if (r.msg && r.msg.indexOf("confirmer") > -1) { showToast(r.msg, "error");
+setTimeout(function() { if (confirm("Renvoyer l email de confirmation ?") && window.fbRenvoyerEmail) { window.fbRenvoyerEmail().then(function(x) { if (x.ok) showToast("Email renvoye !"); }); } }, 1000);
+} else showToast(r.msg || "Email ou mot de passe incorrect", "error");
+return; }
+if (window.estAdminFb && window.estAdminFb()) { restore(); window.fbSignOut(); showToast("Ce compte est reserve a l administration", "error"); return; }
+window.fbChargerProfil(r.uid, email).then(function(u) {
+if (!u) { restore(); window.fbSignOut(); showToast("Ce compte a ete supprime", "error"); return; }
 utilisateurConnecte = u;
 window.utilisateurConnecte = u;
 localStorage.setItem("ls_cu", JSON.stringify(u));
 updateAll();
 restore();
-showToast("Bienvenue " + u.nom + " !");
-navigate("compte"); } else { if (window._get && window._db && window._ref) { window._get(window
-._ref(window._db, "ls/utilisateurs")).then(function(snap) { if (snap && snap.exists()) {
-var fb = snap.val(); if (Array.isArray(fb)) { utilisateurs = fb;
-window.utilisateurs = fb; } var u2 = utilisateurs.find(function(x) { return x
-.email.toLowerCase() === email; }); if (u2) { utilisateurConnecte = u2;
-window.utilisateurConnecte = u2;
-localStorage.setItem("ls_cu", JSON.stringify(u2));
-updateAll();
-restore();
-showToast("Bienvenue " + u2.nom + " !");
-navigate("compte"); } else { restore();
-showToast("Compte non trouve", "error"); } } else { restore();
-showToast("Compte non trouve", "error"); } }).catch(function() { restore();
-showToast("Erreur connexion", "error"); }); } else { restore();
-showToast("Email ou mot de passe incorrect", "error"); } } } else { restore(); if (r.msg &&
-r.msg.indexOf("confirmer") > -1) { showToast(r.msg, "error");
-setTimeout(function() { if (confirm(
-"Renvoyer l email de confirmation ?") && window.fbRenvoyerEmail) { window
-.fbRenvoyerEmail().then(function(x) { if (x.ok) showToast("Email renvoye !"); }); } },
-1000); } else showToast(r.msg || "Email ou mot de passe incorrect", "error"); } }); } else { var u =
-utilisateurs.find(function(x) { return x.email.toLowerCase() === email && x.password === pwd; }); if (u) {
-utilisateurConnecte = u;
-window.utilisateurConnecte = u;
-localStorage.setItem("ls_cu", JSON.stringify(u));
-updateAll();
-restore();
-showToast("Bienvenue " + u.nom + " !");
-navigate("compte"); } else { restore();
-showToast("Email ou mot de passe incorrect", "error"); } } }
+showToast("Bienvenue " + (nomUtilisateur(u) || u.email) + " !");
+navigate("compte");
+}).catch(function() { restore(); showToast("Erreur connexion", "error"); });
+}); }
 
 function handleRegister(e) { e.preventDefault(); var nom = document.getElementById("r-nom").value.trim(),
 prenoms = document.getElementById("r-prenoms") ? document.getElementById("r-prenoms").value.trim() : "",
@@ -2378,11 +2519,8 @@ btn.disabled = true; } function restore() { if (btn) { btn.innerHTML =
 '<i class="fas fa-user-plus"></i> Creer mon compte';
 btn.disabled = false; } } if (window.fbInscription) { window.fbInscription(email, pwd).then(function(r) { if (
 r.ok) { var nu = { id: Date.now(), uid: r.uid, typeCompte: typeC, societe: typeC === 'entreprise' ? societe : '', nom: nom, prenoms: prenoms, email: email, telephone: tel,
-password: pwd, dateInscription: new Date().toISOString() };
-utilisateurs.push(nu);
-window.utilisateurs = utilisateurs;
-saveLocal();
-window.fbSaveUser(utilisateurs.length - 1, nu).catch(function(e) { showToast("Compte cree mais profil non enregistre (" + ((e && e.code) || "erreur") + ")", "error"); });
+dateInscription: new Date().toISOString() };
+window.fbSaveUser(0, nu).catch(function(e) { showToast("Compte cree mais profil non enregistre (" + ((e && e.code) || "erreur") + ")", "error"); }).then(function() { if (window.fbSignOut) window.fbSignOut(); });
 restore();
 document.getElementById("compte-content").innerHTML =
 '<div class="compte-card" style="text-align:center;padding:40px;"><div style="width:80px;height:80px;border-radius:50%;background:#e6f4ea;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><i class="fas fa-envelope" style="font-size:36px;color:#1e7e34;"></i></div><h3 style="font-family:Barlow Condensed,Arial,sans-serif;font-size:24px;font-weight:800;margin-bottom:12px;text-transform:uppercase;">Email de confirmation envoye !</h3><p style="color:#6b7280;font-size:15px;line-height:1.6;margin-bottom:20px;">Un email a ete envoye a <strong>' +
@@ -2541,20 +2679,24 @@ function deleteClient(id) { var u = utilisateurs.find(function(x) { return x.id 
 commandes.filter(function(c) { return c.clientId === id; }).length; var msg = nc > 0 ?
 "Ce client a " + nc +
 " commande(s) enregistree(s). Supprimer son compte n effacera pas l historique des commandes, mais il ne pourra plus se connecter. Continuer ?" :
-"Supprimer definitivement le compte de " + u.nom + " (" + u.email +
-") ? Cette action est irreversible."; if (!confirm(msg)) return;
+"Supprimer le compte de " + u.nom + " (" + u.email +
+") ? Il ne pourra plus se connecter."; if (!confirm(msg)) return;
+u.supprime = true;
+window.fbSaveUser(0, u).then(function() {
 utilisateurs = utilisateurs.filter(function(x) { return x.id !== id; });
-favoris = favoris.filter(function(f) { return f.indexOf(id + "_") !== 0; });
 window.utilisateurs = utilisateurs;
-window.favoris = favoris;
-saveAll();
 updateAll();
-showToast("Compte client supprime"); }
+showToast("Compte client supprime");
+}).catch(function(e) { delete u.supprime; showToast("Suppression NON effectuee (" + ((e && e.code) || "erreur") + ")", "error"); }); }
 
 function escH(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 function nomUtilisateur(u) { if (!u) return ""; var n = u.nomAffiche || u.nom || ""; return (n + (u.prenoms ? " " + u.prenoms : "")).trim(); }
-function getStatutBadge(s, canal) {
-var label = (s === "En attente WhatsApp" && canal === "email") ? "En attente (e-mail)" : s;
+function labelStatut(s, canal, type) {
+if (type === "devis") { return { "En attente WhatsApp": "Devis recu", "En preparation": "Devis en cours", "Expedie": "Devis envoye", "Livre": "Devis accepte", "Annule": "Annule" }[s] || s; }
+return (s === "En attente WhatsApp" && canal === "email") ? "En attente (e-mail)" : s;
+}
+function getStatutBadge(s, canal, type) {
+var label = labelStatut(s, canal, type);
 var c = "s-prep",
 i = "fa-clock";
 if (s === "En attente WhatsApp") { c = "s-wa";
@@ -2571,8 +2713,10 @@ var ancien = cmd.statut, ancienDeduit = !!cmd.stockDeduit;
 var accepte = (val !== "En attente WhatsApp" && val !== "Annule");
 var deltas = [];
 function ajuster(signe) { cmd.produits.forEach(function(it) { var p = produits.find(function(x) { return x.nom === it.nom; }); if (p) { var d = signe * it.quantite; if (signe < 0 && p.stock + d < 0) d = -p.stock; p.stock += d; deltas.push([p, d]); } }); }
+if (cmd.type !== "devis") {
 if (accepte && !cmd.stockDeduit) { ajuster(-1); cmd.stockDeduit = true; }
 else if (!accepte && cmd.stockDeduit) { ajuster(1); cmd.stockDeduit = false; }
+}
 deltas.forEach(function(x) { if (window.fbSaveStock) window.fbSaveStock(produits.indexOf(x[0]), x[0].stock).catch(function() {}); });
 cmd.statut = val;
 window.commandes = commandes;
@@ -2584,33 +2728,47 @@ updateAll();
 showToast("Statut NON enregistre (" + ((e && e.code) || "erreur") + ")", "error"); }); }
 
 var STATUTS_CMD = ["En attente WhatsApp", "En preparation", "Expedie", "Livre", "Annule"];
+var _filtreCmd = "tous";
 
 function fmtF(n) { return Number(n).toLocaleString('fr-FR'); }
 
+function lectureLignes(cmd, cid) {
+var devis = (cmd.type === "devis");
+return cmd.produits.map(function(p, i) {
+var g = function(pref) { return document.getElementById(pref + "-" + cid + "-" + i); };
+var pu = parseFloat((g("pu") || {}).value);
+var qt = devis && g("qt") ? parseFloat(g("qt").value) : p.quantite;
+return { i: i, nom: devis && g("nm") ? g("nm").value.trim() : p.nom, qte: (qt > 0 ? qt : p.quantite), pu: pu > 0 ? pu : 0, dispo: g("dp") ? g("dp").value : (p.dispo || "") };
+});
+}
+
 function majTotalCmd(cid) {
 var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
-var tot = 0, tous = true;
-cmd.produits.forEach(function(p, i) {
-var v = parseFloat((document.getElementById("pu-" + cid + "-" + i) || {}).value);
-var lt = document.getElementById("lt-" + cid + "-" + i);
-if (v > 0) { tot += v * p.quantite; if (lt) lt.textContent = fmtF(v * p.quantite); } else { tous = false; if (lt) lt.textContent = "-"; }
+var tot = 0, ok = true, aucun = true;
+lectureLignes(cmd, cid).forEach(function(l) {
+var lt = document.getElementById("lt-" + cid + "-" + l.i);
+if (l.pu > 0) { tot += l.pu * l.qte; aucun = false; if (lt) lt.textContent = fmtF(l.pu * l.qte); }
+else { if (lt) lt.textContent = l.dispo === "Indisponible" ? "Indisponible" : "-"; if (l.dispo !== "Indisponible") ok = false; }
 });
-var te = document.getElementById("tot-" + cid); if (te) te.textContent = tous ? fmtF(tot) + " FCFA" : "-";
+var te = document.getElementById("tot-" + cid); if (te) te.textContent = (ok && !aucun) ? fmtF(tot) + " FCFA" : "-";
 }
 
 function enregistrerPrixCommande(cid) {
 var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
-var vals = cmd.produits.map(function(p, i) { return (document.getElementById("pu-" + cid + "-" + i).value || "").trim(); });
+var devis = (cmd.type === "devis");
+var lignes = lectureLignes(cmd, cid);
 var backup = JSON.stringify({ p: cmd.produits, pc: cmd.prixClient, t: cmd.total });
-if (vals.every(function(v) { return v === ""; })) {
-cmd.produits.forEach(function(p) { p.prix = 0; }); cmd.prixClient = null;
+var vide = lignes.every(function(l) { return !l.pu && !l.dispo; });
+if (vide) {
+cmd.produits.forEach(function(p) { p.prix = 0; p.dispo = ""; }); cmd.prixClient = null;
 } else {
+for (var k = 0; k < lignes.length; k++) { if (!lignes[k].pu && lignes[k].dispo !== "Indisponible") { showToast("Renseignez le prix de chaque article (ou marquez-le Indisponible)", "error"); return; } if (!lignes[k].nom) { showToast("Le nom d un article est vide", "error"); return; } }
+if (!lignes.some(function(l) { return l.pu > 0; })) { showToast("Au moins un article doit avoir un prix", "error"); return; }
 var tot = 0;
-for (var i = 0; i < vals.length; i++) { var n = Number(vals[i]); if (vals[i] === "" || isNaN(n) || n <= 0) { showToast("Renseignez le prix de chaque article", "error"); return; } }
-cmd.produits.forEach(function(p, i) { p.prix = Number(vals[i]); tot += p.prix * p.quantite; });
+cmd.produits.forEach(function(p, i) { var l = lignes[i]; if (devis) { p.nom = l.nom; p.quantite = l.qte; } p.prix = l.pu; p.dispo = l.dispo; if (l.pu > 0) tot += l.pu * p.quantite; });
 cmd.total = tot; cmd.prixClient = tot;
 }
-window.fbUpdateStatut(cmd).then(function() { saveLocal(); updateAll(); showToast(cmd.prixClient == null ? "Prix retires : le client ne voit plus de prix" : "Prix enregistres : total " + fmtF(cmd.prixClient) + " FCFA"); }).catch(function(e) {
+window.fbUpdateStatut(cmd).then(function() { saveLocal(); updateAll(); showToast(cmd.prixClient == null ? "Prix retires : le client ne voit plus de prix" : "Enregistre : total " + fmtF(cmd.prixClient) + " FCFA"); }).catch(function(e) {
 var o = JSON.parse(backup); cmd.produits = o.p; cmd.prixClient = o.pc; cmd.total = o.t; updateAll();
 showToast("Prix NON enregistres (" + ((e && e.code) || "erreur") + ")", "error"); });
 }
@@ -2642,7 +2800,7 @@ if (r) p.push(_m1000(r, true));
 return p.join(" ");
 }
 
-var RECU_DEFAUT = { format: "A4", titre: "REÇU DE COMMANDE", afficherLogo: true, logoData: null, logoPosition: "gauche", logoHauteur: 70, nomSociete: "", couleur: "#0D2B6B",
+var RECU_DEFAUT = { format: "A4", titre: "REÇU DE COMMANDE", titreDevis: "DEVIS", afficherNom: false, afficherTrait: false, afficherLogo: true, logoData: null, logoPosition: "gauche", logoHauteur: 70, nomSociete: "", couleur: "#0D2B6B",
 disposition: "cote", police: 13, infosLegales: "", afficherAdresse: true, afficherTelephone: true, afficherEmail: true, afficherClient: true, afficherDates: true, afficherPU: true,
 afficherMontantLettres: true, afficherModePaiement: false, afficherSignatures: true, signature1: "Le client", signature2: "Le responsable", piedPage: "Merci de votre confiance" };
 var _recuLogo = null;
@@ -2660,10 +2818,11 @@ if (cfg.afficherAdresse && siteConfig.adresse) ct.push(escH(siteConfig.adresse))
 if (cfg.afficherTelephone && siteConfig.telephone) ct.push("Tél : " + escH(siteConfig.telephone) + (siteConfig.telephone2 ? " / " + escH(siteConfig.telephone2) : ""));
 if (cfg.afficherEmail && siteConfig.email) ct.push(escH(siteConfig.email));
 (cfg.infosLegales || "").split("\n").forEach(function(l) { if (l.trim()) ct.push(escH(l.trim())); });
-var ident = '<div>' + logo + '<div class="co">' + escH(nom) + '</div></div>';
+var nomH = cfg.afficherNom ? '<div class="co">' + escH(nom) + '</div>' : '';
+var ident = '<div>' + logo + nomH + '</div>';
 var coord = '<div class="sm">' + ct.join("<br>") + '</div>';
 var entete;
-if (cfg.logoPosition === "centre") entete = '<div class="top c1"><div style="display:flex;flex-direction:column;align-items:center;">' + (logo ? logo.replace("display:block", "display:block;margin:0 auto 4px") : '') + '<div class="co">' + escH(nom) + '</div></div>' + coord + '</div>';
+if (cfg.logoPosition === "centre") entete = '<div class="top c1"><div style="display:flex;flex-direction:column;align-items:center;">' + (logo ? logo.replace("display:block", "display:block;margin:0 auto 4px") : '') + nomH + '</div>' + coord + '</div>';
 else if (cfg.logoPosition === "droite") entete = '<div class="top">' + coord.replace('class="sm"', 'class="sm" style="text-align:left;"') + ident + '</div>';
 else entete = '<div class="top">' + ident + coord.replace('class="sm"', 'class="sm" style="text-align:right;"') + '</div>';
 var stLabel = { "En preparation": "En préparation", "Expedie": "Expédié", "Livre": "Livré" }[cmd.statut] || cmd.statut;
@@ -2675,16 +2834,19 @@ if (cmd.clientEmail) cl.push(escH(cmd.clientEmail));
 if (cmd.clientAdresse) cl.push(escH(cmd.clientAdresse));
 var boxes = "";
 if (cfg.afficherClient) boxes += '<div><span class="bt">Client</span><br>' + cl.join('<br>') + '</div>';
-if (cfg.afficherDates) boxes += '<div><span class="bt">Commande</span><br>Date : ' + new Date(cmd.date).toLocaleDateString('fr-FR') + '<br>Édité le : ' + new Date().toLocaleDateString('fr-FR') + '<br>Statut : ' + escH(stLabel) + '</div>';
+var devisDoc = (cmd.type === "devis");
+if (cfg.afficherDates) boxes += '<div><span class="bt">' + (devisDoc ? 'Devis' : 'Commande') + '</span><br>Date : ' + new Date(cmd.date).toLocaleDateString('fr-FR') + '<br>Édité le : ' + new Date().toLocaleDateString('fr-FR') + (devisDoc ? '' : '<br>Statut : ' + escH(stLabel)) + '</div>';
 var lignes = cmd.produits.map(function(p, i) {
-return '<tr><td class="c">' + (i + 1) + '</td><td>' + escH(p.nom) + '</td><td class="c">' + p.quantite + '</td>' + (cfg.afficherPU ? '<td class="r">' + fmtF(p.prix) + '</td>' : '') + '<td class="r">' + fmtF(p.prix * p.quantite) + '</td></tr>';
+var pr = p.prix > 0;
+var note = (p.dispo && p.dispo !== "Disponible") ? ' <i style="color:#777;">(' + escH(p.dispo) + ')</i>' : '';
+return '<tr><td class="c">' + (i + 1) + '</td><td>' + escH(p.nom) + note + '</td><td class="c">' + p.quantite + '</td>' + (cfg.afficherPU ? '<td class="r">' + (pr ? fmtF(p.prix) : '-') + '</td>' : '') + '<td class="r">' + (pr ? fmtF(p.prix * p.quantite) : 'Indisponible') + '</td></tr>';
 }).join("");
-var total = cmd.produits.reduce(function(t, p) { return t + p.prix * p.quantite; }, 0);
+var total = cmd.produits.reduce(function(t, p) { return t + (p.prix > 0 ? p.prix * p.quantite : 0); }, 0);
 var lettres = nombreEnLettres(total); lettres = lettres.charAt(0).toUpperCase() + lettres.slice(1);
 var marge = A5 ? "8mm" : "14mm";
 return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu ' + escH(cmd.numero) + '</title><style>' +
 '@page{size:' + (A5 ? "A5" : "A4") + ';margin:' + marge + ';}*{box-sizing:border-box;}body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:' + fs + 'px;margin:0;' + (apercu ? 'max-width:' + (A5 ? 560 : 794) + 'px;margin:0 auto;padding:18px;' : '') + '}' +
-'.top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:3px solid ' + coul + ';padding-bottom:10px;margin-bottom:14px;}.top.c1{flex-direction:column;text-align:center;}.top.c1 .sm{text-align:center;}' +
+'.top{display:flex;justify-content:space-between;align-items:center;gap:12px;' + (cfg.afficherTrait ? 'border-bottom:3px solid ' + coul + ';padding-bottom:10px;' : '') + 'margin-bottom:14px;}.top.c1{flex-direction:column;text-align:center;}.top.c1 .sm{text-align:center;}' +
 '.co{font-size:' + (fs * 1.5) + 'px;font-weight:800;color:' + coul + ';}.sm{color:#555;font-size:' + (fs * 0.92) + 'px;line-height:1.5;}' +
 'h1{text-align:center;font-size:' + (fs * 1.7) + 'px;letter-spacing:1px;margin:4px 0 2px;color:' + coul + ';}.num{text-align:center;font-weight:700;margin-bottom:14px;}' +
 '.box{display:flex;' + (cfg.disposition === "empile" ? 'flex-direction:column;' : '') + 'gap:12px;margin-bottom:14px;}.box>div{flex:1;border:1px solid #ccc;border-radius:6px;padding:8px 12px;line-height:1.55;}.bt{font-weight:800;color:' + coul + ';}' +
@@ -2694,7 +2856,7 @@ return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu 
 '.let{margin:8px 0 14px;font-style:italic;}.pay{margin:8px 0 14px;}.sig{display:flex;justify-content:space-between;margin-top:' + (A5 ? 22 : 32) + 'px;}.sig div{width:44%;text-align:center;border-top:1px solid #333;padding-top:6px;}' +
 '.foot{margin-top:24px;text-align:center;color:#777;font-size:' + (fs * 0.85) + 'px;border-top:1px solid #ddd;padding-top:8px;}' +
 '</style></head><body>' + entete +
-'<h1>' + escH(cfg.titre || "REÇU DE COMMANDE") + '</h1><div class="num">N° ' + escH(cmd.numero) + '</div>' +
+'<h1>' + escH(cmd.type === "devis" ? (cfg.titreDevis || "DEVIS") : (cfg.titre || "REÇU DE COMMANDE")) + '</h1><div class="num">N° ' + escH(cmd.numero) + '</div>' +
 (boxes ? '<div class="box">' + boxes + '</div>' : '') +
 '<table><thead><tr><th class="c" style="width:34px;">N°</th><th>Désignation</th><th class="c" style="width:50px;">Qté</th>' + (cfg.afficherPU ? '<th class="r" style="width:100px;">Prix unit. (FCFA)</th>' : '') + '<th class="r" style="width:110px;">Montant (FCFA)</th></tr></thead><tbody>' + lignes + '</tbody></table>' +
 '<div class="tot"><div>TOTAL : ' + fmtF(total) + ' FCFA</div></div>' +
@@ -2707,8 +2869,9 @@ return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu 
 
 function imprimerRecu(cid, fmt) {
 var cmd = commandes.find(function(c) { return c.id === cid; }); if (!cmd) return;
-if (cmd.prixClient == null || !(cmd.prixClient > 0)) { showToast("Renseignez le prix de chaque article puis cliquez sur Enregistrer les prix", "error"); return; }
-if (cmd.statut === "En attente WhatsApp" || cmd.statut === "Annule") { showToast("Le recu s imprime une fois la commande acceptee (En preparation, Expedie ou Livre)", "error"); return; }
+if (cmd.prixClient == null || !(cmd.prixClient > 0)) { showToast("Les prix ne sont pas encore renseignes", "error"); return; }
+if (cmd.statut === "Annule") { showToast("Cette commande est annulee", "error"); return; }
+if (cmd.type !== "devis" && cmd.statut === "En attente WhatsApp") { showToast("Le recu est disponible une fois la commande acceptee", "error"); return; }
 var sel = document.getElementById("fmt-" + cid);
 var format = fmt || (sel ? sel.value : getRecuCfg().format);
 var html = construireRecuHTML(cmd, getRecuCfg(), format, false);
@@ -2720,8 +2883,8 @@ setTimeout(function() { f.contentWindow.focus(); f.contentWindow.print(); setTim
 }
 
 /* ---- Reglages du recu (admin) ---- */
-var RC_TXT = ["format", "titre", "logoPosition", "logoHauteur", "nomSociete", "couleur", "disposition", "police", "infosLegales", "signature1", "signature2", "piedPage"];
-var RC_BOOL = ["afficherLogo", "afficherAdresse", "afficherTelephone", "afficherEmail", "afficherClient", "afficherDates", "afficherPU", "afficherMontantLettres", "afficherModePaiement", "afficherSignatures"];
+var RC_TXT = ["format", "titre", "titreDevis", "logoPosition", "logoHauteur", "nomSociete", "couleur", "disposition", "police", "infosLegales", "signature1", "signature2", "piedPage"];
+var RC_BOOL = ["afficherNom", "afficherTrait", "afficherLogo", "afficherAdresse", "afficherTelephone", "afficherEmail", "afficherClient", "afficherDates", "afficherPU", "afficherMontantLettres", "afficherModePaiement", "afficherSignatures"];
 function lireRecuForm() {
 var c = {};
 RC_TXT.forEach(function(k) { var e = document.getElementById("rc-" + k); if (e) c[k] = e.value; });
@@ -2780,8 +2943,8 @@ function supprimerCommandes(ids) {
 var cmds = ids.map(function(id) { return commandes.find(function(c) { return c.id === id; }); }).filter(Boolean); if (!cmds.length) return;
 var msg = cmds.length === 1 ? "Supprimer definitivement la commande " + cmds[0].numero + " ?" : "Supprimer definitivement ces " + cmds.length + " commandes ?";
 if (!confirm(msg + "\\nCette action est irreversible.")) return;
-Promise.all(cmds.map(function(c) { return Promise.all((c._ks && c._ks.length ? c._ks : [String(c.id)]).map(function(k) { return window.fbSupprimerCle(k); })); })).then(function() {
-cmds.filter(function(c) { return c.stockDeduit; }).forEach(function(c) { c.produits.forEach(function(it) { var p = produits.find(function(x) { return x.nom === it.nom; }); if (p) { p.stock += it.quantite; window.fbSaveStock(produits.indexOf(p), p.stock).catch(function() {}); } }); });
+Promise.all(cmds.map(function(c) { return window.fbSupprimerCmd(c); })).then(function() {
+cmds.filter(function(c) { return c.stockDeduit && c.type !== "devis"; }).forEach(function(c) { c.produits.forEach(function(it) { var p = produits.find(function(x) { return x.nom === it.nom; }); if (p) { p.stock += it.quantite; window.fbSaveStock(produits.indexOf(p), p.stock).catch(function() {}); } }); });
 window.commandes = commandes.filter(function(c) { return ids.indexOf(c.id) < 0; }); commandes = window.commandes;
 saveLocal(); updateAll(); showToast(cmds.length === 1 ? "Commande supprimee" : cmds.length + " commandes supprimees");
 }).catch(function(e) { showToast("Suppression NON effectuee (" + ((e && e.code) || "erreur") + ")", "error"); });
@@ -2789,26 +2952,40 @@ saveLocal(); updateAll(); showToast(cmds.length === 1 ? "Commande supprimee" : c
 
 function champActif(el) { var a = document.activeElement; return !!(el && a && el.contains(a) && /INPUT|TEXTAREA|SELECT/.test(a.tagName)); }
 
-function renderOrdres() { var el = document.getElementById("orders-list"); if (!el) return; if (champActif(el)) return; if (!commandes.length) { el
-.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune commande</p></div>'; return; }
-el.innerHTML = barreSelectionCmd() + commandes.slice().reverse().map(function(c) {
-var tous = c.produits.every(function(p) { return p.prix > 0; });
-var tot = tous ? c.produits.reduce(function(t, p) { return t + p.prix * p.quantite; }, 0) : 0;
+function definirFiltreCmd(f) { _filtreCmd = f; renderOrdres(); }
+
+function renderOrdres() { var el = document.getElementById("orders-list"); if (!el) return; if (champActif(el)) return;
+var liste = commandes.filter(function(c) { return _filtreCmd === "tous" || (_filtreCmd === "devis" ? c.type === "devis" : c.type !== "devis"); });
+var nbD = commandes.filter(function(c) { return c.type === "devis"; }).length;
+var filtres = '<div class="cmd-filtres">' + [["tous", "Tout (" + commandes.length + ")"], ["commandes", "Commandes (" + (commandes.length - nbD) + ")"], ["devis", "Devis (" + nbD + ")"]].map(function(f) { return '<button class="cmd-filtre' + (_filtreCmd === f[0] ? ' active' : '') + '" onclick="definirFiltreCmd(\'' + f[0] + '\')">' + f[1] + '</button>'; }).join("") + '</div>';
+if (!liste.length) { el.innerHTML = filtres + '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune commande</p></div>'; return; }
+var DISPOS = ["", "Disponible", "Sur commande", "Indisponible"];
+el.innerHTML = filtres + barreSelectionCmd() + liste.slice().reverse().map(function(c) {
+var devis = (c.type === "devis");
+var ok = c.produits.every(function(p) { return p.prix > 0 || p.dispo === "Indisponible"; }) && c.produits.some(function(p) { return p.prix > 0; });
+var tot = c.produits.reduce(function(t, p) { return t + (p.prix > 0 ? p.prix * p.quantite : 0); }, 0);
 var lignes = c.produits.map(function(p, i) {
 var pu = p.prix > 0 ? p.prix : "";
-return '<tr><td>' + escH(p.nom) + '</td><td style="text-align:center;">' + p.quantite + '</td><td><input type="number" min="0" step="any" class="pu-input" id="pu-' + c.id + '-' + i + '" value="' + pu + '" placeholder="Prix unitaire" oninput="majTotalCmd(' + c.id + ')"></td><td style="text-align:right;font-weight:600;" id="lt-' + c.id + '-' + i + '">' + (pu ? fmtF(pu * p.quantite) : '-') + '</td></tr>';
+var dopts = DISPOS.map(function(d) { return '<option value="' + d + '"' + ((p.dispo || "") === d ? " selected" : "") + '>' + (d || "-- Dispo --") + '</option>'; }).join("");
+return '<tr><td>' + (devis ? '<input type="text" class="pu-input" style="width:100%;min-width:140px;" id="nm-' + c.id + '-' + i + '" value="' + escH(p.nom) + '" oninput="majTotalCmd(' + c.id + ')">' : escH(p.nom)) + '</td>' +
+'<td style="text-align:center;">' + (devis ? '<input type="number" min="0" step="any" class="pu-input" style="width:70px;" id="qt-' + c.id + '-' + i + '" value="' + p.quantite + '" oninput="majTotalCmd(' + c.id + ')">' : p.quantite) + '</td>' +
+'<td><input type="number" min="0" step="any" class="pu-input" id="pu-' + c.id + '-' + i + '" value="' + pu + '" placeholder="Prix unitaire" oninput="majTotalCmd(' + c.id + ')"></td>' +
+'<td><select class="statut-select" id="dp-' + c.id + '-' + i + '" onchange="majTotalCmd(' + c.id + ')">' + dopts + '</select></td>' +
+'<td style="text-align:right;font-weight:600;" id="lt-' + c.id + '-' + i + '">' + (pu ? fmtF(pu * p.quantite) : (p.dispo === "Indisponible" ? "Indisponible" : "-")) + '</td></tr>';
 }).join("");
-var opts = STATUTS_CMD.map(function(st) { return '<option value="' + st + '"' + (c.statut === st ? " selected" : "") + '>' + st + '</option>'; }).join("");
-return '<div class="order-card"><div class="order-header"><span class="order-id"><input type="checkbox" class="sel-cmd" value="' + c.id + '" onchange="majSelectionCmd()" style="margin-right:8px;transform:scale(1.2);"><i class="fas fa-receipt" style="margin-right:6px;"></i>' + escH(c.numero) + '</span>' +
-(c.canal === 'email' ? '<span style="font-size:12px;color:#0D2B6B;"><i class="fas fa-envelope"></i> E-mail</span>' : '<span style="font-size:12px;color:#1e7e34;"><i class="fab fa-whatsapp"></i> WhatsApp</span>') + getStatutBadge(c.statut, c.canal) +
-'</div><div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-user" style="color:#0D2B6B;margin-right:5px;"></i>' + (c.clientSociete ? '<strong>' + escH(c.clientSociete) + '</strong> &mdash; ' : '') + '<strong>' + escH(c.clientNom) + '</strong> &mdash; ' + escH(c.clientEmail) + (c.clientTel ? ' &mdash; ' + escH(c.clientTel) : '') + ' &mdash; ' + new Date(c.date).toLocaleDateString('fr-FR') + '</div>' +
+var opts = STATUTS_CMD.map(function(st) { return '<option value="' + st + '"' + (c.statut === st ? " selected" : "") + '>' + labelStatut(st, c.canal, c.type) + '</option>'; }).join("");
+return '<div class="order-card"><div class="order-header"><span class="order-id"><input type="checkbox" class="sel-cmd" value="' + c.id + '" onchange="majSelectionCmd()" style="margin-right:8px;transform:scale(1.2);"><i class="fas ' + (devis ? 'fa-file-invoice' : 'fa-receipt') + '" style="margin-right:6px;"></i>' + escH(c.numero) + '</span>' +
+(devis ? '<span class="tag-devis">DEVIS</span>' : '') +
+(c.canal === 'email' ? '<span style="font-size:12px;color:#0D2B6B;"><i class="fas fa-envelope"></i> E-mail</span>' : '<span style="font-size:12px;color:#1e7e34;"><i class="fab fa-whatsapp"></i> WhatsApp</span>') + getStatutBadge(c.statut, c.canal, c.type) +
+'</div><div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-user" style="color:#0D2B6B;margin-right:5px;"></i>' + (c.clientSociete ? '<strong>' + escH(c.clientSociete) + '</strong> &mdash; ' : '') + '<strong>' + escH(c.clientNom) + '</strong>' + (c.clientEmail ? ' &mdash; ' + escH(c.clientEmail) : '') + (c.clientTel ? ' &mdash; ' + escH(c.clientTel) : '') + ' &mdash; ' + new Date(c.date).toLocaleDateString('fr-FR') + '</div>' +
 (c.clientAdresse ? '<div style="font-size:13px;color:#6b7280;margin-bottom:4px;"><i class="fas fa-map-marker-alt" style="color:#0D2B6B;margin-right:5px;"></i>' + escH(c.clientAdresse) + (c.clientIndications ? ' &mdash; <em>' + escH(c.clientIndications) + '</em>' : '') + '</div>' : '') +
-'<div class="tbl-wrap"><table class="tbl-cmd"><thead><tr><th>Article</th><th style="text-align:center;">Qte</th><th>Prix unitaire (FCFA)</th><th style="text-align:right;">Montant</th></tr></thead><tbody>' + lignes + '</tbody></table></div>' +
-'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;"><span style="font-weight:700;font-size:15px;">TOTAL : <span id="tot-' + c.id + '" style="color:#CC1818;">' + (tous ? fmtF(tot) + ' FCFA' : '-') + '</span></span>' +
+(devis && c.texte ? '<div class="devis-texte"><b>Demande :</b> ' + escH(c.texte).replace(/\n/g, '<br>') + (c.message ? '<br><b>Message :</b> ' + escH(c.message) : '') + '</div>' : '') +
+'<div class="tbl-wrap"><table class="tbl-cmd"><thead><tr><th>Article</th><th style="text-align:center;">Qte</th><th>Prix unitaire (FCFA)</th><th>Disponibilite</th><th style="text-align:right;">Montant</th></tr></thead><tbody>' + lignes + '</tbody></table></div>' +
+'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;"><span style="font-weight:700;font-size:15px;">TOTAL : <span id="tot-' + c.id + '" style="color:#CC1818;">' + (ok ? fmtF(tot) + ' FCFA' : '-') + '</span></span>' +
 '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;font-weight:600;color:#6b7280;">Statut :</span><select class="statut-select" onchange="changerStatut(' + c.id + ',this.value)">' + opts + '</select></div></div>' +
-'<div class="cmd-actions"><button class="btn" onclick="enregistrerPrixCommande(' + c.id + ')"><i class="fas fa-save"></i> Enregistrer les prix</button>' +
-'<select class="statut-select" id="fmt-' + c.id + '" title="Format du recu"><option value="A4"' + (getRecuCfg().format === "A4" ? " selected" : "") + '>A4</option><option value="A5"' + (getRecuCfg().format === "A5" ? " selected" : "") + '>A5</option></select>' +
-'<button class="btn rouge" onclick="imprimerRecu(' + c.id + ')"><i class="fas fa-print"></i> Imprimer le recu</button>' +
+'<div class="cmd-actions"><button class="btn" onclick="enregistrerPrixCommande(' + c.id + ')"><i class="fas fa-save"></i> Enregistrer prix et disponibilite</button>' +
+'<select class="statut-select" id="fmt-' + c.id + '" title="Format"><option value="A4"' + (getRecuCfg().format === "A4" ? " selected" : "") + '>A4</option><option value="A5"' + (getRecuCfg().format === "A5" ? " selected" : "") + '>A5</option></select>' +
+'<button class="btn rouge" onclick="imprimerRecu(' + c.id + ')"><i class="fas fa-print"></i> ' + (devis ? 'Imprimer le devis' : 'Imprimer le recu') + '</button>' +
 '<button class="btn" style="background:#6b7280;" onclick="supprimerCommandes([' + c.id + '])"><i class="fas fa-trash"></i> Supprimer</button></div></div>';
 }).join(""); }
 
@@ -2880,14 +3057,16 @@ e = document.getElementById("bg-type"); if (e) { e.value = siteConfig.bgType || 
 changeBgType(); }
 e = document.getElementById("bg-color"); if (e) e.value = siteConfig.bgValue || "#f2f3f5"; }
 
-function updateAdminStats() { var ca = commandes.reduce(function(s, c) { return s + c.total; }, 0); document.getElementById(
+function cmdsVente() { return commandes.filter(function(c) { return c.type !== 'devis'; }); }
+
+function updateAdminStats() { var ca = cmdsVente().reduce(function(s, c) { return s + c.total; }, 0); document.getElementById(
 "admin-stats").innerHTML =
 '<div class="stat-card"><div class="stat-icon si-bleu"><i class="fas fa-box"></i></div><div><div class="stat-value">' +
 produits.length +
 '</div><div class="stat-label">Produits</div></div></div><div class="stat-card"><div class="stat-icon si-vert"><i class="fas fa-users"></i></div><div><div class="stat-value">' +
 utilisateurs.length +
 '</div><div class="stat-label">Clients</div></div></div><div class="stat-card"><div class="stat-icon si-orange"><i class="fas fa-shopping-bag"></i></div><div><div class="stat-value">' +
-commandes.length +
+cmdsVente().length +
 '</div><div class="stat-label">Commandes</div></div></div><div class="stat-card"><div class="stat-icon si-rouge"><i class="fas fa-coins"></i></div><div><div class="stat-value">' +
 Math.round(ca / 1000) + 'K</div><div class="stat-label">CA FCFA</div></div></div><div class="stat-card"><div class="stat-icon si-violet"><i class="fas fa-heart"></i></div><div><div class="stat-value">' +
 favoris.length +
@@ -2908,7 +3087,7 @@ for (var i = 5; i >= 0; i--) {
 var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
 lbls.push(m[d.getMonth()]);
 var ca = 0;
-commandes.forEach(function(c) { var dc = new Date(c.date); if (dc.getMonth() === d.getMonth() && dc
+cmdsVente().forEach(function(c) { var dc = new Date(c.date); if (dc.getMonth() === d.getMonth() && dc
 .getFullYear() === d.getFullYear()) ca += c.total; });
 dats.push(ca);
 }
@@ -2924,7 +3103,7 @@ e = 0,
 l = 0,
 a = 0,
 wa = 0;
-commandes.forEach(function(c) { if (c.statut === "En attente WhatsApp") wa++;
+cmdsVente().forEach(function(c) { if (c.statut === "En attente WhatsApp") wa++;
 else if (c.statut === "En preparation") p++;
 else if (c.statut === "Expedie") e++;
 else if (c.statut === "Livre") l++;
@@ -2937,7 +3116,7 @@ chartSt = new Chart(c2, { type: "doughnut", data: { labels: ["En attente WhatsAp
 "#0D2B6B", "#1e7e34", "#c62828"
 ], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: "bottom" } } } }); }
 var scores = {};
-commandes.forEach(function(c) { c.produits.forEach(function(p) { scores[p.nom] = (scores[p.nom] || 0) + p
+cmdsVente().forEach(function(c) { c.produits.forEach(function(p) { scores[p.nom] = (scores[p.nom] || 0) + p
 .quantite; }); });
 var sorted = Object.entries(scores).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 5);
 var topEl = document.getElementById("top-produits");
@@ -3016,18 +3195,41 @@ document.querySelectorAll(".close-btn").forEach(function(b) { b.addEventListener
 b.dataset.modal); }); });
 document.querySelectorAll(".modal").forEach(function(m) { m.addEventListener("click", function(e) { if (e
 .target === m) closeModal(m.id); }); });
+function parseLignesDevis(txt) {
+var out = [];
+String(txt || "").split(/\r?\n|;|,/).forEach(function(l) {
+l = l.trim(); if (!l || out.length >= 30) return;
+var m = l.match(/^(\d+(?:[.,]\d+)?)\s*(?:x\s*)?(.+)$/i);
+if (m && m[2]) out.push({ nom: m[2].trim().slice(0, 120), quantite: parseFloat(m[1].replace(",", ".")) || 1, prix: 0 });
+else out.push({ nom: l.slice(0, 120), quantite: 1, prix: 0 });
+});
+return out;
+}
+
 document.getElementById("devis-form").addEventListener("submit", function(e) {
 e.preventDefault();
-var txt = "DEMANDE DE DEVIS - LE SOLIDAIRE SARL\n\nNom : " + document.getElementById("d-nom")
-.value + "\nTelephone : " + document.getElementById("d-tel").value + "\nLocalite : " +
-document.getElementById("d-ville").value + "\n\nProduits :\n" + document.getElementById(
-"d-produits").value + "\n\n" + (document.getElementById("d-message").value ?
-"Message : " + document.getElementById("d-message").value + "\n\n" : "") +
-"Envoye depuis lesolidaire.github.io";
-window.open("https://wa.me/" + siteConfig.whatsapp + "?text=" + encodeURIComponent(txt),
-"_blank");
-showToast("Redirection vers WhatsApp...");
-e.target.reset();
+var form = e.target;
+var nom = document.getElementById("d-nom").value.trim(), tel = document.getElementById("d-tel").value.trim(),
+ville = document.getElementById("d-ville").value.trim(), prodTxt = document.getElementById("d-produits").value.trim(),
+msg = document.getElementById("d-message").value.trim();
+var waWin = window.open("", "_blank");
+if (waWin) { try { waWin.document.write('<p style="font-family:Arial,sans-serif;padding:30px;font-size:18px;">Envoi de votre demande en cours...</p>'); } catch (x) {} }
+var u = window.utilisateurConnecte, fu = window._firebaseUser, lie = !!(u && fu);
+function aller(num) {
+var txt = "DEMANDE DE DEVIS - LE SOLIDAIRE SARL\n\nReference : " + num + "\nNom : " + nom + "\nTelephone : " + tel + "\nLocalite : " + ville + "\n\nProduits :\n" + prodTxt + "\n\n" + (msg ? "Message : " + msg + "\n\n" : "") + "Envoye depuis lesolidaire.github.io";
+var url = "https://wa.me/" + siteConfig.whatsapp + "?text=" + encodeURIComponent(txt);
+if (waWin && !waWin.closed) waWin.location.href = url; else window.open(url, "_blank");
+showToast("Demande de devis enregistree ! Redirection vers WhatsApp...");
+form.reset();
+}
+var d0 = new Date(), ds0 = d0.getFullYear() + String(d0.getMonth() + 1).padStart(2, "0") + String(d0.getDate()).padStart(2, "0");
+var numP = window.fbNumero ? window.fbNumero("DEV").catch(function() { return "DEV-" + ds0 + "-" + String(Date.now() % 1000).padStart(3, "0"); }) : Promise.resolve("DEV-" + ds0 + "-" + String(Date.now() % 1000).padStart(3, "0"));
+numP.then(function(num) {
+var cmd = { id: Date.now(), numero: num, type: "devis", clientId: lie ? u.id : "visiteur", clientUid: lie ? fu.uid : "", clientNom: nom, clientEmail: lie ? u.email : "", clientTel: tel, clientAdresse: ville,
+clientSociete: lie ? (u.societe || "") : "", clientType: lie ? (u.typeCompte || "particulier") : "visiteur",
+canal: "whatsapp", produits: parseLignesDevis(prodTxt), texte: prodTxt.slice(0, 2000), message: msg.slice(0, 1000), total: 0, date: new Date().toISOString(), statut: "En attente WhatsApp" };
+return window.fbSaveCommande(cmd).then(function() { if (lie && !window.commandes.some(function(c) { return c.id === cmd.id; })) { window.commandes.push(cmd); updateAll(); } }).catch(function(err) { console.error("Devis non enregistre", err); }).then(function() { aller(num); });
+}).catch(function() { aller("DEV-" + ds0); });
 });
 document.getElementById("add-prod-form").addEventListener("submit", function(e) { e.preventDefault();
 readImg(document.getElementById("p-photo")).then(function(photo) { produits.push({ id: nextId++,
@@ -3119,15 +3321,12 @@ showToast("Arriere-plan mis a jour !"); });
 document.getElementById("pwd-form").addEventListener("submit", function(e) { e.preventDefault(); var old =
 document.getElementById("pwd-old").value,
 nw = document.getElementById("pwd-new").value,
-cnf = document.getElementById("pwd-confirm").value; if (old !== siteConfig.adminPassword) { showToast(
-"Mot de passe actuel incorrect", "error"); return; } if (nw.length < 6) { showToast(
-"Minimum 6 caracteres", "error"); return; } if (nw !== cnf) { showToast(
-"Les mots de passe ne correspondent pas", "error"); return; }
-siteConfig.adminPassword = nw;
-window.siteConfig = siteConfig;
-saveAll();
-e.target.reset();
-showToast("Mot de passe modifie !"); });
+cnf = document.getElementById("pwd-confirm").value;
+if (!old) { showToast("Entrez le mot de passe actuel", "error"); return; }
+if (nw.length < 8) { showToast("Minimum 8 caracteres", "error"); return; }
+if (nw !== cnf) { showToast("Les mots de passe ne correspondent pas", "error"); return; }
+var form = e.target;
+window.fbChangerMdp(old, nw).then(function(r) { if (r.ok) { form.reset(); showToast("Mot de passe administrateur modifie !"); } else showToast(r.msg || "Erreur", "error"); }); });
 document.querySelectorAll(".admin-tab").forEach(function(tab) { tab.addEventListener("click", function() {
 document.querySelectorAll(".admin-tab").forEach(function(t) { t.classList.remove(
 "active"); });
